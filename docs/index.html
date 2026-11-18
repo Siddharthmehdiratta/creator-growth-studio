@@ -13,7 +13,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236C47FF'/%3E%3Cpath d='M9 21v-3M14 21v-7M19 21v-10M24 21V8' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-app="start.html">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-logo" viewBox="0 0 32 32"><defs><linearGradient id="lg-brand" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6C47FF"/><stop offset=".55" stop-color="#E0428A"/><stop offset="1" stop-color="#FF8A3D"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg-brand)"/><path d="M9 21.5v-3M14 21.5v-7M19 21.5v-10M24 21.5V8" stroke="#fff" stroke-width="3" stroke-linecap="round"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></symbol>
@@ -46,29 +46,41 @@
   <symbol id="i-next" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m0 0-6-6m6 6-6 6"/></symbol>
   <linearGradient id="g-half"><stop offset="50%" stop-color="#F5A524"/><stop offset="50%" stop-color="#e2e5ea"/></linearGradient>
   <symbol id="i-star" viewBox="0 0 20 20"><path d="M10 1.8l2.4 5 5.4.7-4 3.8 1 5.4L10 14.1l-4.8 2.6 1-5.4-4-3.8 5.4-.7z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 11 12 4l9 7M5 9.5V20h5v-6h4v6h5V9.5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2M9 12a17 17 0 0 1 9-9c1 0 3 2 3 3a17 17 0 0 1-9 9zM9 12l-4-1 3-4h4M12 15l1 4 4-3v-4M15 9h.01"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 21V4h11l-2 4 2 4H5"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></symbol>
+  <symbol id="i-gh" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 2.9.8.1-.6.4-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5a3.9 3.9 0 0 1 1-2.7 3.6 3.6 0 0 1 .1-2.7s.8-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .6 1.4.2 2.4.1 2.7a3.9 3.9 0 0 1 1 2.7c0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></symbol>
+  <symbol id="i-down-c" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
 </svg>
 <a class="skip" href="#main">Skip to content</a>
 <header class="top top-dark">
   <div class="wrap">
     <a class="logo" href="./"><svg aria-hidden="true"><use href="#i-logo"/></svg>Creator Growth Studio</a>
-    <nav aria-label="Main"><a href="features.html">Features</a><a href="how-it-works.html">How it works</a><a href="growth-guide.html">Growth guide</a><a href="faq.html">FAQ</a></nav>
-    <div class="right">
-      <a class="btn ghost-light sm gh" href="https://github.com/Siddharthmehdiratta/creator-growth-studio">GitHub</a>
-      <a class="btn primary sm" href="start.html">Start free</a>
-      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mnav"><span></span><span></span><span></span></button>
-    </div>
+    <nav class="dnav" aria-label="Main"><a href="./" aria-current="page">Home</a><div class="dd"><button class="dd-btn" type="button" aria-expanded="false">Product<svg aria-hidden="true"><use href="#i-down-c"/></svg></button><div class="dd-menu"><a href="start.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-rocket"/></svg></span><span><b>Start free</b><small>Pick a platform, get your report</small></span></a><a href="features.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-star"/></svg></span><span><b>Features tour</b><small>7 features, one slide at a time</small></span></a><a href="how-it-works.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-sliders"/></svg></span><span><b>How it works</b><small>The steps, the stars, your privacy</small></span></a><a href="start.html?sample=1"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-chart"/></svg></span><span><b>Sample report</b><small>A fictional account, the real tool</small></span></a><a href="sample-boardroom.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-users"/></svg></span><span><b>Sample AI boardroom</b><small>What the Claude review looks like</small></span></a></div></div><div class="dd"><button class="dd-btn" type="button" aria-expanded="false">Learn<svg aria-hidden="true"><use href="#i-down-c"/></svg></button><div class="dd-menu"><a href="guide.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-book"/></svg></span><span><b>Beginner's guide</b><small>Your first report in 7 steps</small></span></a><a href="growth-guide.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-target"/></svg></span><span><b>Growth guide 2026</b><small>What the platforms reward, with sources</small></span></a><a href="faq.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-search"/></svg></span><span><b>FAQ</b><small>Search quick answers</small></span></a></div></div><div class="dd"><button class="dd-btn" type="button" aria-expanded="false">Help<svg aria-hidden="true"><use href="#i-down-c"/></svg></button><div class="dd-menu"><a href="help.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-help"/></svg></span><span><b>Help centre</b><small>Every way to get help</small></span></a><a href="https://github.com/Siddharthmehdiratta/creator-growth-studio/discussions/new?category=q-a" rel="noopener"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-msg"/></svg></span><span><b>Ask a question</b><small>Public questions and answers on GitHub</small></span></a><a href="report.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-flag"/></svg></span><span><b>Report a problem</b><small>Tell us what broke</small></span></a><a href="feedback.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-heart"/></svg></span><span><b>Give feedback</b><small>What to keep, what to change</small></span></a></div></div><a href="github.html">GitHub</a></nav>
+    <div class="right"><a class="btn primary sm" href="start.html">Start free</a></div>
   </div>
-  <nav class="mnav" id="mnav" aria-label="Mobile" hidden><a href="features.html">Features</a><a href="how-it-works.html">How it works</a><a href="growth-guide.html">Growth guide</a><a href="faq.html">FAQ</a><a href="start.html" class="btn primary">Start free</a></nav>
 </header>
+<nav class="tabbar" aria-label="Quick links"><a href="index.html" aria-current="page"><svg aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></a><a href="start.html"><svg aria-hidden="true"><use href="#i-rocket"/></svg><span>Start</span></a><a href="guide.html"><svg aria-hidden="true"><use href="#i-book"/></svg><span>Guide</span></a><a href="help.html"><svg aria-hidden="true"><use href="#i-help"/></svg><span>Help</span></a><button type="button" data-sheet-open aria-controls="sheet" aria-expanded="false"><svg aria-hidden="true"><use href="#i-menu"/></svg><span>Menu</span></button></nav>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <div class="sheet-card">
+    <div class="sheet-head"><b>Menu</b><button type="button" class="sheet-x" data-sheet-close aria-label="Close menu"><svg aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <a class="sheet-home" href="./"><svg aria-hidden="true"><use href="#i-home"/></svg>Home</a>
+    <div class="sheet-group"><h3>Product</h3><a href="start.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-rocket"/></svg></span><span><b>Start free</b><small>Pick a platform, get your report</small></span></a><a href="features.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-star"/></svg></span><span><b>Features tour</b><small>7 features, one slide at a time</small></span></a><a href="how-it-works.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-sliders"/></svg></span><span><b>How it works</b><small>The steps, the stars, your privacy</small></span></a><a href="start.html?sample=1"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-chart"/></svg></span><span><b>Sample report</b><small>A fictional account, the real tool</small></span></a><a href="sample-boardroom.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-users"/></svg></span><span><b>Sample AI boardroom</b><small>What the Claude review looks like</small></span></a></div><div class="sheet-group"><h3>Learn</h3><a href="guide.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-book"/></svg></span><span><b>Beginner's guide</b><small>Your first report in 7 steps</small></span></a><a href="growth-guide.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-target"/></svg></span><span><b>Growth guide 2026</b><small>What the platforms reward, with sources</small></span></a><a href="faq.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-search"/></svg></span><span><b>FAQ</b><small>Search quick answers</small></span></a></div><div class="sheet-group"><h3>Help</h3><a href="help.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-help"/></svg></span><span><b>Help centre</b><small>Every way to get help</small></span></a><a href="https://github.com/Siddharthmehdiratta/creator-growth-studio/discussions/new?category=q-a" rel="noopener"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-msg"/></svg></span><span><b>Ask a question</b><small>Public questions and answers on GitHub</small></span></a><a href="report.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-flag"/></svg></span><span><b>Report a problem</b><small>Tell us what broke</small></span></a><a href="feedback.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-heart"/></svg></span><span><b>Give feedback</b><small>What to keep, what to change</small></span></a></div><div class="sheet-group"><h3>Project</h3><a href="github.html"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-code"/></svg></span><span><b>GitHub project</b><small>Stars, licence, run it yourself</small></span></a><a href="https://github.com/Siddharthmehdiratta/creator-growth-studio" rel="noopener"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-gh"/></svg></span><span><b>Code on GitHub</b><small>Read every line</small></span></a><a href="https://siddharthmehdiratta.github.io/founder-skill-plus/" rel="noopener"><span class="mi-ic"><svg aria-hidden="true"><use href="#i-spark"/></svg></span><span><b>Founder Plus</b><small>Our sister project for founders</small></span></a></div>
+    <a class="btn primary lg sheet-cta" href="start.html">Start free</a>
+  </div>
+</div>
 <main id="main">
 
-<section class="hero">
+<section class="slide dark hero" id="s-home" data-title="Home">
   <div class="glow g1" aria-hidden="true"></div><div class="glow g2" aria-hidden="true"></div>
   <div class="wrap">
     <div class="hero-copy">
       <span class="eyebrow-pill"><span class="dot"></span>Free for creators, built on official data</span>
       <h1>See which posts grow your account, and why.</h1>
-      <p class="lead">Every post gets a star rating, a plain-English reason it worked or flopped, and a clear idea of what to post next. No forms to fill in.</p>
+      <p class="lead">A star rating for every post, the reason it worked or flopped, and what to post next. No forms to fill in.</p>
       <p class="pick-q">What do you want to grow?</p>
       
 <div class="pick" role="group" aria-label="Choose a platform">
@@ -78,14 +90,14 @@
 </div>
       <p class="hero-alt"><a href="start.html?sample=1">Or see a sample report first</a></p>
     </div>
-    <div class="visual preview" aria-label="Example report from a fictional sample account">
+    <div class="visual preview tilt" aria-label="Example report from a fictional sample account">
       <div class="phone" aria-hidden="true">
         <div class="ph-head"><span class="ph-av"><span>LR</span></span><div><b>lowping.rohan</b><span>2,282 followers</span></div></div>
         <div class="ph-stats"><div><b>40</b><span>posts</span></div><div><b>3.5</b><span>avg stars</span></div><div><b>Growing</b><span>level</span></div></div>
         <div class="ph-grid"><div class="tile k1"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M8 5v14l11-7z"/></svg><span class="bdg"><i>★</i>3</span></div><div class="tile k2"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M7 4h11a2 2 0 0 1 2 2v11M4 8h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/></svg><span class="bdg"><i>★</i>4</span></div><div class="tile k6"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M8 5v14l11-7z"/></svg><span class="bdg"><i>★</i>4</span></div><div class="tile k5"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M7 4h11a2 2 0 0 1 2 2v11M4 8h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/></svg><span class="bdg"><i>★</i>3.5</span></div><div class="tile k3"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M8 5v14l11-7z"/></svg><span class="bdg"><i>★</i>2.5</span></div><div class="tile k4"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 5h16v14H4zM4 15l5-5 4 4 3-3 4 4"/></svg><span class="bdg"><i>★</i>1.5</span></div><div class="tile k1"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M8 5v14l11-7z"/></svg><span class="bdg"><i>★</i>5</span></div><div class="tile k2"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M7 4h11a2 2 0 0 1 2 2v11M4 8h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/></svg><span class="bdg"><i>★</i>2.5</span></div><div class="tile k6"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M8 5v14l11-7z"/></svg><span class="bdg"><i>★</i>5</span></div></div>
       </div>
       <div class="frame">
-        <div class="bar"><b>Post report</b><span>20 Aug 2026</span><span class="pill good">Top post</span></div>
+        <div class="bar"><b>Post report</b><span>Example account</span><span class="pill good">Top post</span></div>
         <div class="body">
           <div style="display:flex;align-items:center;gap:10px"><span class="stars-txt" aria-label="5 out of 5 stars">★★★★★</span><span class="score">Score 255</span></div>
           <p class="cap">GTA 6 price in India</p>
@@ -97,83 +109,78 @@
       </div>
       <div class="chip chip-a" aria-hidden="true"><span class="ic"><svg><use href="#i-clock"/></svg></span><span><small>Best time to post</small><b>Afternoon, 12 to 5 pm</b></span></div>
       <div class="chip chip-b" aria-hidden="true"><span class="ic"><svg><use href="#i-upar"/></svg></span><span><small>What travels further</small><b>"Face to camera" hooks: +128% reach</b></span></div>
-      <p class="note"><b>Example:</b> a fictional sample account, analysed by the real tool.</p>
     </div>
   </div>
+  <button class="next-slide" type="button" data-next>Next: How it works<svg aria-hidden="true"><use href="#i-down-c"/></svg></button>
 </section>
 
-<section class="works"><div class="wrap"><span>Works with</span><ul><li><svg aria-hidden="true"><use href="#i-ig"/></svg>Instagram</li><li><svg aria-hidden="true"><use href="#i-play"/></svg>YouTube</li><li><svg aria-hidden="true"><use href="#i-live"/></svg>Twitch</li><li><svg aria-hidden="true"><use href="#i-spark"/></svg>Reviewed by Claude</li></ul></div></section>
-
-<section class="section">
+<section class="slide" id="s-how" data-title="How it works">
   <div class="wrap">
-    <div class="head center"><span class="kicker">Everything in one report</span><h2>A full growth team, free</h2><p>Each number is compared with your own typical post, so the advice fits an account of 80 followers or 80,000.</p></div>
-    <div class="cards6">
-      <a class="c6" href="features.html#stars"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-star"/></svg></span><h3>Every post rated</h3><p>1 to 5 stars from watch time, sends, follows, likes, saves and comments.</p><span class="more">See how</span></a>
-      <a class="c6" href="features.html#why"><span class="f-ic pink"><svg aria-hidden="true"><use href="#i-chart"/></svg></span><h3>Why it worked</h3><p>Each number next to your usual, with a plain reason and what to do next time.</p><span class="more">See how</span></a>
-      <a class="c6" href="features.html#next"><span class="f-ic orange"><svg aria-hidden="true"><use href="#i-bolt"/></svg></span><h3>What to post next</h3><p>Ideas from your own best posts, with the format, day and time that work for you.</p><span class="more">See how</span></a>
-      <a class="c6" href="features.html#plan"><span class="f-ic teal"><svg aria-hidden="true"><use href="#i-cal"/></svg></span><h3>A 30-day plan</h3><p>A calendar of your best days that drops straight into Google Calendar.</p><span class="more">See how</span></a>
-      <a class="c6" href="features.html#comments"><span class="f-ic sky"><svg aria-hidden="true"><use href="#i-msg"/></svg></span><h3>Comments sorted</h3><p>Questions, requests, praise, criticism and spam, in English and Hinglish.</p><span class="more">See how</span></a>
-      <a class="c6" href="features.html#board"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-users"/></svg></span><h3>AI boardroom</h3><p>A CEO, growth, social, SEO, data and creative leads review your account in Claude.</p><span class="more">See how</span></a>
-    </div>
+    <div class="head center"><h2>Three steps, under a minute</h2><p>Nothing to install and no account to create.</p></div>
+    <ol class="steps-row">
+      <li><span class="n">1</span><span class="st-ic"><svg aria-hidden="true"><use href="#i-target"/></svg></span><h3>Pick your platform</h3><p>Instagram, YouTube or Twitch.</p></li>
+      <li><span class="n">2</span><span class="st-ic"><svg aria-hidden="true"><use href="#i-up"/></svg></span><h3>Bring your numbers</h3><p>Type a username, upload an export, or type in your streams.</p></li>
+      <li><span class="n">3</span><span class="st-ic"><svg aria-hidden="true"><use href="#i-star"/></svg></span><h3>Read your report</h3><p>Stars for every post, why, and what to post next.</p></li>
+    </ol>
+    <p class="slide-links"><a class="btn" href="guide.html">Read the beginner's guide</a><a class="btn ghost" href="how-it-works.html">How the stars work</a></p>
   </div>
+  <button class="next-slide" type="button" data-next>Next: What you get<svg aria-hidden="true"><use href="#i-down-c"/></svg></button>
 </section>
 
-<section class="section alt">
+<section class="slide alt" id="s-get" data-title="What you get">
   <div class="wrap">
-    <div class="head center"><span class="kicker">Three platforms</span><h2>Bring the numbers you already have</h2><p>Pick your platform, then the easiest way in. You can always add more detail later.</p></div>
-    <div class="plat3">
-      <div class="pl"><span class="pc-ic ig"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><h3>Instagram</h3><ul class="ticks"><li>Type a username for public numbers</li><li>Connect for reach, watch time and skips</li><li>Or upload a Meta Business Suite export</li></ul><a class="btn primary" href="start.html?p=instagram">Start with Instagram</a></div>
-      <div class="pl"><span class="pc-ic yt"><svg aria-hidden="true"><use href="#i-play"/></svg></span><h3>YouTube</h3><ul class="ticks"><li>Upload your YouTube Studio export</li><li>Videos and Shorts rated separately</li><li>Watch time, click rate and subscribers</li></ul><a class="btn primary" href="start.html?p=youtube">Start with YouTube</a></div>
-      <div class="pl"><span class="pc-ic tw"><svg aria-hidden="true"><use href="#i-live"/></svg></span><h3>Twitch</h3><ul class="ticks"><li>Type in your last few streams</li><li>Viewers, hours, follows and chat</li><li>Best days, times and stream length</li></ul><a class="btn primary" href="start.html?p=twitch">Start with Twitch</a></div>
+    <div class="head center"><h2>A growth team in one report</h2><p>Every number is compared with your own typical post, so it fits 80 followers or 80,000.</p></div>
+    <div class="cards6 compact">
+      <a class="c6" href="features.html#stars"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-star"/></svg></span><h3>Every post rated</h3><p>1 to 5 stars from watch time, sends and follows.</p></a>
+      <a class="c6" href="features.html#why"><span class="f-ic pink"><svg aria-hidden="true"><use href="#i-chart"/></svg></span><h3>Why it worked</h3><p>Each number next to your usual, in plain words.</p></a>
+      <a class="c6" href="features.html#next"><span class="f-ic orange"><svg aria-hidden="true"><use href="#i-bolt"/></svg></span><h3>What to post next</h3><p>Ideas from your own best posts.</p></a>
+      <a class="c6" href="features.html#plan"><span class="f-ic teal"><svg aria-hidden="true"><use href="#i-cal"/></svg></span><h3>A 30-day plan</h3><p>Your best days, ready for Google Calendar.</p></a>
+      <a class="c6" href="features.html#comments"><span class="f-ic sky"><svg aria-hidden="true"><use href="#i-msg"/></svg></span><h3>Comments sorted</h3><p>Questions, requests, praise and spam.</p></a>
+      <a class="c6" href="features.html#board"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-users"/></svg></span><h3>AI boardroom</h3><p>Six expert advisers review you in Claude.</p></a>
     </div>
+    <p class="slide-links"><a class="btn primary" href="features.html">Take the features tour</a></p>
   </div>
+  <button class="next-slide" type="button" data-next>Next: Why trust it<svg aria-hidden="true"><use href="#i-down-c"/></svg></button>
 </section>
 
-<section class="facts-band">
+<section class="slide dark facts" id="s-trust" data-title="Why trust it">
   <div class="wrap">
-    <div class="fb-head"><span class="kicker light">Built on the rules that matter in 2026</span><h2>Advice grounded in what the platforms actually reward</h2></div>
+    <div class="head center"><h2>Built on what the platforms reward in 2026</h2><p>Every rule has a source you can check.</p></div>
     <div class="fb-grid">
-      <div><b>3 signals</b><p>Watch time, sends per reach and likes per reach are what Instagram's head names as most important. Your stars weigh them most.</p><a href="https://buffer.com/resources/instagram-algorithms/" target="_blank" rel="noopener">Source: Buffer</a></div>
-      <div><b>3 to 5 posts</b><p>A week is the sweet spot in Buffer's study of 2 million Instagram posts: it more than doubled follower growth compared with 1 to 2.</p><a href="https://buffer.com/resources/how-often-to-post-on-instagram/" target="_blank" rel="noopener">Source: Buffer</a></div>
+      <div><b>3 signals</b><p>Watch time, sends and likes per person reached are what Instagram's head names as most important. Your stars weigh them most.</p><a href="https://buffer.com/resources/instagram-algorithms/" target="_blank" rel="noopener">Source: Buffer</a></div>
+      <div><b>3 to 5 posts</b><p>A week more than doubled follower growth against 1 to 2, in Buffer's study of 2 million posts.</p><a href="https://buffer.com/resources/how-often-to-post-on-instagram/" target="_blank" rel="noopener">Source: Buffer</a></div>
       <div><b>5 hashtags</b><p>Instagram caps hashtags at 5 per post since December 2025. Your plan never suggests more.</p><a href="https://www.businesstoday.in/technology/news/story/no-more-hashtag-stuffing-instagram-limits-hashtag-usage-to-just-5-per-reel-and-post-507444-2025-12-19" target="_blank" rel="noopener">Source: Business Today</a></div>
     </div>
-    <p class="fb-more"><a href="growth-guide.html">Read the full 2026 growth guide</a></p>
+    <ul class="trust-row"><li><svg aria-hidden="true"><use href="#i-lock"/></svg>Never asks for your password</li><li><svg aria-hidden="true"><use href="#i-shield"/></svg>Official API only, no scraping</li><li><svg aria-hidden="true"><use href="#i-code"/></svg>Open source, MIT licence</li></ul>
   </div>
+  <button class="next-slide" type="button" data-next>Next: Get started<svg aria-hidden="true"><use href="#i-down-c"/></svg></button>
 </section>
 
-<section class="section" id="levels">
+<section class="slide" id="s-start" data-title="Get started">
   <div class="wrap">
-    <div class="head center"><span class="kicker">For every size</span><h2>Advice that fits where you are</h2><p>A creator with 80 followers needs different advice from one with 80,000. Your report adjusts to your level.</p></div>
-    <div class="levels">
-      <div class="lv l1"><b>Starter</b><span>Under 1,000</span><p>Find one niche and a first second that stops the scroll.</p></div>
-      <div class="lv l2"><b>Growing</b><span>1,000 to 10,000</span><p>Double down on your two best formats and start series.</p></div>
-      <div class="lv l3"><b>Established</b><span>10,000 to 100,000</span><p>Test new formats with trial reels and start brand deals.</p></div>
-      <div class="lv l4"><b>Pro</b><span>100,000 and over</span><p>Build franchises, a team and more than one income stream.</p></div>
-      <div class="lv l5"><b>Brands</b><span>Any size</span><p>Type a creator's username to check their engagement before you pay.</p></div>
+    <div class="head center"><h2>Ready? Pick a platform.</h2><p>Or find help first. Everything is one tap away.</p></div>
+    
+<div class="pick light" role="group" aria-label="Choose a platform">
+  <a class="pick-card ig" href="start.html?p=instagram"><span class="pc-ic"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><span><b>Instagram</b><small>Reels, posts and carousels</small></span><svg class="go" aria-hidden="true"><use href="#i-next"/></svg></a>
+  <a class="pick-card yt" href="start.html?p=youtube"><span class="pc-ic"><svg aria-hidden="true"><use href="#i-play"/></svg></span><span><b>YouTube</b><small>Videos and Shorts</small></span><svg class="go" aria-hidden="true"><use href="#i-next"/></svg></a>
+  <a class="pick-card tw" href="start.html?p=twitch"><span class="pc-ic"><svg aria-hidden="true"><use href="#i-live"/></svg></span><span><b>Twitch</b><small>Live streams</small></span><svg class="go" aria-hidden="true"><use href="#i-next"/></svg></a>
+</div>
+    <div class="help-grid">
+      <a href="guide.html"><svg aria-hidden="true"><use href="#i-book"/></svg><b>Beginner's guide</b></a>
+      <a href="faq.html"><svg aria-hidden="true"><use href="#i-search"/></svg><b>FAQ</b></a>
+      <a href="https://github.com/Siddharthmehdiratta/creator-growth-studio/discussions/new?category=q-a"><svg aria-hidden="true"><use href="#i-msg"/></svg><b>Ask a question</b></a>
+      <a href="report.html"><svg aria-hidden="true"><use href="#i-flag"/></svg><b>Report a problem</b></a>
+      <a href="feedback.html"><svg aria-hidden="true"><use href="#i-heart"/></svg><b>Give feedback</b></a>
+      <a href="github.html"><svg aria-hidden="true"><use href="#i-gh"/></svg><b>GitHub project</b></a>
     </div>
   </div>
 </section>
-
-<section class="section alt">
-  <div class="wrap faq-wrap">
-    <div class="head"><span class="kicker">Questions</span><h2>Good to know</h2><p>More answers on the <a href="faq.html">FAQ page</a>, or <a href="https://github.com/Siddharthmehdiratta/creator-growth-studio/discussions/new?category=q-a">ask your own question</a>.</p></div>
-    <div class="faq">
-      <details><summary>Is it really free?</summary><p>Yes. It's open source under the MIT licence, and you can read every line on GitHub. There's nothing to buy and no account to create.</p></details>
-      <details><summary>Do I need to give my password?</summary><p>No. Typing a username reads public numbers. Connect Instagram uses Instagram's own login page, so the tool never sees your password.</p></details>
-      <details><summary>Does it work with a small account?</summary><p>Yes. Ratings compare each post with your own typical post, so they work from your first few posts. With fewer than 15 posts, the report says its patterns are early hints, not proof.</p></details>
-      <details><summary>Which accounts can it read?</summary><p>Instagram Creator and Business accounts. Switching from a personal account is free and takes a minute in the Instagram app. YouTube and Twitch work from your own numbers.</p></details>
-    </div>
-  </div>
-</section>
-<section class="cta-band"><div class="wrap"><div><h2>Ready to see your own report?</h2><p>Pick Instagram, YouTube or Twitch. It takes under a minute and it's free.</p></div><a class="btn light lg" href="start.html">Start free</a></div></section>
 
 </main>
 <footer class="site-foot">
   <div class="wrap">
     <div class="ft-brand"><a class="logo" href="./"><svg aria-hidden="true"><use href="#i-logo"/></svg>Creator Growth Studio</a><p>Free and open source (MIT), made by Siddharth Mehdiratta. Uses Instagram's official API, never sees your password, and stores nothing. Platform rules checked on 19 November 2026.</p></div>
-    <div><b>Product</b><a href="start.html">Start free</a><a href="features.html">Features</a><a href="how-it-works.html">How it works</a><a href="sample-boardroom.html">Sample AI boardroom</a></div>
-    <div><b>Learn</b><a href="growth-guide.html">Growth guide 2026</a><a href="growth-guide.html#instagram">Instagram</a><a href="growth-guide.html#youtube">YouTube</a><a href="growth-guide.html#twitch">Twitch</a></div>
-    <div><b>Help</b><a href="faq.html">FAQ</a><a href="https://github.com/Siddharthmehdiratta/creator-growth-studio/discussions/new?category=q-a">Ask a question</a><a href="https://github.com/Siddharthmehdiratta/creator-growth-studio/issues/new">Report a problem</a><a href="https://github.com/Siddharthmehdiratta/creator-growth-studio">GitHub</a><a href="https://siddharthmehdiratta.github.io/founder-skill-plus/">Founder Plus</a></div>
+    <div><b>Product</b><a href="start.html">Start free</a><a href="features.html">Features tour</a><a href="how-it-works.html">How it works</a><a href="start.html?sample=1">Sample report</a><a href="sample-boardroom.html">Sample AI boardroom</a></div><div><b>Learn</b><a href="guide.html">Beginner's guide</a><a href="growth-guide.html">Growth guide 2026</a><a href="faq.html">FAQ</a></div><div><b>Help</b><a href="help.html">Help centre</a><a href="https://github.com/Siddharthmehdiratta/creator-growth-studio/discussions/new?category=q-a">Ask a question</a><a href="report.html">Report a problem</a><a href="feedback.html">Give feedback</a></div><div><b>Project</b><a href="github.html">GitHub project</a><a href="https://github.com/Siddharthmehdiratta/creator-growth-studio">Code on GitHub</a><a href="https://siddharthmehdiratta.github.io/founder-skill-plus/">Founder Plus</a></div>
   </div>
 </footer>
 <script src="site.js"></script>

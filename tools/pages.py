@@ -1,6 +1,7 @@
 """Builds the Creator Growth Studio website pages (docs/*.html) from one shared header, footer and icon set.
 Run: python3 tools/pages.py   (start.html, the app itself, is kept by hand; this script only refreshes its header and footer.)"""
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
@@ -10,7 +11,31 @@ ASK = REPO + "/discussions/new?category=q-a"
 BUG = REPO + "/issues/new"
 FONT_PRELOAD = '<link rel="preload" href="fonts/plus-jakarta-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>\n<link rel="preload" href="fonts/plus-jakarta-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>'
 FAVICON = "<link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236C47FF'/%3E%3Cpath d='M9 21v-3M14 21v-7M19 21v-10M24 21V8' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E\">"
-NAV = [("features.html", "Features"), ("how-it-works.html", "How it works"), ("growth-guide.html", "Growth guide"), ("faq.html", "FAQ")]
+FP_URL = "https://siddharthmehdiratta.github.io/founder-skill-plus/"
+# One menu, used by the desktop dropdowns, the phone menu sheet and the footer.
+MENU = [
+    ("Product", [("start.html", "i-rocket", "Start free", "Pick a platform, get your report"),
+                 ("features.html", "i-star", "Features tour", "7 features, one slide at a time"),
+                 ("how-it-works.html", "i-sliders", "How it works", "The steps, the stars, your privacy"),
+                 ("start.html?sample=1", "i-chart", "Sample report", "A fictional account, the real tool"),
+                 ("sample-boardroom.html", "i-users", "Sample AI boardroom", "What the Claude review looks like")]),
+    ("Learn", [("guide.html", "i-book", "Beginner's guide", "Your first report in 7 steps"),
+               ("growth-guide.html", "i-target", "Growth guide 2026", "What the platforms reward, with sources"),
+               ("faq.html", "i-search", "FAQ", "Search quick answers")]),
+    ("Help", [("help.html", "i-help", "Help centre", "Every way to get help"),
+              (ASK, "i-msg", "Ask a question", "Public questions and answers on GitHub"),
+              ("report.html", "i-flag", "Report a problem", "Tell us what broke"),
+              ("feedback.html", "i-heart", "Give feedback", "What to keep, what to change")]),
+    ("Project", [("github.html", "i-code", "GitHub project", "Stars, licence, run it yourself"),
+                 (REPO, "i-gh", "Code on GitHub", "Read every line"),
+                 (FP_URL, "i-spark", "Founder Plus", "Our sister project for founders")]),
+]
+
+
+def _item(h, ic, t, sub, active=""):
+    cur = ' aria-current="page"' if h == active else ""
+    ext = ' rel="noopener"' if h.startswith("http") else ""
+    return f'<a href="{h}"{cur}{ext}><span class="mi-ic"><svg aria-hidden="true"><use href="#{ic}"/></svg></span><span><b>{t}</b><small>{sub}</small></span></a>'
 
 
 def head(title, desc, dark=False):
@@ -28,35 +53,46 @@ def head(title, desc, dark=False):
 {FAVICON}
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-app="start.html">
 """
 
 
 def header(active="", dark=False):
-    links = "".join(f'<a href="{h}"{" aria-current=\"page\"" if h == active else ""}>{t}</a>' for h, t in NAV)
+    """Desktop: Home, three dropdowns and GitHub. Phone: a labelled tab bar at the bottom plus a full menu sheet."""
+    groups = {n: items for n, items in MENU}
+    def dd(name):
+        on = any(h == active for h, *_ in groups[name])
+        return (f'<div class="dd"><button class="dd-btn{" on" if on else ""}" type="button" aria-expanded="false">{name}<svg aria-hidden="true"><use href="#i-down-c"/></svg></button>'
+                f'<div class="dd-menu">{"".join(_item(*i, active) for i in groups[name])}</div></div>')
+    home_cur = ' aria-current="page"' if active == "index.html" else ""
+    gh_cur = ' aria-current="page"' if active == "github.html" else ""
+    sheet = "".join(f'<div class="sheet-group"><h3>{n}</h3>{"".join(_item(*i, active) for i in items)}</div>' for n, items in MENU)
+    tab = lambda h, ic, t: f'<a href="{h}"{" aria-current=\"page\"" if h == active else ""}><svg aria-hidden="true"><use href="#{ic}"/></svg><span>{t}</span></a>'
     return f"""{SPRITE}
 <a class="skip" href="#main">Skip to content</a>
 <header class="top{' top-dark' if dark else ''}">
   <div class="wrap">
     <a class="logo" href="./"><svg aria-hidden="true"><use href="#i-logo"/></svg>Creator Growth Studio</a>
-    <nav aria-label="Main">{links}</nav>
-    <div class="right">
-      <a class="btn {'ghost-light' if dark else 'ghost'} sm gh" href="{REPO}">GitHub</a>
-      <a class="btn primary sm" href="start.html">Start free</a>
-      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mnav"><span></span><span></span><span></span></button>
-    </div>
+    <nav class="dnav" aria-label="Main"><a href="./"{home_cur}>Home</a>{dd("Product")}{dd("Learn")}{dd("Help")}<a href="github.html"{gh_cur}>GitHub</a></nav>
+    <div class="right"><a class="btn primary sm" href="start.html">Start free</a></div>
   </div>
-  <nav class="mnav" id="mnav" aria-label="Mobile" hidden>{links}<a href="start.html" class="btn primary">Start free</a></nav>
 </header>
+<nav class="tabbar" aria-label="Quick links">{tab("./", "i-home", "Home") if active != "index.html" else tab("index.html", "i-home", "Home")}{tab("start.html", "i-rocket", "Start")}{tab("guide.html", "i-book", "Guide")}{tab("help.html", "i-help", "Help")}<button type="button" data-sheet-open aria-controls="sheet" aria-expanded="false"><svg aria-hidden="true"><use href="#i-menu"/></svg><span>Menu</span></button></nav>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <div class="sheet-card">
+    <div class="sheet-head"><b>Menu</b><button type="button" class="sheet-x" data-sheet-close aria-label="Close menu"><svg aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <a class="sheet-home" href="./"><svg aria-hidden="true"><use href="#i-home"/></svg>Home</a>
+    {sheet}
+    <a class="btn primary lg sheet-cta" href="start.html">Start free</a>
+  </div>
+</div>
 """
 
 
 FOOT = f"""<footer class="site-foot">
   <div class="wrap">
     <div class="ft-brand"><a class="logo" href="./"><svg aria-hidden="true"><use href="#i-logo"/></svg>Creator Growth Studio</a><p>Free and open source (MIT), made by Siddharth Mehdiratta. Uses Instagram's official API, never sees your password, and stores nothing. Platform rules checked on 19 November 2026.</p></div>
-    <div><b>Product</b><a href="start.html">Start free</a><a href="features.html">Features</a><a href="how-it-works.html">How it works</a><a href="sample-boardroom.html">Sample AI boardroom</a></div>
-    <div><b>Learn</b><a href="growth-guide.html">Growth guide 2026</a><a href="growth-guide.html#instagram">Instagram</a><a href="growth-guide.html#youtube">YouTube</a><a href="growth-guide.html#twitch">Twitch</a></div>
-    <div><b>Help</b><a href="faq.html">FAQ</a><a href="{ASK}">Ask a question</a><a href="{BUG}">Report a problem</a><a href="{REPO}">GitHub</a><a href="https://siddharthmehdiratta.github.io/founder-skill-plus/">Founder Plus</a></div>
+    {"".join(f'<div><b>{n}</b>' + "".join(f'<a href="{h}">{t}</a>' for h, _, t, _ in items) + '</div>' for n, items in MENU)}
   </div>
 </footer>
 <script src="site.js"></script>
@@ -65,13 +101,29 @@ FOOT = f"""<footer class="site-foot">
 """
 
 
-def page_hero(kicker, title, lead, crumbs=None):
+def page_hero(kicker, title, lead, crumbs=None, compact=False):
     c = f'<p class="crumbs"><a href="./">Home</a><span>/</span>{crumbs}</p>' if crumbs else ""
-    return f"""<section class="page-hero"><div class="wrap">{c}<span class="kicker">{kicker}</span><h1>{title}</h1><p class="lead">{lead}</p></div></section>"""
+    return f"""<section class="page-hero{' compact' if compact else ''}"><div class="wrap">{c}<span class="kicker">{kicker}</span><h1>{title}</h1><p class="lead">{lead}</p></div></section>"""
 
 
 def cta(title="Ready to see your own report?", text="Pick Instagram, YouTube or Twitch. It takes under a minute and it's free."):
     return f"""<section class="cta-band"><div class="wrap"><div><h2>{title}</h2><p>{text}</p></div><a class="btn light lg" href="start.html">Start free</a></div></section>"""
+
+
+def deck(label, slides, done=("start.html", "Start free")):
+    """A slide deck: one card at a time, Back and Next buttons, dots, a counter, swipe and arrow keys."""
+    n = len(slides)
+    items = "".join(f'<div class="deck-slide" id="{i}" data-title="{t}" role="group" aria-roledescription="slide" aria-label="{k + 1} of {n}: {t}">{h}</div>'
+                    for k, (i, t, h) in enumerate(slides))
+    back = '<button class="deck-prev btn" type="button"><svg aria-hidden="true"><use href="#i-back"/></svg>Back</button>'
+    nxt = '<button class="deck-next btn primary" type="button">Next<svg aria-hidden="true"><use href="#i-next"/></svg></button>'
+    fin = f'<a class="btn primary deck-done" href="{done[0]}" hidden>{done[1]}</a>'
+    return f"""<section class="deck-sec"><div class="wrap">
+<div class="deck" aria-roledescription="carousel" aria-label="{label}" tabindex="0">
+  <div class="deck-bar">{back}<div class="deck-mid"><span class="deck-count" aria-live="polite">1 of {n}</span><b data-deck-label>{slides[0][1]}</b><div class="deck-dots"></div></div>{nxt}{fin}</div>
+  <div class="deck-track">{items}</div>
+  <div class="deck-foot">{back}{nxt}{fin}</div>
+</div></div></section>"""
 
 
 def write(name, title, desc, body, active="", dark=False):
@@ -93,26 +145,30 @@ TILES = "".join(f'<div class="tile {k}"><svg viewBox="0 0 24 24"><path fill="non
                                 ("k5", "M7 4h11a2 2 0 0 1 2 2v11M4 8h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z", "3.5"), ("k3", "M8 5v14l11-7z", "2.5"), ("k4", "M4 5h16v14H4zM4 15l5-5 4 4 3-3 4 4", "1.5"),
                                 ("k1", "M8 5v14l11-7z", "5"), ("k2", "M7 4h11a2 2 0 0 1 2 2v11M4 8h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z", "2.5"), ("k6", "M8 5v14l11-7z", "5")])
 
+def next_btn(label):
+    return f'<button class="next-slide" type="button" data-next>Next: {label}<svg aria-hidden="true"><use href="#i-down-c"/></svg></button>'
+
+
 HOME = f"""
-<section class="hero">
+<section class="slide dark hero" id="s-home" data-title="Home">
   <div class="glow g1" aria-hidden="true"></div><div class="glow g2" aria-hidden="true"></div>
   <div class="wrap">
     <div class="hero-copy">
       <span class="eyebrow-pill"><span class="dot"></span>Free for creators, built on official data</span>
       <h1>See which posts grow your account, and why.</h1>
-      <p class="lead">Every post gets a star rating, a plain-English reason it worked or flopped, and a clear idea of what to post next. No forms to fill in.</p>
+      <p class="lead">A star rating for every post, the reason it worked or flopped, and what to post next. No forms to fill in.</p>
       <p class="pick-q">What do you want to grow?</p>
       {PLATFORMS}
       <p class="hero-alt"><a href="start.html?sample=1">Or see a sample report first</a></p>
     </div>
-    <div class="visual preview" aria-label="Example report from a fictional sample account">
+    <div class="visual preview tilt" aria-label="Example report from a fictional sample account">
       <div class="phone" aria-hidden="true">
         <div class="ph-head"><span class="ph-av"><span>LR</span></span><div><b>lowping.rohan</b><span>2,282 followers</span></div></div>
         <div class="ph-stats"><div><b>40</b><span>posts</span></div><div><b>3.5</b><span>avg stars</span></div><div><b>Growing</b><span>level</span></div></div>
         <div class="ph-grid">{TILES}</div>
       </div>
       <div class="frame">
-        <div class="bar"><b>Post report</b><span>20 Aug 2026</span><span class="pill good">Top post</span></div>
+        <div class="bar"><b>Post report</b><span>Example account</span><span class="pill good">Top post</span></div>
         <div class="body">
           <div style="display:flex;align-items:center;gap:10px"><span class="stars-txt" aria-label="5 out of 5 stars">★★★★★</span><span class="score">Score 255</span></div>
           <p class="cap">GTA 6 price in India</p>
@@ -124,81 +180,71 @@ HOME = f"""
       </div>
       <div class="chip chip-a" aria-hidden="true"><span class="ic"><svg><use href="#i-clock"/></svg></span><span><small>Best time to post</small><b>Afternoon, 12 to 5 pm</b></span></div>
       <div class="chip chip-b" aria-hidden="true"><span class="ic"><svg><use href="#i-upar"/></svg></span><span><small>What travels further</small><b>"Face to camera" hooks: +128% reach</b></span></div>
-      <p class="note"><b>Example:</b> a fictional sample account, analysed by the real tool.</p>
     </div>
   </div>
+  {next_btn("How it works")}
 </section>
 
-<section class="works"><div class="wrap"><span>Works with</span><ul><li><svg aria-hidden="true"><use href="#i-ig"/></svg>Instagram</li><li><svg aria-hidden="true"><use href="#i-play"/></svg>YouTube</li><li><svg aria-hidden="true"><use href="#i-live"/></svg>Twitch</li><li><svg aria-hidden="true"><use href="#i-spark"/></svg>Reviewed by Claude</li></ul></div></section>
-
-<section class="section">
+<section class="slide" id="s-how" data-title="How it works">
   <div class="wrap">
-    <div class="head center"><span class="kicker">Everything in one report</span><h2>A full growth team, free</h2><p>Each number is compared with your own typical post, so the advice fits an account of 80 followers or 80,000.</p></div>
-    <div class="cards6">
-      <a class="c6" href="features.html#stars"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-star"/></svg></span><h3>Every post rated</h3><p>1 to 5 stars from watch time, sends, follows, likes, saves and comments.</p><span class="more">See how</span></a>
-      <a class="c6" href="features.html#why"><span class="f-ic pink"><svg aria-hidden="true"><use href="#i-chart"/></svg></span><h3>Why it worked</h3><p>Each number next to your usual, with a plain reason and what to do next time.</p><span class="more">See how</span></a>
-      <a class="c6" href="features.html#next"><span class="f-ic orange"><svg aria-hidden="true"><use href="#i-bolt"/></svg></span><h3>What to post next</h3><p>Ideas from your own best posts, with the format, day and time that work for you.</p><span class="more">See how</span></a>
-      <a class="c6" href="features.html#plan"><span class="f-ic teal"><svg aria-hidden="true"><use href="#i-cal"/></svg></span><h3>A 30-day plan</h3><p>A calendar of your best days that drops straight into Google Calendar.</p><span class="more">See how</span></a>
-      <a class="c6" href="features.html#comments"><span class="f-ic sky"><svg aria-hidden="true"><use href="#i-msg"/></svg></span><h3>Comments sorted</h3><p>Questions, requests, praise, criticism and spam, in English and Hinglish.</p><span class="more">See how</span></a>
-      <a class="c6" href="features.html#board"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-users"/></svg></span><h3>AI boardroom</h3><p>A CEO, growth, social, SEO, data and creative leads review your account in Claude.</p><span class="more">See how</span></a>
-    </div>
+    <div class="head center"><h2>Three steps, under a minute</h2><p>Nothing to install and no account to create.</p></div>
+    <ol class="steps-row">
+      <li><span class="n">1</span><span class="st-ic"><svg aria-hidden="true"><use href="#i-target"/></svg></span><h3>Pick your platform</h3><p>Instagram, YouTube or Twitch.</p></li>
+      <li><span class="n">2</span><span class="st-ic"><svg aria-hidden="true"><use href="#i-up"/></svg></span><h3>Bring your numbers</h3><p>Type a username, upload an export, or type in your streams.</p></li>
+      <li><span class="n">3</span><span class="st-ic"><svg aria-hidden="true"><use href="#i-star"/></svg></span><h3>Read your report</h3><p>Stars for every post, why, and what to post next.</p></li>
+    </ol>
+    <p class="slide-links"><a class="btn" href="guide.html">Read the beginner's guide</a><a class="btn ghost" href="how-it-works.html">How the stars work</a></p>
   </div>
+  {next_btn("What you get")}
 </section>
 
-<section class="section alt">
+<section class="slide alt" id="s-get" data-title="What you get">
   <div class="wrap">
-    <div class="head center"><span class="kicker">Three platforms</span><h2>Bring the numbers you already have</h2><p>Pick your platform, then the easiest way in. You can always add more detail later.</p></div>
-    <div class="plat3">
-      <div class="pl"><span class="pc-ic ig"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><h3>Instagram</h3><ul class="ticks"><li>Type a username for public numbers</li><li>Connect for reach, watch time and skips</li><li>Or upload a Meta Business Suite export</li></ul><a class="btn primary" href="start.html?p=instagram">Start with Instagram</a></div>
-      <div class="pl"><span class="pc-ic yt"><svg aria-hidden="true"><use href="#i-play"/></svg></span><h3>YouTube</h3><ul class="ticks"><li>Upload your YouTube Studio export</li><li>Videos and Shorts rated separately</li><li>Watch time, click rate and subscribers</li></ul><a class="btn primary" href="start.html?p=youtube">Start with YouTube</a></div>
-      <div class="pl"><span class="pc-ic tw"><svg aria-hidden="true"><use href="#i-live"/></svg></span><h3>Twitch</h3><ul class="ticks"><li>Type in your last few streams</li><li>Viewers, hours, follows and chat</li><li>Best days, times and stream length</li></ul><a class="btn primary" href="start.html?p=twitch">Start with Twitch</a></div>
+    <div class="head center"><h2>A growth team in one report</h2><p>Every number is compared with your own typical post, so it fits 80 followers or 80,000.</p></div>
+    <div class="cards6 compact">
+      <a class="c6" href="features.html#stars"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-star"/></svg></span><h3>Every post rated</h3><p>1 to 5 stars from watch time, sends and follows.</p></a>
+      <a class="c6" href="features.html#why"><span class="f-ic pink"><svg aria-hidden="true"><use href="#i-chart"/></svg></span><h3>Why it worked</h3><p>Each number next to your usual, in plain words.</p></a>
+      <a class="c6" href="features.html#next"><span class="f-ic orange"><svg aria-hidden="true"><use href="#i-bolt"/></svg></span><h3>What to post next</h3><p>Ideas from your own best posts.</p></a>
+      <a class="c6" href="features.html#plan"><span class="f-ic teal"><svg aria-hidden="true"><use href="#i-cal"/></svg></span><h3>A 30-day plan</h3><p>Your best days, ready for Google Calendar.</p></a>
+      <a class="c6" href="features.html#comments"><span class="f-ic sky"><svg aria-hidden="true"><use href="#i-msg"/></svg></span><h3>Comments sorted</h3><p>Questions, requests, praise and spam.</p></a>
+      <a class="c6" href="features.html#board"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-users"/></svg></span><h3>AI boardroom</h3><p>Six expert advisers review you in Claude.</p></a>
     </div>
+    <p class="slide-links"><a class="btn primary" href="features.html">Take the features tour</a></p>
   </div>
+  {next_btn("Why trust it")}
 </section>
 
-<section class="facts-band">
+<section class="slide dark facts" id="s-trust" data-title="Why trust it">
   <div class="wrap">
-    <div class="fb-head"><span class="kicker light">Built on the rules that matter in 2026</span><h2>Advice grounded in what the platforms actually reward</h2></div>
+    <div class="head center"><h2>Built on what the platforms reward in 2026</h2><p>Every rule has a source you can check.</p></div>
     <div class="fb-grid">
-      <div><b>3 signals</b><p>Watch time, sends per reach and likes per reach are what Instagram's head names as most important. Your stars weigh them most.</p><a href="https://buffer.com/resources/instagram-algorithms/" target="_blank" rel="noopener">Source: Buffer</a></div>
-      <div><b>3 to 5 posts</b><p>A week is the sweet spot in Buffer's study of 2 million Instagram posts: it more than doubled follower growth compared with 1 to 2.</p><a href="https://buffer.com/resources/how-often-to-post-on-instagram/" target="_blank" rel="noopener">Source: Buffer</a></div>
+      <div><b>3 signals</b><p>Watch time, sends and likes per person reached are what Instagram's head names as most important. Your stars weigh them most.</p><a href="https://buffer.com/resources/instagram-algorithms/" target="_blank" rel="noopener">Source: Buffer</a></div>
+      <div><b>3 to 5 posts</b><p>A week more than doubled follower growth against 1 to 2, in Buffer's study of 2 million posts.</p><a href="https://buffer.com/resources/how-often-to-post-on-instagram/" target="_blank" rel="noopener">Source: Buffer</a></div>
       <div><b>5 hashtags</b><p>Instagram caps hashtags at 5 per post since December 2025. Your plan never suggests more.</p><a href="https://www.businesstoday.in/technology/news/story/no-more-hashtag-stuffing-instagram-limits-hashtag-usage-to-just-5-per-reel-and-post-507444-2025-12-19" target="_blank" rel="noopener">Source: Business Today</a></div>
     </div>
-    <p class="fb-more"><a href="growth-guide.html">Read the full 2026 growth guide</a></p>
+    <ul class="trust-row"><li><svg aria-hidden="true"><use href="#i-lock"/></svg>Never asks for your password</li><li><svg aria-hidden="true"><use href="#i-shield"/></svg>Official API only, no scraping</li><li><svg aria-hidden="true"><use href="#i-code"/></svg>Open source, MIT licence</li></ul>
   </div>
+  {next_btn("Get started")}
 </section>
 
-<section class="section" id="levels">
+<section class="slide" id="s-start" data-title="Get started">
   <div class="wrap">
-    <div class="head center"><span class="kicker">For every size</span><h2>Advice that fits where you are</h2><p>A creator with 80 followers needs different advice from one with 80,000. Your report adjusts to your level.</p></div>
-    <div class="levels">
-      <div class="lv l1"><b>Starter</b><span>Under 1,000</span><p>Find one niche and a first second that stops the scroll.</p></div>
-      <div class="lv l2"><b>Growing</b><span>1,000 to 10,000</span><p>Double down on your two best formats and start series.</p></div>
-      <div class="lv l3"><b>Established</b><span>10,000 to 100,000</span><p>Test new formats with trial reels and start brand deals.</p></div>
-      <div class="lv l4"><b>Pro</b><span>100,000 and over</span><p>Build franchises, a team and more than one income stream.</p></div>
-      <div class="lv l5"><b>Brands</b><span>Any size</span><p>Type a creator's username to check their engagement before you pay.</p></div>
+    <div class="head center"><h2>Ready? Pick a platform.</h2><p>Or find help first. Everything is one tap away.</p></div>
+    {PLATFORMS.replace('class="pick"', 'class="pick light"')}
+    <div class="help-grid">
+      <a href="guide.html"><svg aria-hidden="true"><use href="#i-book"/></svg><b>Beginner's guide</b></a>
+      <a href="faq.html"><svg aria-hidden="true"><use href="#i-search"/></svg><b>FAQ</b></a>
+      <a href="{ASK}"><svg aria-hidden="true"><use href="#i-msg"/></svg><b>Ask a question</b></a>
+      <a href="report.html"><svg aria-hidden="true"><use href="#i-flag"/></svg><b>Report a problem</b></a>
+      <a href="feedback.html"><svg aria-hidden="true"><use href="#i-heart"/></svg><b>Give feedback</b></a>
+      <a href="github.html"><svg aria-hidden="true"><use href="#i-gh"/></svg><b>GitHub project</b></a>
     </div>
   </div>
 </section>
-
-<section class="section alt">
-  <div class="wrap faq-wrap">
-    <div class="head"><span class="kicker">Questions</span><h2>Good to know</h2><p>More answers on the <a href="faq.html">FAQ page</a>, or <a href="{ASK}">ask your own question</a>.</p></div>
-    <div class="faq">
-      <details><summary>Is it really free?</summary><p>Yes. It's open source under the MIT licence, and you can read every line on GitHub. There's nothing to buy and no account to create.</p></details>
-      <details><summary>Do I need to give my password?</summary><p>No. Typing a username reads public numbers. Connect Instagram uses Instagram's own login page, so the tool never sees your password.</p></details>
-      <details><summary>Does it work with a small account?</summary><p>Yes. Ratings compare each post with your own typical post, so they work from your first few posts. With fewer than 15 posts, the report says its patterns are early hints, not proof.</p></details>
-      <details><summary>Which accounts can it read?</summary><p>Instagram Creator and Business accounts. Switching from a personal account is free and takes a minute in the Instagram app. YouTube and Twitch work from your own numbers.</p></details>
-    </div>
-  </div>
-</section>
-{cta()}
 """
 
 # ---------------------------------------------------------------- features
-FEATURES = page_hero("Features", "Everything your report tells you", "One report that does the work of a growth team: it rates every post, explains why, tells you what to post next and plans your month.", "Features") + """
-<nav class="subnav" aria-label="On this page"><div class="wrap"><a href="#stars">Star ratings</a><a href="#why">Why it worked</a><a href="#next">What to post</a><a href="#plan">30-day plan</a><a href="#comments">Comments</a><a href="#board">AI boardroom</a><a href="#health">Audience health</a></div></nav>
-<section class="section"><div class="wrap">
+FEATURE_ROWS = """
   <div class="feature" id="stars">
     <div class="f-copy"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-star"/></svg></span><h2 class="h3">A star rating for every post</h2>
       <p>One to five stars, based on the signals Instagram says matter most: watch time, sends and likes per person reached, plus follows, saves and comments.</p>
@@ -258,70 +304,88 @@ FEATURES = page_hero("Features", "Everything your report tells you", "One report
       <div class="mc-row"><span>Engagement</span><b>3.9%</b><em class="up">Normal</em></div><div class="mc-row"><span>Comments per 100 likes</span><b>6.1</b><em class="up">Real talk</em></div>
       <div class="mc-row"><span>Likes on every post</span><b>Vary</b><em class="up">Healthy</em></div><div class="mc-why"><b>Looks healthy</b><span>Ask for an Insights screenshot before paying.</span></div></div></div>
   </div>
-</div></section>
-""" + cta()
+"""
+FEAT_TITLES = {"stars": "Star ratings", "why": "Why it worked", "next": "What to post next", "plan": "30-day plan", "comments": "Comments sorted", "board": "AI boardroom", "health": "Audience health"}
+_rows = [r.strip() for r in re.split(r'(?=<div class="feature)', FEATURE_ROWS) if r.strip()]
+FEATURES = page_hero("Features tour", "Everything your report tells you, one feature at a time", "Press Next or swipe. Seven features, about a minute.", "Features", compact=True) + deck(
+    "Feature tour", [(re.search(r'id="(\w+)"', r).group(1), FEAT_TITLES[re.search(r'id="(\w+)"', r).group(1)], re.sub(r'^<div class="feature( rev)?" id="\w+">', '<div class="feature">', r)) for r in _rows]) + cta()
+
 
 # ---------------------------------------------------------------- how it works
-HOW = page_hero("How it works", "From your numbers to a plan in under a minute", "Pick your platform, bring your numbers, read your report. Here's exactly what happens at each step, and how the stars are worked out.", "How it works") + """
-<section class="section"><div class="wrap">
-  <ol class="steps3 big">
-    <li><span class="n">1</span><h3>Pick your platform</h3><p>Instagram, YouTube or Twitch. The next step changes to fit it.</p></li>
-    <li><span class="n">2</span><h3>Bring your numbers</h3><p>Type a username, connect, upload an export or type in your streams. Use whichever is easiest.</p></li>
-    <li><span class="n">3</span><h3>Read your report</h3><p>Stars for every post, why each worked, what to post next and a 30-day plan.</p></li>
-  </ol>
-</div></section>
-
-<section class="section alt" id="ways"><div class="wrap">
-  <div class="head"><span class="kicker">Step 2 in detail</span><h2>Every way to bring your numbers</h2></div>
-  <div class="table-card"><table class="table">
-    <thead><tr><th>Platform</th><th>How</th><th>What it reads</th><th>Time</th></tr></thead>
-    <tbody>
-      <tr><td><b>Instagram</b></td><td>Type a username or profile link</td><td>Followers, and likes, comments and Reel views on the last 50 posts</td><td>Seconds</td></tr>
-      <tr><td><b>Instagram</b></td><td>Connect Instagram (official login)</td><td>All of the above plus reach, views, watch time, skip rate, sends, saves, follows, profile visits and comments</td><td>1 minute</td></tr>
-      <tr><td><b>Instagram</b></td><td>Upload a Meta Business Suite export</td><td>Reach, views, likes, comments, shares, saves and follows for up to 90 days</td><td>2 minutes</td></tr>
-      <tr><td><b>YouTube</b></td><td>Upload a YouTube Studio export</td><td>Views, watch time, average view duration, click rate, subscribers, likes, comments and shares</td><td>2 minutes</td></tr>
-      <tr><td><b>Twitch</b></td><td>Type in your last streams</td><td>Average viewers, hours, followers gained and chat messages</td><td>3 minutes</td></tr>
-    </tbody></table></div>
-</div></section>
-
-<section class="section" id="stars"><div class="wrap">
-  <div class="split">
-    <div><span class="kicker">The method</span><h2>How the stars are worked out</h2>
-      <p class="muted">Each post gets a score where 100 means a normal post for you. The score blends how many people a post reached with how strongly those people reacted.</p>
-      <ol class="nums"><li><b>Per person reached.</b> Sends, follows, likes, saves and comments are divided by reach, so a big post doesn't win just for being big.</li>
-      <li><b>Compared with you.</b> Each signal is compared with your own typical post, not with other accounts.</li>
-      <li><b>Weighted by what matters.</b> Watch time and sends count most, because Instagram's head names them as top signals.</li>
-      <li><b>Turned into stars.</b> 3.5 stars is your normal. 5 stars is about twice as good as usual. 1 star is well below.</li></ol></div>
+HOW = page_hero("How it works", "From your numbers to a plan in under a minute", "Five short slides: the steps, every way in, how the stars work, how patterns are tested, and where your data goes.", "How it works", compact=True) + deck("How it works", [
+    ("steps", "The 3 steps", """<div class="dk-head"><h2>The 3 steps</h2><p>Pick, bring, read. That's all.</p></div>
+  <ol class="steps-row">
+    <li><span class="n">1</span><span class="st-ic"><svg aria-hidden="true"><use href="#i-target"/></svg></span><h3>Pick your platform</h3><p>Instagram, YouTube or Twitch. The next step changes to fit it.</p></li>
+    <li><span class="n">2</span><span class="st-ic"><svg aria-hidden="true"><use href="#i-up"/></svg></span><h3>Bring your numbers</h3><p>Type a username, connect, upload an export or type in your streams.</p></li>
+    <li><span class="n">3</span><span class="st-ic"><svg aria-hidden="true"><use href="#i-star"/></svg></span><h3>Read your report</h3><p>Stars for every post, why each worked, what to post next and a 30-day plan.</p></li>
+  </ol>"""),
+    ("ways", "Every way in", """<div class="dk-head"><h2>Every way to bring your numbers</h2><p>Use whichever is easiest. You can add more detail later.</p></div>
+  <div class="ways">
+    <div class="way"><span class="pc-ic ig sm"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><div><b>Type a username or profile link</b><p>Followers, and likes, comments and Reel views on the last 50 posts.</p></div><span class="t">Seconds</span></div>
+    <div class="way"><span class="pc-ic ig sm"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><div><b>Connect Instagram (official login)</b><p>Also reach, watch time, skip rate, sends, saves, follows, profile visits and comments.</p></div><span class="t">1 minute</span></div>
+    <div class="way"><span class="pc-ic ig sm"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><div><b>Upload a Meta Business Suite export</b><p>Reach, views, likes, comments, shares, saves and follows for up to 90 days.</p></div><span class="t">2 minutes</span></div>
+    <div class="way"><span class="pc-ic yt sm"><svg aria-hidden="true"><use href="#i-play"/></svg></span><div><b>Upload a YouTube Studio export</b><p>Views, watch time, view duration, click rate, subscribers, likes, comments and shares.</p></div><span class="t">2 minutes</span></div>
+    <div class="way"><span class="pc-ic tw sm"><svg aria-hidden="true"><use href="#i-live"/></svg></span><div><b>Type in your last Twitch streams</b><p>Average viewers, hours, followers gained and chat messages.</p></div><span class="t">3 minutes</span></div>
+  </div>"""),
+    ("stars", "How stars work", """<div class="split">
+    <div><h2>How the stars are worked out</h2>
+      <p class="muted">Each post gets a score where 100 means a normal post for you.</p>
+      <ol class="nums"><li><b>Per person reached.</b> A big post doesn't win just for being big.</li>
+      <li><b>Compared with you.</b> Not with other accounts.</li>
+      <li><b>Weighted by what matters.</b> Watch time and sends count most.</li>
+      <li><b>Turned into stars.</b> 3.5 is your normal. 5 is about twice as good.</li></ol></div>
     <div class="table-card"><table class="table"><thead><tr><th>Signal</th><th style="text-align:right">Weight</th></tr></thead><tbody>
       <tr><td>Average watch time</td><td style="text-align:right">30%</td></tr><tr><td>Sends per 1,000 reached</td><td style="text-align:right">30%</td></tr>
       <tr><td>Follows per 1,000 reached</td><td style="text-align:right">25%</td></tr><tr><td>Likes per 1,000 reached</td><td style="text-align:right">15%</td></tr>
       <tr><td>Saves per 1,000 reached</td><td style="text-align:right">15%</td></tr><tr><td>Comments per 1,000 reached</td><td style="text-align:right">15%</td></tr>
-      <tr><td>Hold rate (people who didn't skip)</td><td style="text-align:right">15%</td></tr></tbody></table>
-      <p class="small muted" style="padding:12px 16px 4px;margin:0">Weights are shared out again when a signal is missing, for example when an export has no watch time.</p></div>
-  </div>
-</div></section>
-
-<section class="section alt" id="patterns"><div class="wrap">
-  <div class="split">
-    <div><span class="kicker">Honest statistics</span><h2>How patterns are found</h2>
+      <tr><td>Hold rate (didn't skip)</td><td style="text-align:right">15%</td></tr></tbody></table>
+      <p class="small muted" style="padding:12px 16px 4px;margin:0">When a signal is missing, its weight is shared out again.</p></div>
+  </div>"""),
+    ("patterns", "Honest patterns", """<div class="split">
+    <div><h2>How patterns are found</h2>
       <p class="muted">Simple averages fool people. If your night posts were all GTA 6 posts, night looks great even when the topic did the work. So the report compares like with like.</p></div>
-    <ul class="ticks"><li>Format, time, day, hook, topic, length and hashtags are tested together, so each one is judged with the others held equal</li>
-      <li>A time trend is included, so a growing account doesn't make recent habits look magic</li>
+    <ul class="ticks"><li>Format, time, day, hook, topic, length and hashtags are tested together</li>
+      <li>A time trend is included, so growth doesn't make recent habits look magic</li>
       <li>Only findings that pass a strict test are shown, labelled strong or good evidence</li>
       <li>On pure random data, fewer than 1 in 10 runs shows a false pattern</li>
       <li>Groups with fewer than 3 posts are marked thin and never shown as rules</li></ul>
-  </div>
-</div></section>
-
-<section class="section" id="privacy"><div class="wrap">
-  <div class="head"><span class="kicker">Privacy</span><h2>Where your data goes</h2></div>
+  </div>"""),
+    ("privacy", "Your privacy", """<div class="dk-head"><h2>Where your data goes</h2><p>Short answer: nowhere.</p></div>
   <div class="cards3">
     <div class="c6 static"><span class="f-ic teal"><svg aria-hidden="true"><use href="#i-lock"/></svg></span><h3>Worked out in your browser</h3><p>The report is calculated on your own device. Uploaded files never leave it.</p></div>
     <div class="c6 static"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-shield"/></svg></span><h3>Official API only</h3><p>Instagram numbers come through Meta's official API. No scraping, no bots, no passwords.</p></div>
     <div class="c6 static"><span class="f-ic orange"><svg aria-hidden="true"><use href="#i-check"/></svg></span><h3>Nothing stored</h3><p>The connector keeps nothing. Your login token stays in your browser tab until you close it.</p></div>
-  </div>
-</div></section>
-""" + cta()
+  </div>"""),
+]) + cta()
+
+# ---------------------------------------------------------------- beginner's guide
+def bstep(h2, lead, do, tip=""):
+    t = f'<div class="callout info"><svg aria-hidden="true"><use href="#i-info"/></svg><p>{tip}</p></div>' if tip else ""
+    return f'<div class="dk-head"><h2>{h2}</h2><p>{lead}</p></div><div class="do"><b>Do this</b><ol>{"".join(f"<li>{x}</li>" for x in do)}</ol></div>{t}'
+
+BEGIN = page_hero("Beginner's guide", "Your first report in 7 steps", "New to all this? Go one step at a time. Each step takes 1 to 3 minutes. Press Next when you're done.", "Beginner's guide", compact=True) + deck("Beginner's guide", [
+    ("b1", "What you'll get", bstep("What you'll get", "A report that tells you which posts grew your account, why, and what to post next. About 10 minutes in total.",
+        ["Have your phone or computer ready.", "Know which platform you want to grow: Instagram, YouTube or Twitch.", "That's it. No account, no password, no payment."],
+        "Want to look first? <a href=\"start.html?sample=1\">Open the sample report</a>. It's a fictional account analysed by the real tool.")),
+    ("b2", "Get your account ready", bstep("Get your account ready", "Only Instagram needs a setting changed. YouTube and Twitch need nothing.",
+        ["<b>Instagram:</b> open the Instagram app, go to Settings, then Account type and tools, then Switch to professional account. Pick Creator. It's free and you can switch back.",
+         "<b>YouTube:</b> nothing to do yet.", "<b>Twitch:</b> nothing to do yet."],
+        "Instagram only lets tools read Creator and Business accounts. That's Instagram's rule, not ours.")),
+    ("b3", "Pick your platform", bstep("Pick your platform", "Open the tool and choose where you post.",
+        ["Press <a href=\"start.html\">Start free</a>.", "Press Instagram, YouTube or Twitch.", "The next screen shows only the options for that platform."])),
+    ("b4", "Bring your numbers", bstep("Bring your numbers", "Pick the easiest way for you. Each one is explained on screen.",
+        ["<b>Instagram:</b> type your username, or press Connect Instagram, or upload an export from Meta Business Suite.",
+         "<b>YouTube:</b> in YouTube Studio open Analytics, then Advanced mode. Pick the last 90 days, press the download icon, choose CSV, and upload the file called Table data.csv.",
+         "<b>Twitch:</b> type in your last 5 to 10 streams: date, start time, average viewers, hours, new followers and chat messages."],
+        "Username lookup and Connect Instagram switch on once the site's Meta app is approved. Until then, the export upload gives the same detail.")),
+    ("b5", "Read your stars", bstep("Read your stars", "Every post gets 1 to 5 stars, compared with your own typical post.",
+        ["3.5 stars means a normal post for you.", "5 stars means about twice as good as usual. 1 star means well below.", "Sort by Best first to see your top posts, then Worst first."])),
+    ("b6", "See why", bstep("See why each post worked", "Open any post. Each number sits next to your usual, with a plain reason.",
+        ["Look for the biggest green number. That's what made it work.", "Look for the red one. That's what held it back.", "Read the Next time line and write it down."])),
+    ("b7", "Act, then check again", bstep("Act on it, then check again", "Growth comes from repeating what works and changing one thing at a time.",
+        ["Open What to post next and pick one idea.", "Open Plan and add the 30-day calendar to Google Calendar.", "Post 3 to 5 times a week for 4 weeks.", "Run your report again and compare."],
+        "Stuck? <a href=\"help.html\">Open the Help centre</a>. Questions are answered in public so the next person learns too.")),
+], done=("start.html", "Start my report")) + cta()
 
 # ---------------------------------------------------------------- growth guide
 def src(url, name):
@@ -418,7 +482,7 @@ faq_html = "".join(
     "".join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in items) + "</div></section>"
     for i, (name, items) in enumerate(FAQS))
 chips = "".join(f'<a href="#g{i}">{name}</a>' for i, (name, _) in enumerate(FAQS))
-FAQ = page_hero("Help centre", "Frequently asked questions", "Quick answers about getting started, connecting Instagram, how the stars work, privacy, and YouTube and Twitch.", "FAQ") + f"""
+FAQ = page_hero("FAQ", "Frequently asked questions", "Quick answers about getting started, connecting Instagram, how the stars work, privacy, and YouTube and Twitch.", "FAQ") + f"""
 <section class="section tight"><div class="wrap narrow">
   <div class="faq-search"><svg aria-hidden="true"><use href="#i-search"/></svg><label for="q" class="sr">Search the questions</label><input id="q" type="search" placeholder="Search the questions, for example: password" autocomplete="off"></div>
   <nav class="chips" aria-label="Topics">{chips}</nav>
@@ -431,13 +495,106 @@ FAQ = page_hero("Help centre", "Frequently asked questions", "Quick answers abou
 </div></section>
 """
 
+# ---------------------------------------------------------------- help centre, feedback, report, github
+_popular = [FAQS[0][1][1], FAQS[1][1][1], FAQS[2][1][0], FAQS[4][1][0]]
+HELP = page_hero("Help centre", "How can we help?", "Pick what you need. Every option is free and answered in public, so the next person learns too.", "Help centre") + f"""
+<section class="section tight"><div class="wrap">
+  <form class="faq-search big" action="faq.html" method="get" role="search"><svg aria-hidden="true"><use href="#i-search"/></svg><label for="hq" class="sr">Search the questions</label><input id="hq" name="q" type="search" placeholder="Search answers, for example: password" autocomplete="off"><button class="btn primary" type="submit">Search</button></form>
+  <div class="hub">
+    {"".join(f'<a class="hub-c" href="{h}"><span class="mi-ic"><svg aria-hidden="true"><use href="#{ic}"/></svg></span><b>{t}</b><small>{sub}</small></a>' for h, ic, t, sub in [
+        ("guide.html", "i-book", "Beginner's guide", "Your first report in 7 steps"),
+        ("faq.html", "i-search", "FAQ", "21 quick answers, searchable"),
+        (ASK, "i-msg", "Ask a question", "Post it in our public Q and A"),
+        ("report.html", "i-flag", "Report a problem", "Something broke or looks wrong"),
+        ("feedback.html", "i-heart", "Give feedback", "Tell us what to keep or change"),
+        ("github.html", "i-code", "GitHub project", "Code, licence and how to help build it"),
+        ("growth-guide.html", "i-target", "Growth guide 2026", "What the platforms reward, with sources"),
+        ("how-it-works.html", "i-sliders", "How it works", "How the stars and patterns work")])}
+  </div>
+  <div class="split help-split">
+    <div><h2>Popular questions</h2><div class="faq">{"".join(f'<details><summary>{q}</summary><p>{x}</p></details>' for q, x in _popular)}</div><p><a href="faq.html">See all questions</a></p></div>
+    <div class="note-card"><h3>How replies work</h3><ol class="nums"><li><b>You post</b> a question, problem or idea on GitHub.</li><li><b>We reply there</b>, in public, usually within a few days.</li><li><b>You get an email</b> from GitHub when someone answers.</li></ol><p class="small muted">A free GitHub account is needed to post. Nothing is sent until you press the final button on GitHub.</p></div>
+  </div>
+</div></section>
+"""
+
+
+def form_page(kind, intro, fields, button):
+    return f"""<section class="section tight"><div class="wrap narrow">
+  <form class="gh-form card" data-gh-issue="{BUG}" data-kind="{kind}">
+    <p class="muted">{intro}</p>
+    {fields}
+    <button class="btn primary lg" type="submit">{button}</button>
+    <p class="small muted">This opens GitHub in a new tab with your words filled in. Press <b>Create</b> there to send it. A free GitHub account is needed. Nothing is sent until you press it.</p>
+    <p class="form-ok callout good" hidden>GitHub is open in a new tab. Press Create there to send. Thank you.</p>
+  </form>
+</div></section>"""
+
+
+def fld(label, name, kind="text", opts=None, req=False, hint=""):
+    r = " required" if req else ""
+    h = f'<small>{hint}</small>' if hint else ""
+    fid = "f-" + "".join(c for c in name.lower() if c.isalnum())
+    if kind == "area":
+        ctl = f'<textarea id="{fid}" name="{name}" rows="4"{r}></textarea>'
+    elif kind == "select":
+        ctl = f'<select id="{fid}" name="{name}"{r}><option value="">Choose one</option>' + "".join(f"<option>{o}</option>" for o in opts) + "</select>"
+    elif kind == "stars":
+        return f'<fieldset class="fld rate"><legend>{label}</legend>' + "".join(f'<label><input type="radio" name="{name}" value="{v} of 5"{r if v == 1 else ""}><span>{v}</span></label>' for v in range(1, 6)) + f'<small>1 is very hard, 5 is very easy</small></fieldset>'
+    else:
+        ctl = f'<input id="{fid}" name="{name}" type="text"{r}>'
+    return f'<div class="fld"><label for="{fid}">{label}</label>{h}{ctl}</div>'
+
+
+PARTS = ["Home page", "Instagram report", "YouTube report", "Twitch report", "Beginner's guide", "Growth guide", "Something else"]
+FEEDBACK = page_hero("Give feedback", "Tell us what to keep and what to change", "Two minutes. Every message is read, and the best ideas get built.", "Give feedback") + form_page("Feedback",
+    "Be as blunt as you like. Short answers are fine.",
+    fld("In one line, what's your feedback?", "title", req=True) + fld("Which part did you use?", "Part used", "select", PARTS) + fld("How easy was it?", "Ease", "stars")
+    + fld("What worked well?", "What worked", "area") + fld("What should change?", "What to change", "area"), "Send feedback on GitHub")
+REPORT = page_hero("Report a problem", "Something broke? Tell us.", "The more exact you are, the faster it gets fixed. Please don't include passwords or private numbers.", "Report a problem") + form_page("Problem",
+    "Answer what you can. Skip what you don't know.",
+    fld("What went wrong, in one line?", "title", req=True, hint="For example: the YouTube upload says no rows found") + fld("Which part?", "Part", "select", PARTS)
+    + fld("What did you do?", "Steps", "area", hint="The buttons you pressed, in order") + fld("What happened?", "What happened", "area") + fld("What did you expect?", "Expected", "area")
+    + fld("Device", "Device", "select", ["Phone", "Computer", "Tablet"]) + fld("Browser", "Browser", hint="For example: Chrome on Android"), "Send report on GitHub")
+
+GITHUB = page_hero("GitHub project", "Free, open source and yours to copy", "Every line of code is public under the MIT licence. Use it, change it, or help build it.", "GitHub project") + f"""
+<section class="section tight"><div class="wrap">
+  <div class="gh-stats" data-gh-repo="Siddharthmehdiratta/creator-growth-studio">
+    <div><b data-gh="stars">…</b><span>Stars</span></div><div><b data-gh="forks">…</b><span>Copies (forks)</span></div><div><b data-gh="issues">…</b><span>Open issues</span></div><div><b data-gh="updated">…</b><span>Last update</span></div><div><b data-gh="license">…</b><span>Licence</span></div>
+  </div>
+  <p class="gh-actions"><a class="btn primary lg" href="{REPO}"><svg aria-hidden="true"><use href="#i-gh"/></svg>Open on GitHub</a><a class="btn lg" href="{REPO}/stargazers">Give it a star</a></p>
+  <div class="split">
+    <div><h2>What's inside</h2>
+      <ul class="tree"><li><b>docs/</b><span>This website and the report tool. Plain HTML, CSS and JavaScript.</span></li>
+        <li><b>connect/</b><span>The small Instagram connector (a free Cloudflare Worker). Stores nothing.</span></li>
+        <li><b>skills/</b><span>Claude Code skills: the Python engine, the AI boardroom and the platform rules.</span></li>
+        <li><b>tests/</b><span>Automatic checks for the maths, the connector and every page.</span></li></ul></div>
+    <div><h2>Run your own copy</h2>
+      <ol class="nums"><li><b>Fork it.</b> Press Fork on GitHub. It's free.</li><li><b>Turn on Pages.</b> Settings, then Pages, then branch main and folder /docs.</li><li><b>Open your site.</b> It works straight away with uploads. For username lookup, follow CONNECT-INSTAGRAM.md.</li></ol>
+      <pre class="code"><code>git clone {REPO}.git
+cd creator-growth-studio/docs
+python3 -m http.server 8000</code></pre></div>
+  </div>
+  <h2>Help build it</h2>
+  <div class="cards3">
+    <a class="c6" href="{REPO}/stargazers"><span class="f-ic orange"><svg aria-hidden="true"><use href="#i-star"/></svg></span><h3>Star the repo</h3><p>It helps other creators find it.</p></a>
+    <a class="c6" href="report.html"><span class="f-ic pink"><svg aria-hidden="true"><use href="#i-flag"/></svg></span><h3>Report a problem</h3><p>Bugs get fixed faster with exact steps.</p></a>
+    <a class="c6" href="{REPO}/pulls"><span class="f-ic violet"><svg aria-hidden="true"><use href="#i-code"/></svg></span><h3>Send a change</h3><p>Open a pull request. Tests run on every change.</p></a>
+  </div>
+</div></section>
+"""
+
 if __name__ == "__main__":
-    write("index.html", "Creator Growth Studio: see which posts grow your account, and why", "Free. Pick Instagram, YouTube or Twitch and get a star rating for every post, why it worked, what to post next and a 30-day plan.", HOME, "", dark=True)
-    write("features.html", "Features: Creator Growth Studio", "Star ratings for every post, why each worked, what to post next, a 30-day plan, comments sorted, an AI boardroom and an audience health check.", FEATURES, "features.html")
+    write("index.html", "Creator Growth Studio: see which posts grow your account, and why", "Free. Pick Instagram, YouTube or Twitch and get a star rating for every post, why it worked, what to post next and a 30-day plan.", HOME, "index.html", dark=True)
+    write("features.html", "Features tour: Creator Growth Studio", "Star ratings for every post, why each worked, what to post next, a 30-day plan, comments sorted, an AI boardroom and an audience health check.", FEATURES, "features.html")
     write("how-it-works.html", "How it works: Creator Growth Studio", "How your numbers become a report: every way to bring data, how the stars are worked out, how patterns are tested, and where your data goes.", HOW, "how-it-works.html")
+    write("guide.html", "Beginner's guide: your first report in 7 steps", "New to growth tools? Get your first report in 7 short steps, one at a time.", BEGIN, "guide.html")
     write("growth-guide.html", "Growth guide 2026: Instagram, YouTube and Twitch", "What the platforms and the biggest studies say about growing in 2026, with sources and steps.", GUIDE, "growth-guide.html")
     write("faq.html", "FAQ: Creator Growth Studio", "Answers about getting started, Instagram connection, star ratings, YouTube, Twitch, privacy and brand checks.", FAQ, "faq.html")
-    (DOCS / "guide.html").write_text('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Moved: How it works</title><meta http-equiv="refresh" content="0; url=how-it-works.html"><link rel="canonical" href="how-it-works.html"></head><body><p><a href="how-it-works.html">This page moved to How it works.</a></p></body></html>')
+    write("help.html", "Help centre: Creator Growth Studio", "Every way to get help: beginner's guide, FAQ, ask a question, report a problem, give feedback.", HELP, "help.html")
+    write("feedback.html", "Give feedback: Creator Growth Studio", "Tell us what to keep and what to change.", FEEDBACK, "feedback.html")
+    write("report.html", "Report a problem: Creator Growth Studio", "Something broke? Tell us exactly what happened.", REPORT, "report.html")
+    write("github.html", "GitHub project: Creator Growth Studio", "Free and open source under MIT. Stars, licence, what's inside and how to run your own copy.", GITHUB, "github.html")
     # refresh shared header and footer on hand-made pages
     for name in ["start.html", "sample-boardroom.html"]:
         p = DOCS / name
@@ -446,7 +603,7 @@ if __name__ == "__main__":
         s = p.read_text()
         if "<!--HEADER-->" in s and "<!--/HEADER-->" in s:
             a, b = s.index("<!--HEADER-->") + 13, s.index("<!--/HEADER-->")
-            s = s[:a] + "\n" + header("") + s[b:]
+            s = s[:a] + "\n" + header(name if name == "start.html" else "") + s[b:]
         if "<!--FOOTER-->" in s and "<!--/FOOTER-->" in s:
             a, b = s.index("<!--FOOTER-->") + 13, s.index("<!--/FOOTER-->")
             s = s[:a] + "\n" + FOOT.replace('<script src="site.js"></script>\n</body>\n</html>\n', '') + s[b:]
