@@ -1,7 +1,6 @@
 import { ArrowRightIcon, BadgeCheckIcon, CalendarDaysIcon, CheckIcon, LightbulbIcon, LockIcon, MessageSquareTextIcon, SparklesIcon, StarIcon, UsersIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { BlurFade } from "@/components/velora/blur-fade";
 import { BorderBeam } from "@/components/velora/border-beam";
 import { BrowserMockup } from "@/components/velora/browser-mockup";
 import { SiteHeader } from "@/components/site/header";
@@ -36,24 +35,24 @@ export default function Home() {
           <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_0%,#EDE7FF_0%,transparent_70%)]" />
           <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-size-[4rem_4rem] opacity-50 mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,black,transparent_75%)]" />
           <div className="mx-auto max-w-7xl px-5 pt-16 pb-10 text-center sm:pt-24 lg:px-8">
-            <BlurFade delay={0.05}>
+            <div>
               <a href={href("/changelog/")} className="inline-flex items-center gap-2 rounded-full border bg-background/80 px-3 py-1 text-sm text-muted-foreground shadow-xs hover:text-foreground">
                 <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">New</span>
                 YouTube and Twitch reports are here
                 <ArrowRightIcon className="size-3.5" />
               </a>
-            </BlurFade>
-            <BlurFade delay={0.1}>
+            </div>
+            <div>
               <h1 className="mx-auto mt-7 max-w-4xl text-[2.6rem] leading-[1.05] font-semibold tracking-[-0.04em] text-balance sm:text-6xl lg:text-7xl">
                 Know which posts grow your account, and why.
               </h1>
-            </BlurFade>
-            <BlurFade delay={0.18}>
+            </div>
+            <div>
               <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground text-pretty sm:text-xl">
                 A star rating for every post, the reason it worked or flopped, and what to post next. Free, private, and ready in under a minute.
               </p>
-            </BlurFade>
-            <BlurFade delay={0.26}>
+            </div>
+            <div>
               <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Button size="lg" className="h-12 rounded-xl px-6 text-base shadow-lg shadow-primary/25" asChild>
                   <a href={href(SITE.app)}>Get my free report<ArrowRightIcon /></a>
@@ -67,10 +66,10 @@ export default function Home() {
                   <li key={t} className="flex items-center gap-1.5"><CheckIcon className="size-4 text-primary" />{t}</li>
                 ))}
               </ul>
-            </BlurFade>
+            </div>
           </div>
 
-          <BlurFade delay={0.35} className="mx-auto max-w-6xl px-5 pb-20 lg:px-8">
+          <div className="mx-auto max-w-6xl px-5 pb-20 lg:px-8">
             <div className="relative">
               <div aria-hidden className="absolute -inset-x-10 -top-10 -bottom-4 -z-10 rounded-[3rem] bg-[radial-gradient(50%_60%_at_50%_40%,#C9B8FF_0%,transparent_70%)] opacity-60 blur-2xl" />
               <div className="mx-auto w-full max-w-[19rem] overflow-hidden rounded-[2.4rem] border-8 border-[#15131F] bg-[#15131F] shadow-2xl shadow-primary/20 sm:hidden">
@@ -82,7 +81,7 @@ export default function Home() {
               </BrowserMockup>
               <p className="mt-4 text-center text-xs text-muted-foreground">Real report, fictional sample account.</p>
             </div>
-          </BlurFade>
+          </div>
         </section>
 
         {/* ---------------- platform choice ---------------- */}
