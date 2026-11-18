@@ -103,7 +103,7 @@
       if ([g("caption"), g("id")].some(v => String(v || "").trim().toLowerCase() === "total")) return;
       const p = { id: String(g("id") || "P" + String(i + 1).padStart(3, "0")), caption: String(g("caption") || ""), time: time(g("time")),
         type: "type" in cm ? fmt(g("type")) : (num(g("duration")) ? "reel" : "unknown"), link: /^https?:\/\//i.test(String(g("link") || "").trim()) ? String(g("link")).trim() : "",
-        hook: String(g("hook") || "").trim() || null, topic: String(g("topic") || "").trim() || null };
+        hook: String(g("hook") || "").trim() || null, topic: String(g("topic") || "").trim() || null, no_hour: !/\d:\d\d/.test(String(g("time") || "")) };
       ["reach", "views", "likes", "comments", "shares", "saves", "follows", "watch_hours", "avg_view_pct", "ctr", "skip_rate", "profile_visits"].forEach(k => { p[k] = num(g(k), dc); });
       p.duration = secs(g("duration"), dc); p.avg_watch = secs(g("avg_watch"), dc);
       if (p.reach === null) { p.reach = p.views; p.reach_is_views = true; }
@@ -139,7 +139,7 @@
       SIGNALS.forEach(([k, , wt]) => { const v = p.signals[k], m = med[k]; if (v === null || !m) return; parts += wt * Math.log(Math.max(v, 0.01 * m) / m); w += wt; });
       const quality = w ? Math.exp(parts / w) : 1, ri = medReach ? p.reach / medReach : 1;
       p.score = pyRound(100 * Math.sqrt(quality * ri)); p.quality = pyRound(100 * quality); p.reach_index = pyRound(100 * ri);
-      p.slot = slot(p.time ? p.time.getHours() : null); p.weekday = p.time ? DAYS[p.time.getDay()] : "unknown";
+      p.slot = slot(p.time && !p.no_hour ? p.time.getHours() : null); p.weekday = p.time ? DAYS[p.time.getDay()] : "unknown";
       p.length = durBucket(p.duration); p.tags = tagsOf(p.caption); p.stars = starsOf(p.score);
     });
     return [med, medReach];

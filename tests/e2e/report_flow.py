@@ -16,9 +16,18 @@ async def main():
         pg = await ctx.new_page(); errs = []
         pg.on("pageerror", lambda e: errs.append(str(e))); pg.on("console", lambda m: m.type == "error" and errs.append(m.text))
         await pg.goto(BASE)
-        check(await pg.locator("h1").count() == 1, "landing has one h1")
-        check("Score" in await pg.text_content("#pv-score"), "landing preview built from real sample output")
-        await pg.click("header [data-sample]"); await pg.wait_for_selector("#app:not([hidden])")
+        check(await pg.locator("h1").count() == 1, "home has one h1")
+        check(await pg.locator(".hero .pick-card").count() == 3, "home asks which platform to grow")
+        for page_ in ["features.html", "how-it-works.html", "growth-guide.html", "faq.html", "sample-boardroom.html"]:
+            await pg.goto(BASE + page_); check(await pg.locator("h1").count() == 1 and await pg.locator("header.top nav a").count() >= 4, f"{page_} has a title and the shared menu")
+        await pg.goto(BASE + "faq.html"); await pg.fill("#q", "password"); await pg.wait_for_timeout(100)
+        vis = await pg.evaluate("[...document.querySelectorAll('.faq-group details')].filter(d => !d.hidden).length")
+        check(0 < vis < 8, f"FAQ search narrows the questions ({vis} shown)")
+        await pg.goto(BASE + "start.html")
+        check(await pg.is_visible("#w1") and await pg.locator("[data-plat]").count() == 3, "start page asks the platform first")
+        await pg.click("[data-plat=instagram]"); check(await pg.is_visible("#lookup") and await pg.is_hidden("#w1"), "Instagram step shows the username box")
+        await pg.click("#w-back"); check(await pg.is_visible("#w1"), "Back returns to the platform step")
+        await pg.click("#w1 [data-sample]"); await pg.wait_for_selector("#app:not([hidden])")
         for t in TABS:
             await pg.click(f"#tab-{t}"); txt = await pg.text_content(f"#p-{t}")
             check(len(txt) > 200 and "undefined" not in txt and "NaN" not in txt and "[object" not in txt, f"tab {t} renders clean text")
@@ -43,14 +52,34 @@ async def main():
         await pg.click("#tab-ideas"); check("tech" in (await pg.text_content("#p-ideas")).lower(), "changing niche in Adjust updates ideas")
         await pg.focus("#tab-ideas"); await pg.keyboard.press("ArrowRight"); check(await pg.get_attribute("#tab-plan", "aria-selected") == "true", "arrow keys move between tabs")
         await pg.reload(); await pg.wait_for_selector("#app:not([hidden])"); check(True, "report survives a page reload")
-        await pg.click("#new-file"); check(await pg.is_visible("#landing"), "New report returns to the start")
+        await pg.click("#new-file"); check(await pg.is_visible("#w1"), "New report returns to the platform step")
+        # YouTube
+        await pg.goto(BASE + "start.html?p=youtube"); check(await pg.is_visible("#drop-yt"), "YouTube step asks for the Studio export")
+        await pg.click("[data-sample-yt]"); await pg.wait_for_selector("#app:not([hidden])")
+        types = await pg.evaluate("[...new Set(CGS_APP.audit().reports.map(r => r.type))].sort().join(',')")
+        check(types == "short,video", f"YouTube Shorts and videos rated separately ({types})")
+        check("Typical views" in await pg.text_content("#p-overview"), "YouTube overview talks about views")
+        await pg.click("#new-file")
+        # Twitch, typed by hand
+        await pg.goto(BASE + "start.html?p=twitch")
+        rows = [("2026-11-01", "20:00", "Ranked night", "12", "3", "6", "400"), ("2026-11-03", "21:00", "Chill", "8", "2", "2", "150"), ("2026-11-07", "19:00", "Launch hype", "20", "4", "14", "900")]
+        for i, r in enumerate(rows):
+            for j, v in enumerate(r):
+                await pg.locator("#tw-rows tr").nth(i).locator("input").nth(j).fill(v)
+        await pg.click("#tw-go"); await pg.wait_for_selector("#app:not([hidden])")
+        a = await pg.evaluate("CGS_APP.audit()")
+        check(a["posts"] == 3 and a["reports"][0]["type"] == "stream", "Twitch streams typed by hand become a report")
+        await pg.click("#tab-posts"); check("viewer-hours" in await pg.text_content("#p-posts"), "Twitch report uses viewer-hours, not reach")
+        await pg.click("#new-file"); await pg.goto(BASE + "start.html?p=twitch"); await pg.click("[data-sample-tw]"); await pg.wait_for_selector("#app:not([hidden])")
+        check((await pg.evaluate("CGS_APP.audit()"))["posts"] == 16, "Twitch sample streamer loads")
         check(not errs, f"no console errors on desktop: {errs[:3]}")
         # phone: nothing wider than the screen on any tab
         ph = await b.new_page(viewport={"width": 360, "height": 780}, is_mobile=True, has_touch=True); perr = []
         ph.on("pageerror", lambda e: perr.append(str(e)))
-        await ph.goto(BASE)
-        wide = await ph.evaluate("document.documentElement.scrollWidth"); check(wide <= 360, f"landing fits a 360px phone ({wide})")
-        await ph.click(".start [data-sample]"); await ph.wait_for_selector("#app:not([hidden])")
+        for page_ in ["", "features.html", "how-it-works.html", "growth-guide.html", "faq.html", "start.html"]:
+            await ph.goto(BASE + page_); wide = await ph.evaluate("document.documentElement.scrollWidth"); check(wide <= 360, f"{page_ or 'home'} fits a 360px phone ({wide})")
+        await ph.click(".menu-btn"); check(await ph.is_visible("#mnav"), "phone menu opens")
+        await ph.click("#w1 [data-sample]"); await ph.wait_for_selector("#app:not([hidden])")
         for t in TABS:
             await ph.evaluate(f"document.getElementById('tab-{t}').click()"); await ph.wait_for_timeout(100)
             wide = await ph.evaluate("document.documentElement.scrollWidth"); check(wide <= 360, f"phone tab {t} fits ({wide}px)")

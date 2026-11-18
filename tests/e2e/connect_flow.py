@@ -56,7 +56,7 @@ async def main():
             if not c: fails.append(msg)
 
         # 1. public lookup from a pasted link
-        pg, errs = await page(); await pg.goto(BASE)
+        pg, errs = await page(); await pg.goto(BASE + "start.html?p=instagram")
         await pg.fill("#handle", "https://www.instagram.com/lowping.rohan/"); await pg.click("#lookup button"); await pg.wait_for_selector("#app:not([hidden])", timeout=5000)
         meta = await pg.text_content("#acct-meta"); check("public numbers" in meta, "public lookup opens report: " + meta)
         ov = await pg.text_content("#p-overview")
@@ -74,6 +74,7 @@ async def main():
         check(seen.count("/insights") == 2, "insights fetched in batches of 20: %d calls" % seen.count("/insights"))
         check("live from Instagram" in (await pg.text_content("#acct-meta")), "connected label")
         check(await pg.evaluate("location.hash.indexOf('TESTTOKEN') < 0"), "token removed from the address bar")
+        check(await pg.evaluate("location.pathname.endsWith('start.html')"), "login from the home page lands on the start page")
         a = await pg.evaluate("CGS_APP.audit()")
         check(a["posts"] == 40 and any(r["post"]["avg_watch"] for r in a["reports"]), "40 posts with watch time")
         tz = await pg.evaluate("Intl.DateTimeFormat().resolvedOptions().timeZone")
@@ -84,7 +85,7 @@ async def main():
         check(not errs, "no page errors (connected): %s" % errs); await pg.close()
 
         # 3. errors are explained, not swallowed
-        pg, errs = await page(); await pg.goto(BASE)
+        pg, errs = await page(); await pg.goto(BASE + "start.html?p=instagram")
         await pg.fill("#handle", "private.person"); await pg.click("#lookup button"); await pg.wait_for_selector("#load-err:not([hidden])")
         check("Only public Creator and Business" in await pg.text_content("#load-err"), "private account explained")
         await pg.fill("#handle", "instagram.com/p/ABC"); await pg.click("#lookup button")
@@ -93,7 +94,7 @@ async def main():
         await pg.close()
 
         # 4. without a connector, the box explains what to do instead
-        pg = await b.new_page(); await pg.goto(BASE)
+        pg = await b.new_page(); await pg.goto(BASE + "start.html?p=instagram")
         await pg.fill("#handle", "natgeo"); await pg.click("#lookup button")
         check("being switched on" in await pg.text_content("#load-err") and await pg.is_visible("#export-help"), "no connector: points to the export")
         await b.close()

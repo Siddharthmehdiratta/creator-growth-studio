@@ -35,7 +35,7 @@ Meta's screens change often, so the names above may differ slightly. Until Meta 
 5. Go back to the Worker. Open **Settings**, then **Variables and Secrets**, and add these three:
    - `IG_APP_ID`: your Instagram app ID (type **Text**)
    - `IG_APP_SECRET`: your Instagram app secret (type **Secret**)
-   - `SITE_URL`: `https://siddharthmehdiratta.github.io/creator-growth-studio/` (type **Text**)
+   - `SITE_URL`: `https://siddharthmehdiratta.github.io/creator-growth-studio/start.html` (type **Text**)
 6. Copy the Worker's address, for example `https://cgs-connect.your-name.workers.dev`. Use it to finish Part 1, step 7.
 7. In this repo, open `docs/config.js` and set `connectUrl` to that address. The Connect Instagram button then works.
 

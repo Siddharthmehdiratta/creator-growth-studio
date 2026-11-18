@@ -15,7 +15,7 @@
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   const icon = (id, cls) => `<svg aria-hidden="true"${cls ? ` class="${cls}"` : ""}><use href="#i-${id}"/></svg>`;
   const SLOT = { "morning (5-12)": ["Morning", "5 am to 12 pm", "09:00"], "afternoon (12-5 pm)": ["Afternoon", "12 to 5 pm", "13:00"], "evening (5-9 pm)": ["Evening", "5 to 9 pm", "19:00"], "night (9 pm-12)": ["Night", "9 pm to midnight", "21:30"], "late night (12-5 am)": ["Late night", "midnight to 5 am", "23:30"] };
-  const FORMAT = { reel: ["Reel", "Reels"], carousel: ["Carousel", "Carousels"], image: ["Photo post", "Photo posts"], video: ["Video", "Videos"], story: ["Story", "Stories"] };
+  const FORMAT = { reel: ["Reel", "Reels"], carousel: ["Carousel", "Carousels"], image: ["Photo post", "Photo posts"], video: ["Video", "Videos"], short: ["Short", "Shorts"], stream: ["Stream", "Streams"], story: ["Story", "Stories"] };
   const fName = (f, plural) => (FORMAT[f] ? FORMAT[f][plural ? 1 : 0] : f.charAt(0).toUpperCase() + f.slice(1));
   const LANGS = D.audiences.languages, COUNTRIES = D.audiences.countries;
 
@@ -32,7 +32,7 @@
     return `<span class="stars${lg ? " lg" : ""}" role="img" aria-label="${n} out of 5 stars">${h}</span>`;
   }
   function ratio(r) { if (r == null || !isFinite(r)) return ""; const cls = r >= 1.15 ? "up" : r <= 0.85 ? "down" : "flat"; return `<span class="ratio ${cls}">${r >= 10 ? Math.round(r) : r.toFixed(1)}x</span>`; }
-  const TYPE_IC = { reel: "M8 5v14l11-7z", video: "M8 5v14l11-7z", carousel: "M7 4h11a2 2 0 0 1 2 2v11M4 8h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" };
+  const TYPE_IC = { reel: "M8 5v14l11-7z", video: "M8 5v14l11-7z", short: "M8 5v14l11-7z", stream: "M4 3h16v11l-4 4h-4l-3 3v-3H4zM11 7v4M15 7v4", carousel: "M7 4h11a2 2 0 0 1 2 2v11M4 8h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" };
   function thumb(id, type) {
     const u = META.thumbs && META.thumbs[id];
     if (u) return `<img class="thumb" src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'thumb ph'}))">`;
@@ -86,15 +86,21 @@
     try { posts = E.loadPosts(rows); } catch (e) { return fail(e.message); }
     POSTS = posts; META = Object.assign({ source: "file", handle: "", name: "", detected: {} }, meta || {});
     const rawRows = typeof rows === "string" ? E.parseCSV(rows) : rows;
+    const plat = META.platform || detectPlatform(rawRows);
+    if (plat === "youtube") POSTS.forEach(p => { p.type = p.duration && p.duration <= 60 ? "short" : "video"; });
+    if (plat === "twitch") POSTS.forEach(p => { p.type = "stream"; });
     const first = k => { for (const r of rawRows) { const key = Object.keys(r).find(x => x.trim().toLowerCase() === k); if (key && String(r[key]).trim()) return String(r[key]).trim(); } return ""; };
     META.handle = META.handle || first("account username") || first("channel name");
     META.name = META.name || first("account name");
-    META.detected = { platform: detectPlatform(rawRows), niche: detectNiche(posts) };
+    META.detected = { platform: plat, niche: detectNiche(posts) };
     if (!meta || !meta.keepSettings) { S.platform = META.detected.platform; S.niche = META.detected.niche; S.followers = (meta && meta.followers) || null; }
     if (!S.niche) S.niche = META.detected.niche;
     analyse(); openApp(); return true;
   }
-  function fail(msg) { const e = $("load-err"); e.textContent = msg; e.hidden = false; toast(msg); return false; }
+  function fail(msg) {
+    if (!$("landing").hidden && $("w2").hidden) choosePlatform(S.platform || "instagram");
+    const e = $("load-err"); e.textContent = msg; e.hidden = false; toast(msg); return false;
+  }
   function useFile(file) {
     if (!file) return;
     if (file.size > 25 * 1024 * 1024) return fail("That file is over 25 MB. Export 90 days of posts and try again.");
@@ -110,6 +116,53 @@
       if (loadRows(text, meta)) sess.set("cgs-data", JSON.stringify({ kind: "csv", text, meta }));
     } catch (e) { fail("The sample only loads on the website. Open the live site, or drop in your own file."); }
   }
+  async function loadSampleYT() {
+    try { const text = await fetch("data/sample-youtube-export.csv").then(r => { if (!r.ok) throw 0; return r.text(); });
+      const meta = { source: "sample", platform: "youtube", followers: 4870, handle: "LowPing Rohan", fileName: "Sample channel" };
+      if (loadRows(text, meta)) sess.set("cgs-data", JSON.stringify({ kind: "csv", text, meta }));
+    } catch (e) { fail("The sample only loads on the website. Open the live site, or drop in your own file."); }
+  }
+  /* Twitch: no public export, so streams are typed into a small table and turned into rows the engine understands.
+     Reach = viewer-hours (average viewers x hours), Follows = followers gained, Comments = chat messages. */
+  const TW_COLS = [["date", "date", "Date"], ["start", "time", "Start"], ["title", "text", "Title"], ["avg", "number", "Avg viewers"], ["hours", "number", "Hours"], ["fol", "number", "New followers"], ["chat", "number", "Chat messages"]];
+  let TW = [];
+  function twBlank() { const d = new Date(); return { date: iso(d), start: "20:00", title: "", avg: "", hours: "", fol: "", chat: "" }; }
+  function twRender() {
+    if (!TW.length) TW = [twBlank(), twBlank(), twBlank()];
+    $("tw-rows").innerHTML = TW.map((r, i) => `<tr>${TW_COLS.map(([k, t, l]) => `<td><input data-tw="${i}.${k}" type="${t}" ${t === "number" ? 'min="0" step="any" inputmode="decimal"' : ""} value="${esc(r[k])}" aria-label="${l}, stream ${i + 1}"${k === "title" ? ' placeholder="Stream title"' : ""}></td>`).join("")}<td><button class="iconbtn" type="button" data-twdel="${i}" aria-label="Remove stream ${i + 1}"><svg aria-hidden="true"><use href="#i-x"/></svg></button></td></tr>`).join("");
+  }
+  function twRows() {
+    return TW.filter(r => Number(r.avg) > 0 && Number(r.hours) > 0 && r.date).map((r, i) => ({ "Post ID": "S" + String(i + 1).padStart(3, "0"), "Description": r.title || "Stream " + (i + 1), "Publish time": `${r.date} ${r.start || "20:00"}`, "Post type": "Stream",
+      "Reach": Math.round(Number(r.avg) * Number(r.hours)), "Views": Math.round(Number(r.avg) * Number(r.hours)), "Follows": r.fol === "" ? "" : Number(r.fol), "Comments": r.chat === "" ? "" : Number(r.chat), "Duration (sec)": Math.round(Number(r.hours) * 3600) }));
+  }
+  function twGo(meta) {
+    const rows = twRows();
+    if (rows.length < 3) return fail("Add at least 3 streams with average viewers and hours filled in.");
+    const f = parseInt($("tw-f").value, 10);
+    const m = Object.assign({ source: "twitch", platform: "twitch", followers: f > 0 ? f : null, fileName: "Your streams" }, meta || {});
+    if (loadRows(rows, m)) sess.set("cgs-data", JSON.stringify({ kind: "rows", rows, meta: m }));
+  }
+  async function loadSampleTW() {
+    try { const text = await fetch("data/sample-twitch-streams.csv").then(r => { if (!r.ok) throw 0; return r.text(); });
+      TW = E.parseCSV(text).map(r => ({ date: r["Date"], start: r["Start time"], title: r["Stream title"], avg: r["Average viewers"], hours: r["Hours streamed"], fol: r["Followers gained"], chat: r["Chat messages"] }));
+      twRender(); $("tw-f").value = 340; twGo({ source: "sample", handle: "lowping_live", fileName: "Sample streamer" });
+    } catch (e) { fail("The sample only loads on the website."); }
+  }
+  /* ---------- wizard ---------- */
+  function wizStep(n) {
+    $("w1").hidden = n !== 1; $("w2").hidden = n !== 2;
+    [1, 2, 3].forEach(i => { const el = $("sb" + i); el.classList.toggle("on", i <= n); el.classList.toggle("now", i === n); });
+    $("load-err").hidden = true; window.scrollTo(0, 0);
+  }
+  function choosePlatform(p) {
+    if (!["instagram", "youtube", "twitch"].includes(p)) return;
+    S.platform = p; save();
+    document.querySelectorAll(".wplat").forEach(el => { el.hidden = el.dataset.for !== p; });
+    if (p === "twitch") twRender();
+    wizStep(2);
+    const f = { instagram: $("handle"), youtube: $("drop-yt"), twitch: document.querySelector("#tw-rows input") }[p]; if (f) setTimeout(() => f.focus(), 50);
+  }
+  const TWITCH = () => S.platform === "twitch" && POSTS.some(p => p.type === "stream");
   /* Instagram: the connector (connect/worker.js) talks to Instagram's official API. Two ways in:
      connected = the owner logged in, so we get reach, watch time, skips, sends, saves, follows and comments;
      public    = any Creator or Business account by username, so only followers, likes, comments and Reel views. */
@@ -233,11 +286,11 @@
   const TABS = ["overview", "posts", "ideas", "plan", "board"];
   let TAB = "overview";
   function openApp() {
-    $("landing").hidden = true; $("app").hidden = false; $("load-err").hidden = true;
+    $("landing").hidden = true; $("app").hidden = false; $("load-err").hidden = true; document.body.classList.add("in-app");
     const h = META.handle || (META.source === "file" ? META.fileName : "Your account") || "Your account";
     $("av").textContent = (h.replace(/^@/, "")[0] || "Y").toUpperCase();
     if (META.picture) { const im = new Image(); im.alt = ""; im.referrerPolicy = "no-referrer"; im.onload = () => { $("av").textContent = ""; $("av").appendChild(im); }; im.src = META.picture; }
-    $("acct-name").textContent = META.handle ? "@" + META.handle.replace(/^@/, "") : h;
+    $("acct-name").textContent = META.handle ? (/\s/.test(META.handle) ? META.handle : "@" + META.handle.replace(/^@/, "")) : h;
     const d = dated(), range = d.length ? ` from ${fmtDate(d[0].time)} to ${fmtDate(d[d.length - 1].time)}` : "";
     $("acct-meta").textContent = `${POSTS.length} ${POSTS.length === 1 ? "post" : "posts"}${range}${META.source === "sample" ? ", fictional sample" : META.source === "public" ? ", public numbers" : META.source === "instagram" ? ", live from Instagram" : ""}`;
     document.title = `${$("acct-name").textContent} report: Creator Growth Studio`;
@@ -261,11 +314,11 @@
     $("p-overview").innerHTML = `
       <div class="acct-hero">
         <div class="ah-id"><span class="ah-av">${META.picture ? `<img src="${esc(META.picture)}" alt="" referrerpolicy="no-referrer">` : esc(((META.handle || "Y").replace(/^@/, "")[0] || "Y").toUpperCase())}</span>
-          <div><h2>${esc(META.handle ? "@" + META.handle.replace(/^@/, "") : "Your account")}</h2><p>${POSTS.length} posts${d.length ? `, ${fmtDate(d[0].time)} to ${fmtDate(d[d.length - 1].time)}` : ""}. 100 means normal for you, so the report fits any account size.</p>
+          <div><h2>${esc(META.handle ? (/\s/.test(META.handle) ? META.handle : "@" + META.handle.replace(/^@/, "")) : "Your account")}</h2><p>${POSTS.length} posts${d.length ? `, ${fmtDate(d[0].time)} to ${fmtDate(d[d.length - 1].time)}` : ""}. 100 means normal for you, so the report fits any account size.</p>
           <span class="ah-tags">${lv ? `<span class="ah-tag lvl">${lv.level}</span>` : ""}<span class="ah-tag">${{ sample: "Fictional sample", public: "Public numbers", instagram: "Live from Instagram", file: "From your file" }[META.source] || "Your data"}</span>${S.niche ? `<span class="ah-tag">${esc(niche().name)}</span>` : ""}</span></div></div>
         <div class="ah-kpis">
           <div><span>Average rating</span><b>${avg.toFixed(1)}</b>${stars(avg)}</div>
-          <div><span>${PUBLIC() ? "Typical likes" : "Typical reach"}</span><b>${PUBLIC() ? fmtN(E.median(POSTS.map(p => p.likes))) : fmtN(A.median_reach)}</b><small>${best ? `${fName(best.value, true)} do best` : "per post"}</small></div>
+          <div><span>${PUBLIC() ? "Typical likes" : TWITCH() ? "Typical viewer-hours" : META.detected && META.detected.platform === "youtube" ? "Typical views" : "Typical reach"}</span><b>${PUBLIC() ? fmtN(E.median(POSTS.map(p => p.likes))) : fmtN(A.median_reach)}</b><small>${best ? `${fName(best.value, true)} do best` : "per post"}</small></div>
           <div><span>${unit().charAt(0).toUpperCase() + unit().slice(1)}</span>${S.followers ? `<b>${fmtN(S.followers)}</b><small>${lv ? lv.level + " level" : ""}</small>` : `<b>–</b><button class="linkbtn" data-act="adjust">Add count</button>`}</div>
           <div><span>Posts analysed</span><b>${POSTS.length}</b><small>${top.length ? `${A.reports.filter(r => r.stars >= 4).length} rated 4 stars or more` : ""}</small></div>
         </div>
@@ -323,30 +376,31 @@
     const hasWatch = POSTS.some(p => p.avg_watch), hasSends = POSTS.some(p => p.shares != null);
     const list = filtered();
     $("p-posts").innerHTML = `
-      <div class="panel-head"><div><h2>Every post, rated</h2><p>Open a post to see each number against your usual, why it worked or didn't, and what to do next time.</p></div></div>
+      <div class="panel-head"><div><h2>${TWITCH() ? "Every stream, rated" : META.detected && META.detected.platform === "youtube" ? "Every video, rated" : "Every post, rated"}</h2><p>Open a post to see each number against your usual, why it worked or didn't, and what to do next time.</p></div></div>
       <div class="toolbar">
         <label class="sr" for="pf">Show</label><select class="inline-select" id="pf">${[["all", "All posts"], ["top", "4 stars and up"], ["low", "2.5 stars and under"]].concat(types.length > 1 ? types.map(t => [t, fName(t, true) + " only"]) : []).map(([v, t]) => `<option value="${v}"${S.filter === v ? " selected" : ""}>${t}</option>`).join("")}</select>
         <label class="sr" for="ps">Sort</label><select class="inline-select" id="ps">${[["new", "Newest first"], ["best", "Highest rated"], ["worst", "Lowest rated"], ["reach", "Most reach"]].map(([v, t]) => `<option value="${v}"${S.sort === v ? " selected" : ""}>${t}</option>`).join("")}</select>
         <span class="count">${list.length} of ${POSTS.length} posts</span>
       </div>
       <div class="posts">
-        <div class="plist-head"><span>Rating</span><span>Post</span><span>${PUBLIC() ? "Views" : "Reach"}</span><span>${hasWatch ? "Avg watch" : "Likes"}</span><span>${hasSends ? "Sends" : "Comments"}</span><span></span></div>
+        <div class="plist-head"><span>Rating</span><span>Post</span><span>${PUBLIC() || (META.detected && META.detected.platform === "youtube") ? "Views" : TWITCH() ? "Viewer-hours" : "Reach"}</span><span>${TWITCH() ? "New followers" : hasWatch ? "Avg watch" : "Likes"}</span><span>${hasSends ? (META.detected && META.detected.platform === "youtube" ? "Shares" : "Sends") : TWITCH() ? "Chat" : "Comments"}</span><span></span></div>
         ${list.length ? list.map(r => postRow(r, hasWatch, hasSends)).join("") : `<div class="empty-state"><h3>No posts match</h3><p>Pick a different filter.</p></div>`}
       </div>
       ${commentsCard()}`;
   }
+  const secTxt = v => (v >= 60 ? `${Math.floor(v / 60)}:${String(Math.round(v % 60)).padStart(2, "0")}` : v.toFixed(1) + " s");
   function postRow(r, hasWatch, hasSends) {
     const p = r.post, open = OPEN === r.id;
-    const c2 = hasWatch ? (p.avg_watch ? p.avg_watch.toFixed(1) + " s" : "–") : fmtN(p.likes), c3 = hasSends ? fmtN(p.shares) : fmtN(p.comments);
+    const c2 = TWITCH() ? fmtN(p.follows) : hasWatch ? (p.avg_watch ? secTxt(p.avg_watch) : "–") : fmtN(p.likes), c3 = hasSends ? fmtN(p.shares) : fmtN(p.comments);
     return `<button class="prow" data-row="${esc(r.id)}" aria-expanded="${open}">
       <span class="stars-cell">${stars(r.stars)}<span class="small muted num" style="display:block">Score ${r.score}</span></span>
       <span class="main" style="min-width:0">${thumb(r.id, p.type)}<span class="cap" style="display:block">${esc(r.caption || "Untitled post")}</span><span class="meta">${p.time ? fmtDate(p.time) : "No date"}, ${fName(p.type)}${SLOT[p.slot] ? ", " + SLOT[p.slot][0].toLowerCase() : ""}</span></span>
-      ${PUBLIC() ? `<span class="m first">${p.views ? fmtN(p.views) + "<small>views</small>" : fmtN(p.likes) + "<small>likes</small>"}</span>` : `<span class="m first">${fmtN(p.reach)}<small>reached</small></span>`}<span class="m">${c2}</span><span class="m">${c3}</span>
+      ${PUBLIC() ? `<span class="m first">${p.views ? fmtN(p.views) + "<small>views</small>" : fmtN(p.likes) + "<small>likes</small>"}</span>` : `<span class="m first">${fmtN(p.reach)}<small>${TWITCH() ? "viewer-hours" : META.detected && META.detected.platform === "youtube" ? "views" : "reached"}</small></span>`}<span class="m">${c2}</span><span class="m">${c3}</span>
       <span class="chev">${icon("chev")}</span></button>${open ? postDetail(r) : ""}`;
   }
   function postDetail(r) {
     const rows = r.rows.filter(x => !/\(count\)$/.test(x.metric) || x.value != null).filter(x => !(PUBLIC() && x.metric === "Reach"))
-      .map(x => PUBLIC() ? Object.assign({}, x, { metric: x.metric.replace("per 1,000 reached", "per 1,000 followers") }) : x);
+      .map(x => PUBLIC() ? Object.assign({}, x, { metric: x.metric.replace("per 1,000 reached", "per 1,000 followers") }) : TWITCH() ? Object.assign({}, x, { metric: x.metric.replace("per 1,000 reached", "per 1,000 viewer-hours").replace(/^Reach$/, "Viewer-hours").replace("Comments", "Chat messages") }) : x);
     const FIELD = { "Views": "views", "Profile visits": "profile_visits", "Likes (count)": "likes", "Comments (count)": "comments", "Sends (shares) (count)": "shares", "Saves (count)": "saves", "Follows (count)": "follows" };
     rows.forEach(x => { const f = FIELD[x.metric]; if (x.usual == null && f) { const m = E.median(POSTS.map(p => p[f])); if (m) { x.usual = m; x.ratio = x.value / m; } } });
     const cm = META.comments && META.comments[r.id], ck = cm && cm.length ? E.classifyComments(cm.join("\n")) : null;
@@ -550,7 +604,7 @@
   }
   function boardPrompt() {
     const n = niche(), P = D.platforms[S.platform] || D.platforms.instagram, tgt = D.reviewTargets.find(t => t.id === S.target) || D.reviewTargets[0], L = [];
-    const handle = META.handle ? "@" + META.handle.replace(/^@/, "") : "this account";
+    const handle = META.handle ? (/\s/.test(META.handle) ? META.handle : "@" + META.handle.replace(/^@/, "")) : "this account";
     L.push(`You are running an AI growth boardroom for ${handle}, ${/^[AEIOU]/.test(P.name) ? "an" : "a"} ${P.name} creator in ${n.name.toLowerCase()}. Be honest and specific. Never invent numbers; if you estimate, say "estimate". Use short sentences.`);
     L.push("", "THE ACCOUNT", `- ${S.followers ? full(S.followers) + " " + unit() : unit() + " not given"}. Niche: ${n.name}. Main audience country: ${S.country}. Content language: ${S.lang}. Can keep ${S.pace} posts a week.`);
     if (S.followers) L.push(`- Goal: ${full(goalValue())} ${unit()} in ${S.months} months.`);
@@ -627,7 +681,14 @@
     if (t.id === "connect") { if (!API()) { fail("Connect Instagram is being switched on. Until then, upload your export: open How do I get my export? below."); return; } busy("Opening Instagram..."); location.href = API() + "/login"; return; }
     if (t.matches(".tab")) { showTab(t.id.replace("tab-", "")); return; }
     if (t.id === "open-adjust" || t.dataset.act === "adjust") { openAdjust(); return; }
-    if (t.id === "new-file" || t.id === "home") { e.preventDefault(); sess.del("cgs-data"); history.replaceState(null, "", location.pathname); $("app").hidden = true; $("landing").hidden = false; OPEN = null; DAY = null; document.title = "Creator Growth Studio: star ratings for every Instagram post, and what to post next"; window.scrollTo(0, 0); return; }
+    if (t.id === "new-file" || t.id === "home") { e.preventDefault(); sess.del("cgs-data"); history.replaceState(null, "", location.pathname); $("app").hidden = true; $("landing").hidden = false; document.body.classList.remove("in-app"); OPEN = null; DAY = null; document.title = "Start free: Creator Growth Studio"; wizStep(1); return; }
+    if (t.dataset.plat) { choosePlatform(t.dataset.plat); return; }
+    if (t.id === "w-back") { wizStep(1); return; }
+    if (t.matches("[data-sample-yt]")) { loadSampleYT(); return; }
+    if (t.matches("[data-sample-tw]")) { loadSampleTW(); return; }
+    if (t.id === "tw-add") { TW.push(twBlank()); twRender(); const ins = document.querySelectorAll("#tw-rows tr:last-child input"); if (ins[0]) ins[0].focus(); return; }
+    if (t.dataset.twdel != null) { TW.splice(Number(t.dataset.twdel), 1); twRender(); return; }
+    if (t.id === "tw-go") { twGo(); return; }
     if (t.dataset.row != null) { OPEN = OPEN === t.dataset.row ? null : t.dataset.row; renderPosts(); const el = document.querySelector(`[data-row="${CSS.escape(t.dataset.row)}"]`); if (el) el.focus(); return; }
     if (t.dataset.open != null) { OPEN = t.dataset.open; S.filter = "all"; showTab("posts"); renderPosts(); const el = document.querySelector(`[data-row="${CSS.escape(OPEN)}"]`); if (el) el.scrollIntoView({ block: "center" }); return; }
     if (t.dataset.day != null) { showDay(Number(t.dataset.day)); return; }
@@ -652,26 +713,27 @@
     if (t.dataset.seat) { S.seats = [...document.querySelectorAll("[data-seat]:checked")].map(x => x.dataset.seat); save(); }
     if (!$("board-preview") || $("board-preview").hidden) return; $("board-preview").textContent = boardPrompt();
   });
-  document.addEventListener("input", e => { if (e.target.id === "b-draft") { S.draft = e.target.value; if (!$("board-preview").hidden) $("board-preview").textContent = boardPrompt(); } });
+  document.addEventListener("input", e => { if (e.target.dataset && e.target.dataset.tw) { const [i, k] = e.target.dataset.tw.split("."); TW[Number(i)][k] = e.target.value; return; } if (e.target.id === "b-draft") { S.draft = e.target.value; if (!$("board-preview").hidden) $("board-preview").textContent = boardPrompt(); } });
   document.addEventListener("keydown", e => {
-    if (e.target.id === "drop" && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); $("file").click(); }
+    if ((e.target.id === "drop" || e.target.id === "drop-yt") && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); $("file").click(); }
     if (e.target.matches && e.target.matches(".tab") && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { const i = TABS.indexOf(TAB) + (e.key === "ArrowRight" ? 1 : -1), n = TABS[(i + TABS.length) % TABS.length]; showTab(n); $("tab-" + n).focus(); }
   });
-  const drop = $("drop");
-  ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
-  ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
-  drop.addEventListener("drop", e => useFile(e.dataTransfer.files[0]));
-  window.addEventListener("dragover", e => e.preventDefault()); window.addEventListener("drop", e => { if (drop.contains(e.target)) return; e.preventDefault(); if (!$("landing").hidden && e.dataTransfer && e.dataTransfer.files[0]) useFile(e.dataTransfer.files[0]); });
+  ["drop", "drop-yt"].forEach(id => { const drop = $(id); if (!drop) return;
+    ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+    ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+    drop.addEventListener("drop", e => { e.stopPropagation(); useFile(e.dataTransfer.files[0]); }); });
+  window.addEventListener("dragover", e => e.preventDefault()); window.addEventListener("drop", e => { e.preventDefault(); if (!$("landing").hidden && e.dataTransfer && e.dataTransfer.files[0]) useFile(e.dataTransfer.files[0]); });
   $("adjust").addEventListener("close", () => { if ($("adjust").returnValue === "save") saveAdjust(); });
 
   /* ---------- start ---------- */
-  drawPreview();
-  const hash = new URLSearchParams(location.hash.slice(1));
+  const hash = new URLSearchParams(location.hash.slice(1)), qs = new URLSearchParams(location.search);
   if (hash.get("ig")) { const tok = hash.get("ig"); history.replaceState(null, "", location.pathname); loadInstagram(tok); }
   else if (hash.get("error")) { history.replaceState(null, "", location.pathname); fail(hash.get("error")); }
   else {
     const saved = sess.get("cgs-data");
-    if (saved) { try { const d = JSON.parse(saved); loadRows(d.kind === "csv" ? d.text : d.rows, Object.assign({}, d.meta, { keepSettings: true })); } catch (e) { sess.del("cgs-data"); } }
+    if (qs.get("sample")) { history.replaceState(null, "", location.pathname); loadSample(); }
+    else if (saved) { try { const d = JSON.parse(saved); loadRows(d.kind === "csv" ? d.text : d.rows, Object.assign({}, d.meta, { keepSettings: true })); } catch (e) { sess.del("cgs-data"); } }
+    else if (qs.get("p")) { choosePlatform(qs.get("p")); }
   }
-  window.CGS_APP = { boardPrompt, state: S, audit: () => A };
+  window.CGS_APP = { boardPrompt, state: S, audit: () => A, meta: () => META };
 })();

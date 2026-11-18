@@ -10,7 +10,7 @@
    Settings (Cloudflare dashboard > your Worker > Settings > Variables and Secrets):
      IG_APP_ID       Instagram App ID       (Meta App Dashboard > Instagram > API setup with Instagram login)
      IG_APP_SECRET   Instagram App Secret   (type: Secret)
-     SITE_URL        https://siddharthmehdiratta.github.io/creator-growth-studio/
+     SITE_URL        https://siddharthmehdiratta.github.io/creator-growth-studio/start.html
    Optional, for "Look up any account":
      OWNER_IG_ID     Your own Instagram professional account ID (from Graph API Explorer: me/accounts?fields=instagram_business_account)
      OWNER_TOKEN     A long-lived Facebook Login user token with instagram_basic and pages_show_list (type: Secret)

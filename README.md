@@ -2,16 +2,18 @@
 
 **Type your Instagram username. Get a star rating for every post, the reason it worked or flopped, and what to post next.** Free, for any account from 1 follower to 1 million. Instagram first, then YouTube and Twitch.
 
-### [Open the studio](https://siddharthmehdiratta.github.io/creator-growth-studio/) · [How to use it](https://siddharthmehdiratta.github.io/creator-growth-studio/guide.html)
+### [Start free](https://siddharthmehdiratta.github.io/creator-growth-studio/start.html) · [Features](https://siddharthmehdiratta.github.io/creator-growth-studio/features.html) · [Growth guide 2026](https://siddharthmehdiratta.github.io/creator-growth-studio/growth-guide.html) · [FAQ](https://siddharthmehdiratta.github.io/creator-growth-studio/faq.html)
 
 No forms, no install and no password. The report is worked out in your browser.
 
-## Three ways in
+## Pick your platform, then how to bring your numbers
 | Way | What it reads |
 |---|---|
 | **Type a username or paste a profile link** | Any public Creator or Business account: followers, and likes, comments and Reel views for the last 50 posts |
 | **Connect Instagram** (official login) | Your own account: also reach, views, average watch time, skip rate, sends, saves, follows, profile visits and comments |
-| **Upload an export** | A CSV from Meta Business Suite or YouTube Studio. Works with no setup at all |
+| **Upload an export** | A CSV from Meta Business Suite. Works with no setup at all |
+| **YouTube** | Upload the Table data.csv from YouTube Studio. Shorts and videos are rated separately |
+| **Twitch** | Type in your last few streams (viewers, hours, new followers, chat) |
 
 Both Instagram options use Meta's official API through a small free helper that stores nothing. To switch them on for your own copy, follow [CONNECT-INSTAGRAM.md](CONNECT-INSTAGRAM.md).
 
@@ -47,6 +49,9 @@ Install in Claude Code: paste `https://github.com/Siddharthmehdiratta/creator-gr
 | `/brand-scout` | Vet influencers before paying them |
 
 The engine is `skills/growth-audit/growth.py`: standard-library Python 3.8+, nothing to install. The website runs the same maths in `docs/engine.js`, and a test checks that both give identical numbers.
+
+## Website pages
+The site pages are built by `python3 tools/pages.py` from one shared header, footer and icon set. The app itself is `docs/start.html`.
 
 ## Tests
 ```

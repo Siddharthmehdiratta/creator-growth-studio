@@ -145,7 +145,7 @@ def load_posts(path):
         g = lambda k: r.get(cm[k]) if k in cm else None
         if "total" in (str(g("caption") or "").strip().lower(), str(g("id") or "").strip().lower()):
             continue
-        p = {"id": str(g("id") or "P%03d" % (i + 1)), "caption": str(g("caption") or ""), "time": _time(g("time")),
+        p = {"id": str(g("id") or "P%03d" % (i + 1)), "caption": str(g("caption") or ""), "time": _time(g("time")), "no_hour": not re.search(r"\d:\d\d", str(g("time") or "")),
              "type": _fmt(g("type")) if "type" in cm else ("reel" if _num(g("duration")) else "unknown"),
              "link": str(g("link") or "").strip() if re.match(r"https?://", str(g("link") or "").strip(), re.I) else "", "hook": str(g("hook") or "").strip() or None,
              "topic": str(g("topic") or "").strip() or None}
@@ -248,7 +248,7 @@ def score_posts(posts):
         p["score"] = round(100 * math.sqrt(quality * reach_idx))
         p["quality"] = round(100 * quality)
         p["reach_index"] = round(100 * reach_idx)
-        p["slot"] = hour_slot(p["time"].hour if p["time"] else None)
+        p["slot"] = hour_slot(p["time"].hour if p["time"] and not p.get("no_hour") else None)
         p["weekday"] = p["time"].strftime("%A") if p["time"] else "unknown"
         p["length"] = dur_bucket(p.get("duration"))
         p["tags"] = tags_of(p["caption"])
