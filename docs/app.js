@@ -28,7 +28,7 @@
   /* ---------- small UI helpers ---------- */
   function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 2600); }
   function stars(n, lg) {
-    let h = ""; for (let i = 1; i <= 5; i++) { const fill = n >= i ? "#e3a008" : n >= i - 0.5 ? "url(#g-half)" : "#e2e5ea"; h += `<svg viewBox="0 0 20 20"><use href="#i-star" fill="${fill}"/></svg>`; }
+    let h = ""; for (let i = 1; i <= 5; i++) { const fill = n >= i ? "#F5A524" : n >= i - 0.5 ? "url(#g-half)" : "#E3E1EE"; h += `<svg viewBox="0 0 20 20"><use href="#i-star" fill="${fill}"/></svg>`; }
     return `<span class="stars${lg ? " lg" : ""}" role="img" aria-label="${n} out of 5 stars">${h}</span>`;
   }
   function ratio(r) { if (r == null || !isFinite(r)) return ""; const cls = r >= 1.15 ? "up" : r <= 0.85 ? "down" : "flat"; return `<span class="ratio ${cls}">${r >= 10 ? Math.round(r) : r.toFixed(1)}x</span>`; }
@@ -36,7 +36,7 @@
   function thumb(id, type) {
     const u = META.thumbs && META.thumbs[id];
     if (u) return `<img class="thumb" src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'thumb ph'}))">`;
-    return `<span class="thumb ph" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="${TYPE_IC[type] || "M4 5h16v14H4zM4 15l5-5 4 4 3-3 4 4"}"/></svg></span>`;
+    return `<span class="thumb ph ${esc(type || "")}" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="${TYPE_IC[type] || "M4 5h16v14H4zM4 15l5-5 4 4 3-3 4 4"}"/></svg></span>`;
   }
   async function copy(text, msg) {
     try { await navigator.clipboard.writeText(text); toast(msg); }
@@ -202,6 +202,13 @@
     if (kind === "topic") return `${v} posts (compared with ${base})`;
     return name;
   }
+  function shortFeat(name) {
+    name = name.split(" / ")[0];
+    if (name.startsWith("#")) return `${name} posts`;
+    const m = name.match(/^(\w+): (.*) \(vs (.*)\)$/); if (!m) return name;
+    const [, kind, v] = m;
+    return kind === "format" ? fName(v, true) : kind === "time" ? `${(SLOT[v] || [v])[0]} posts` : kind === "length" ? `${v} reels` : kind === "hook" ? `"${v}" hooks` : v;
+  }
   const strong = ds => (ds || []).filter(d => d.confidence !== "weak");
   const conf = c => `<span class="pill ${c === "strong" ? "good" : "warn"}">${c === "strong" ? "Strong evidence" : "Good evidence"}</span>`;
   const pct = x => `${x >= 1 ? "+" : ""}${Math.round((x - 1) * 100)}%`;
@@ -252,12 +259,16 @@
     const top = A.top.slice(0, 3), bottom = A.bottom.slice(0, 3);
     const best = A.by_format.filter(g => !g.thin)[0];
     $("p-overview").innerHTML = `
-      <div class="panel-head"><div><h2>Overview</h2><p>Every number compares a post with your own typical post. 100 means normal for you, so the report fits any account size.</p></div></div>
-      <div class="grid g4">
-        <div class="stat"><div class="k">Posts analysed</div><div class="v">${POSTS.length}</div><div class="d">${d.length ? fmtDate(d[0].time) + " to " + fmtDate(d[d.length - 1].time) : "No dates in file"}</div></div>
-        <div class="stat"><div class="k">Average rating</div><div class="v">${avg.toFixed(1)} ${stars(avg)}</div><div class="d">3.5 stars is a typical post for you</div></div>
-        <div class="stat">${PUBLIC() ? `<div class="k">Typical likes</div><div class="v">${fmtN(E.median(POSTS.map(p => p.likes)))}</div>` : `<div class="k">Typical reach</div><div class="v">${fmtN(A.median_reach)}</div>`}<div class="d">${best ? `${fName(best.value, true)} do best for you` : "People reached by a normal post"}</div></div>
-        <div class="stat"><div class="k">Level</div>${lv ? `<div class="v">${lv.level}</div><div class="d">${full(S.followers)} ${unit()}</div>` : `<div class="v" style="font-size:18px;padding-top:8px"><button class="btn sm" data-act="adjust">Add follower count</button></div><div class="d">The export doesn't include it</div>`}</div>
+      <div class="acct-hero">
+        <div class="ah-id"><span class="ah-av">${META.picture ? `<img src="${esc(META.picture)}" alt="" referrerpolicy="no-referrer">` : esc(((META.handle || "Y").replace(/^@/, "")[0] || "Y").toUpperCase())}</span>
+          <div><h2>${esc(META.handle ? "@" + META.handle.replace(/^@/, "") : "Your account")}</h2><p>${POSTS.length} posts${d.length ? `, ${fmtDate(d[0].time)} to ${fmtDate(d[d.length - 1].time)}` : ""}. 100 means normal for you, so the report fits any account size.</p>
+          <span class="ah-tags">${lv ? `<span class="ah-tag lvl">${lv.level}</span>` : ""}<span class="ah-tag">${{ sample: "Fictional sample", public: "Public numbers", instagram: "Live from Instagram", file: "From your file" }[META.source] || "Your data"}</span>${S.niche ? `<span class="ah-tag">${esc(niche().name)}</span>` : ""}</span></div></div>
+        <div class="ah-kpis">
+          <div><span>Average rating</span><b>${avg.toFixed(1)}</b>${stars(avg)}</div>
+          <div><span>${PUBLIC() ? "Typical likes" : "Typical reach"}</span><b>${PUBLIC() ? fmtN(E.median(POSTS.map(p => p.likes))) : fmtN(A.median_reach)}</b><small>${best ? `${fName(best.value, true)} do best` : "per post"}</small></div>
+          <div><span>${unit().charAt(0).toUpperCase() + unit().slice(1)}</span>${S.followers ? `<b>${fmtN(S.followers)}</b><small>${lv ? lv.level + " level" : ""}</small>` : `<b>–</b><button class="linkbtn" data-act="adjust">Add count</button>`}</div>
+          <div><span>Posts analysed</span><b>${POSTS.length}</b><small>${top.length ? `${A.reports.filter(r => r.stars >= 4).length} rated 4 stars or more` : ""}</small></div>
+        </div>
       </div>
       <div class="grid g2">
         <div class="card"><h3>The short version</h3><p class="sub">The patterns that stand out in your posts.</p>
@@ -490,11 +501,13 @@
         <span class="goal-lbl" style="top:${(100 * (py(G.goal) - 4) / H).toFixed(1)}%">Goal ${fmtN(G.goal)}</span>
         <svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
           <line x1="${px(0)}" x2="${px(G.months)}" y1="${py(G.goal)}" y2="${py(G.goal)}" stroke="#d3d8df" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>
-          <path d="${line(pts)}" fill="none" stroke="#0b7a66" stroke-width="2.5" vector-effect="non-scaling-stroke"/>${pace ? `<path d="${line(pace)}" fill="none" stroke="#8a909c" stroke-width="2" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>` : ""}
+          <defs><linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6C47FF" stop-opacity=".22"/><stop offset="1" stop-color="#6C47FF" stop-opacity="0"/></linearGradient><linearGradient id="gLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6C47FF"/><stop offset=".6" stop-color="#A33DF5"/><stop offset="1" stop-color="#E0428A"/></linearGradient></defs>
+          <path d="${line(pts)} L${px(G.months)},${H} L${px(0)},${H} Z" fill="url(#gArea)" stroke="none"/>
+          <path d="${line(pts)}" fill="none" stroke="url(#gLine)" stroke-width="3" vector-effect="non-scaling-stroke"/>${pace ? `<path d="${line(pace)}" fill="none" stroke="#8a909c" stroke-width="2" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>` : ""}
         </svg>
         <div class="xlbl">${pts.map(p => `<span>${p.month ? "M" + p.month : "Now"}</span>`).join("")}</div>
       </div>
-      <p class="small muted" style="margin:4px 0 0"><span style="color:var(--accent-ink);font-weight:600">Solid line:</span> the path to your goal. ${pace ? `<span style="font-weight:600">Dashed:</span> where your current pace leads. ` : ""}${G.multiplier_needed ? `To hit the goal at ${S.pace} posts a week, each post needs ${G.multiplier_needed}x the follows it gets now. ` : ""}${esc(G.note)}</p>`;
+      <p class="small muted" style="margin:4px 0 0"><span style="color:var(--brand-700);font-weight:600">Solid line:</span> the path to your goal. ${pace ? `<span style="font-weight:600">Dashed:</span> where your current pace leads. ` : ""}${G.multiplier_needed ? `To hit the goal at ${S.pace} posts a week, each post needs ${G.multiplier_needed}x the follows it gets now. ` : ""}${esc(G.note)}</p>`;
   }
   function calCells(start) {
     let h = ""; for (let i = 0; i < start.getDay(); i++) h += `<div class="day empty"></div>`;
@@ -596,7 +609,13 @@
       $("pv-date").textContent = best.post.time ? fmtDate(best.post.time) : "";
       const keep = best.rows.filter(r => r.ratio != null).slice(0, 5);
       $("pv-rows").innerHTML = keep.map(r => `<div class="mrow"><span>${esc(r.metric.replace(" (seconds)", "").replace(" (% who didn't skip)", ""))}</span><span class="v">${r.metric.startsWith("Average watch") ? r.value + " s" : /Hold/.test(r.metric) ? r.value + "%" : fmtN(r.value)}${ratio(r.ratio)}</span></div>`).join("");
-      $("pv-note").innerHTML = `<b>Why it worked:</b> ${esc((best.good[0] || "").replace(/^./, c => c.toUpperCase()))}.`;
+      $("pv-note").innerHTML = `<b>Why it worked:</b> ${esc((best.good[0] || "").replace(/^./, c => c.toUpperCase()))}. Fictional sample account.`;
+      const recent = a.reports.slice(0, 9), K = { reel: ["k1", "k6", "k3"], carousel: ["k2", "k5"], image: ["k3", "k4"], video: ["k6"] };
+      $("pv-grid").innerHTML = recent.map((r, i) => { const ks = K[r.type] || ["k4"]; return `<div class="tile ${ks[i % ks.length]}"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="${TYPE_IC[r.type] || "M4 5h16v14H4zM4 15l5-5 4 4 3-3 4 4"}"/></svg><span class="bdg"><i>★</i>${r.stars}</span></div>`; }).join("");
+      const slot = (a.by_slot || []).filter(g => !g.thin)[0];
+      if (slot && SLOT[slot.value]) $("pv-time").textContent = `${SLOT[slot.value][0]}, ${SLOT[slot.value][1]}`;
+      const lv = strong(a.drivers_reach).find(d => d.multiplier > 1);
+      if (lv) $("pv-lever").textContent = `${shortFeat(lv.feature)}: ${pct(lv.multiplier)} reach`;
     } catch (e) { document.querySelector(".preview").hidden = true; }
   }
 
