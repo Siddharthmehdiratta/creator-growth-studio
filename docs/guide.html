@@ -1,59 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>How to use Creator Growth Studio (beginner's guide)</title>
-<meta name="description" content="Step-by-step guide: export your Instagram, YouTube or Twitch numbers, get a diagnosis, a growth map, a 30-day plan and an AI boardroom review. No coding.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to use Creator Growth Studio</title>
+<meta name="description" content="A short guide: type your Instagram username or connect your account, read your star ratings, and turn them into a 30-day plan. No coding.">
+<link rel="preload" href="fonts/geist-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23171a21'/%3E%3Cpath d='M9 21v-3M14 21v-7M19 21v-10M24 21V8' stroke='%2334d3b0' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
-<style>.guide{max-width:820px;padding:24px 0 80px}.guide h2{margin:40px 0 12px}.guide ol{padding-left:1.3em}.guide li{margin:10px 0}.guide .block p:last-child{margin-bottom:0}</style>
+<style>
+  .doc { max-width: 720px; padding: 56px 0 96px; }
+  .doc h1 { font-size: clamp(2rem, 4vw, 2.75rem); }
+  .doc .lead { color: var(--muted); font-size: 18px; margin: 14px 0 0; }
+  .doc h2 { font-size: 1.5rem; margin: 48px 0 12px; }
+  .doc ol, .doc ul { padding-left: 1.3em; margin: 0; }
+  .doc li { margin: 10px 0; }
+  .doc li::marker { color: var(--muted); }
+  .doc .callout { margin-top: 16px; }
+  .doc table { margin-top: 8px; }
+</style>
 </head>
 <body>
-<div class="wrap">
-  <div class="bar"><a class="brand" href="./"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Creator Growth Studio</a><nav><a href="./">Open the studio</a></nav></div>
-  <main class="guide">
-    <h1>How to use it</h1>
-    <p class="lead sub" style="font-size:var(--s4);margin-top:16px">10 minutes the first time. No coding, no login. Your numbers stay in your browser.</p>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="./"><svg aria-hidden="true" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#171a21"/><path d="M9 21v-3M14 21v-7M19 21v-10M24 21V8" stroke="#34d3b0" stroke-width="3" stroke-linecap="round"/></svg>Creator Growth Studio</a>
+    <div class="right"><a class="btn dark sm" href="./">Open the studio</a></div>
+  </div>
+</header>
+<main class="wrap">
+<article class="doc">
+<h1>How to use it</h1>
+<p class="lead">Under a minute the first time. No forms, no coding and no password.</p>
 
-    <h2>Instagram (6 steps)</h2>
-    <ol>
-      <li>Switch to a <b>Professional account</b> if you haven't: Settings, then Account type and tools. It's free and unlocks Insights.</li>
-      <li>On a computer, open <b>business.facebook.com</b> (Meta Business Suite) and log in with your Instagram.</li>
-      <li>Go to <b>Insights</b>, then <b>Content</b>. Pick the last 90 days. Press <b>Export data</b> and choose <b>CSV</b>.</li>
-      <li>Optional, but it makes the answers much better: open the CSV in Google Sheets or Excel and add 2 columns, <b>Hook</b> (for example Face to camera, Gameplay first, Text on screen) and <b>Topic</b>. Or label posts later in the studio.</li>
-      <li>Open <a href="./">the studio</a>. Fill in <b>Your account</b>, then drop the CSV into <b>Your numbers</b>.</li>
-      <li>Read your <b>Diagnosis</b>, check the <b>Growth map</b>, download the <b>30-day plan</b> to your calendar, and pick up to 3 fixes for this week.</li>
-    </ol>
-    <div class="block"><p><b>No computer?</b> Take screenshots of Insights on your phone (the Audience tab, and a few posts' insights). Paste them into Claude with the boardroom message and say "read my numbers from these screenshots".</p></div>
+<h2>Get your report</h2>
+<ol>
+  <li>Open <a href="./">the studio</a>.</li>
+  <li>Type your Instagram username, or paste your profile link, and press <b>Get my report</b>.</li>
+  <li>For the full picture, press <b>Connect Instagram</b> and log in through Instagram's own page. This adds reach, watch time, skip rate, sends, saves, follows and your comments.</li>
+</ol>
+<div class="callout info"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></g></svg><p><b>Account not found?</b> Instagram only lets apps read Creator and Business accounts. In the Instagram app, open Settings, then Account type and tools, then Switch to professional account. It's free and takes a minute.</p></div>
 
-    <h2>YouTube</h2>
-    <ol><li>Open <b>YouTube Studio</b>, then <b>Analytics</b>, then <b>Advanced mode</b>.</li><li>Choose the last 90 days, press the download icon, and pick <b>Comma-separated values</b>.</li><li>Unzip it and drop <b>Table data.csv</b> into the studio.</li></ol>
+<h2>Read your report</h2>
+<table class="table">
+  <thead><tr><th>Tab</th><th>What it tells you</th></tr></thead>
+  <tbody>
+    <tr><td><b>Overview</b></td><td>Your average rating, your level, the patterns that stand out, your best and weakest posts, and an audience health check.</td></tr>
+    <tr><td><b>Posts</b></td><td>Every post with 1 to 5 stars. Open one to see each number next to your usual, why it worked or didn't, and what to do next time. Your comments are sorted here too.</td></tr>
+    <tr><td><b>What to post</b></td><td>Ideas built from your best posts and your niche, with the format, day and time that work for you.</td></tr>
+    <tr><td><b>Plan</b></td><td>What your follower goal really takes, and a 30-day calendar you can add to Google Calendar.</td></tr>
+    <tr><td><b>AI boardroom</b></td><td>A message to paste into Claude. A CEO, growth, social media, SEO, data and creative leads review your account, and an AI audience reacts like real viewers.</td></tr>
+  </tbody>
+</table>
+<p class="small muted" style="margin-top:12px">3.5 stars is a typical post for you. 5 stars means about twice as good as your usual. Every number compares you with yourself, so the report works at any size.</p>
 
-    <h2>Twitch</h2>
-    <ol><li>Open <b>Creator Dashboard</b>, then <b>Insights</b>, then <b>Stream summary</b>.</li><li>In the studio, press <b>Add a post by hand</b> for each stream. Put average viewers times hours streamed in Reach, followers gained in Follows, and clips in Sends.</li></ol>
+<h2>Use an export file instead</h2>
+<ol>
+  <li>On a computer, open <a href="https://business.facebook.com/latest/insights/content" target="_blank" rel="noopener">Meta Business Suite</a>, then <b>Insights</b>, then <b>Content</b>.</li>
+  <li>Pick the last 90 days, press <b>Export data</b>, and choose <b>CSV</b>.</li>
+  <li>Drop the file onto the studio. For YouTube, use YouTube Studio, then <b>Analytics</b>, then <b>Advanced mode</b>, then download <b>Table data.csv</b>.</li>
+</ol>
 
-    <h2>The AI boardroom (3 steps)</h2>
-    <ol>
-      <li>In the studio, open <b>AI boardroom</b>. Pick what to review (for example "A post before I publish it") and paste your draft hook, caption or script.</li>
-      <li>Choose your advisers and your audience: ages, gender split and where they live, from Insights, then Audience.</li>
-      <li>Press <b>Copy the message for Claude</b>, open <b>claude.ai</b> or the Claude app, paste, and send. On the free plan, 10 viewers is lighter.</li>
-    </ol>
-    <p class="sub">You get a CEO verdict, a scorecard from each adviser, an AI audience table (who stopped, watched, sent, saved, followed and what they'd comment), the advisers' disagreements, 3 actions for this week, and rewrites.</p>
+<h2>For brands and agencies</h2>
+<p>Type the creator's username. The Overview tab shows an audience health check: engagement against accounts of the same size, comments per like, and patterns that suggest bought likes. Before you pay, ask the creator for an Insights screenshot of their audience's ages and cities. No tool can see those for another account.</p>
 
-    <h2>For brands and agencies</h2>
-    <p>Open <b>For brands</b> in the studio. Type a creator's followers and the likes, comments and views of their last 12 posts, and tick which were paid and labelled. You get engagement against their tier, warning signs, and missing ad labels. Then ask the creator for an Insights screenshot before paying.</p>
-
-    <h2>The full version in Claude Code</h2>
-    <p>If you use Claude Code (a paid Claude plan), paste <b>github.com/Siddharthmehdiratta/creator-growth-studio</b> and say "install this skill pack". Then type <b>/growth-studio</b> in the folder with your export. The boardroom then runs every AI viewer as a separate agent, and you get calendar files and reports saved in your folder.</p>
-
-    <h2>Honest limits</h2>
-    <ul>
-      <li>Instagram never shows anyone their followers' income, or exactly who each follower is. The studio estimates and says so.</li>
-      <li>AI advisers and AI audiences are simulations. Use them to find weak spots, then test with trial reels.</li>
-      <li>Patterns in your posts are not proof. Change one thing at a time for 2 weeks, then check again.</li>
-      <li>No tool can guarantee followers. Anyone who promises that is selling bots.</li>
-    </ul>
-  </main>
-</div>
-<footer><div class="wrap"><p>Creator Growth Studio is free and open source (MIT).</p></div></footer>
+<h2>Honest limits</h2>
+<ul>
+  <li>A username alone shows public numbers only. Reach, watch time, sends and saves need the owner to connect.</li>
+  <li>Patterns in your posts are hints, not proof. Change one thing at a time for 2 weeks, then check again.</li>
+  <li>AI advisers and AI audiences are simulations. Use them to find weak spots, then test with trial reels.</li>
+  <li>No tool can guarantee followers. Anyone who promises that is selling bots.</li>
+</ul>
+</article>
+</main>
+<footer><div class="wrap"><p>Creator Growth Studio is free and open source (MIT), made by Siddharth Mehdiratta.</p><div class="links"><a href="./">Studio</a><a href="sample-boardroom.html">Sample boardroom</a><a href="https://github.com/Siddharthmehdiratta/creator-growth-studio">GitHub</a></div></div></footer>
 </body>
 </html>

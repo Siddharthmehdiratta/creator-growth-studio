@@ -40,6 +40,10 @@ ALIASES = {
     "avg_view_pct": ["average percentage viewed (%)", "average view percentage", "avg % viewed"],
     "ctr": ["impressions click-through rate (%)", "ctr", "click-through rate"],
     "link": ["permalink", "link", "url"],
+    "avg_watch": ["average watch time (sec)", "average watch time (seconds)", "average watch time", "avg. watch time",
+                  "avg watch time", "avg watch time (sec)", "average view duration"],
+    "skip_rate": ["skip rate (%)", "skip rate", "skip rate %"],
+    "profile_visits": ["profile visits", "profile views", "profile visit"],
     "hook": ["hook", "hook type", "opening", "label"],
     "topic": ["topic", "pillar", "series", "content pillar"],
 }
@@ -62,6 +66,17 @@ def _num(v, decimal_comma=False):
         return float(s)
     except ValueError:
         return None
+
+
+def _secs(v, decimal_comma=False):
+    """Seconds from '24', '24.5' or '0:01:23' / '1:23'."""
+    s = str(v or "").strip()
+    if re.match(r"^\d+(:\d{1,2}){1,2}$", s):
+        parts = [int(x) for x in s.split(":")]
+        while len(parts) < 3:
+            parts.insert(0, 0)
+        return parts[0] * 3600 + parts[1] * 60 + parts[2]
+    return _num(v, decimal_comma)
 
 
 def _time(v):
@@ -134,9 +149,11 @@ def load_posts(path):
              "type": _fmt(g("type")) if "type" in cm else ("reel" if _num(g("duration")) else "unknown"),
              "link": str(g("link") or "").strip() if re.match(r"https?://", str(g("link") or "").strip(), re.I) else "", "hook": str(g("hook") or "").strip() or None,
              "topic": str(g("topic") or "").strip() or None}
-        for k in ("reach", "views", "likes", "comments", "shares", "saves", "follows", "duration", "watch_hours",
-                  "avg_view_pct", "ctr"):
+        for k in ("reach", "views", "likes", "comments", "shares", "saves", "follows", "watch_hours",
+                  "avg_view_pct", "ctr", "skip_rate", "profile_visits"):
             p[k] = _num(g(k), semicolon)
+        p["duration"] = _secs(g("duration"), semicolon)
+        p["avg_watch"] = _secs(g("avg_watch"), semicolon)
         if p["reach"] is None:
             p["reach"] = p["views"]
             p["reach_is_views"] = True
@@ -149,12 +166,14 @@ def load_posts(path):
 
 
 # ---------------------------------------------------------------- per-post metrics
-SIGNALS = [  # (key, label, weight in the growth score)
+SIGNALS = [  # (key, label, weight in the growth score). Watch and hold only count when the export has them.
+    ("watch", "Average watch time (seconds)", 0.30),
     ("sends", "Sends per 1,000 reached", 0.30),
     ("follows", "Follows per 1,000 reached", 0.25),
     ("likes", "Likes per 1,000 reached", 0.15),
     ("saves", "Saves per 1,000 reached", 0.15),
     ("comments", "Comments per 1,000 reached", 0.15),
+    ("hold", "Hold rate (% who didn't skip)", 0.15),
 ]
 SRC = {"sends": "shares", "follows": "follows", "likes": "likes", "saves": "saves", "comments": "comments"}
 
@@ -162,6 +181,15 @@ SRC = {"sends": "shares", "follows": "follows", "likes": "likes", "saves": "save
 def per_k(p, field):
     v = p.get(field)
     return None if v is None or not p["reach"] else 1000.0 * v / p["reach"]
+
+
+def sig(p, k):
+    if k == "watch":
+        return p.get("avg_watch") if p.get("avg_watch") else None
+    if k == "hold":
+        sr = p.get("skip_rate")
+        return None if sr is None else max(0.0, 100.0 - sr)
+    return per_k(p, SRC[k])
 
 
 def _median(xs):
@@ -203,10 +231,10 @@ def tags_of(caption):
 
 def score_posts(posts):
     """Add per-1,000 signals and a growth score: 100 = this account's typical post."""
-    med = {k: _median(per_k(p, SRC[k]) for p in posts) for k, _, _ in SIGNALS}
+    med = {k: _median(sig(p, k) for p in posts) for k, _, _ in SIGNALS}
     med_reach = _median(p["reach"] for p in posts)
     for p in posts:
-        p["signals"] = {k: per_k(p, SRC[k]) for k, _, _ in SIGNALS}
+        p["signals"] = {k: sig(p, k) for k, _, _ in SIGNALS}
         parts, wsum = [], 0.0
         for k, _, w in SIGNALS:
             v, m = p["signals"][k], med[k]
@@ -224,7 +252,19 @@ def score_posts(posts):
         p["weekday"] = p["time"].strftime("%A") if p["time"] else "unknown"
         p["length"] = dur_bucket(p.get("duration"))
         p["tags"] = tags_of(p["caption"])
+        p["stars"] = stars_of(p["score"])
     return med, med_reach
+
+
+STAR_BANDS = [(200, 5.0), (150, 4.5), (120, 4.0), (100, 3.5), (80, 3.0), (60, 2.5), (45, 2.0), (30, 1.5)]
+
+
+def stars_of(score):
+    """1 to 5 stars against the account's own typical post (score 100 = 3.5 stars)."""
+    for cut, st in STAR_BANDS:
+        if score >= cut:
+            return st
+    return 1.0
 
 
 def groups(posts, key, min_n=3):
@@ -386,6 +426,8 @@ def why(p, med, med_reach):
     """Plain reasons a post beat or missed the account's typical post."""
     good, bad = [], []
     labels = {k: l for k, l, _ in SIGNALS}
+    labels["watch"] = "Watch time per view"
+    labels["hold"] = "Hold rate per view"
     for k, _, _ in SIGNALS:
         v, m = p["signals"].get(k), med.get(k)
         if v is None or not m:
@@ -405,6 +447,115 @@ def why(p, med, med_reach):
     return good, bad
 
 
+ADVICE = {
+    "low_hold": "Most people swiped away early: rework the first second (movement, your face, or the payoff first).",
+    "low_watch": "People left before the end: cut slow parts, show the result earlier, or make it shorter.",
+    "good_watch_long": "People watched this one far longer than usual: make a part 2 in the same style.",
+    "low_sends": "Few people sent it to a friend: end with a clear reason to share ('send this to the friend who...').",
+    "high_sends": "People sent this to friends: that's the strongest signal for reaching new people. Repeat the angle.",
+    "high_saves": "People saved it: useful content works for you. Turn it into a carousel or a numbered series.",
+    "low_follows_good_reach": "It travelled but didn't win followers: say who you are in the first lines and tell viewers what's next.",
+    "high_follows": "It brought in followers: pin it to your profile so new visitors see it first.",
+    "low_reach_good_quality": "The people who saw it liked it, but few saw it: test the same idea as a trial reel, post at your best time, or collab.",
+    "high_comments": "People talked: reply to comments in the first hour and pin the best one.",
+    "low_everything": "It missed on most signals: don't repeat this format or topic without changing the hook.",
+}
+
+
+def advice_for(p, med, med_reach):
+    s_, out = p["signals"], []
+    r = lambda k: (s_.get(k) / med[k]) if s_.get(k) is not None and med.get(k) else None
+    reach_r = p["reach"] / med_reach if med_reach else 1
+    if (r("hold") or 1) < 0.85:
+        out.append(ADVICE["low_hold"])
+    if (r("watch") or 1) < 0.7:
+        out.append(ADVICE["low_watch"])
+    if (r("watch") or 0) >= 1.5:
+        out.append(ADVICE["good_watch_long"])
+    if (r("sends") or 1) < 0.6:
+        out.append(ADVICE["low_sends"])
+    if (r("sends") or 0) >= 1.5:
+        out.append(ADVICE["high_sends"])
+    if (r("saves") or 0) >= 1.5:
+        out.append(ADVICE["high_saves"])
+    if reach_r >= 1.5 and (r("follows") or 1) < 0.7:
+        out.append(ADVICE["low_follows_good_reach"])
+    if (r("follows") or 0) >= 1.5:
+        out.append(ADVICE["high_follows"])
+    if reach_r <= 0.6 and p.get("quality", 100) >= 110:
+        out.append(ADVICE["low_reach_good_quality"])
+    if (r("comments") or 0) >= 1.8:
+        out.append(ADVICE["high_comments"])
+    if p["score"] < 45 and not out:
+        out.append(ADVICE["low_everything"])
+    return out[:4]
+
+
+def post_report(p, med, med_reach):
+    rows = []
+    for key, label, raw, usual in (("reach", "Reach", p.get("reach"), med_reach), ("views", "Views", p.get("views"), None),
+                                   ("profile_visits", "Profile visits", p.get("profile_visits"), None)):
+        if raw is not None:
+            rows.append({"metric": label, "value": raw, "usual": usual, "ratio": (raw / usual) if usual else None})
+    for k, label, _ in SIGNALS:
+        v = p["signals"].get(k)
+        if v is not None:
+            rows.append({"metric": label, "value": round(v, 1), "usual": round(med[k], 1) if med.get(k) else None,
+                         "ratio": (v / med[k]) if med.get(k) else None})
+    for k, label in (("likes", "Likes"), ("comments", "Comments"), ("shares", "Sends (shares)"), ("saves", "Saves"), ("follows", "Follows")):
+        if p.get(k) is not None:
+            rows.append({"metric": label + " (count)", "value": p[k], "usual": None, "ratio": None})
+    if p.get("avg_watch") and p.get("duration"):
+        rows.append({"metric": "Watched on average (% of length)", "value": round(100 * p["avg_watch"] / p["duration"]), "usual": None, "ratio": None})
+    g, b = why(p, med, med_reach)
+    return {"id": p["id"], "caption": p["caption"], "stars": p["stars"], "score": p["score"], "type": p["type"],
+            "time": p["time"].strftime("%Y-%m-%d %H:%M") if p.get("time") else "", "rows": rows, "good": g, "bad": b,
+            "next": advice_for(p, med, med_reach), "link": p.get("link", "")}
+
+
+LEVELS = [
+    (100, "Starter", "Under 100 followers. Instagram won't show audience age or cities yet. Focus: one clear niche, 3 to 4 posts a week, and learning which hooks hold people."),
+    (1000, "Starter", "Under 1,000. Every post is a test. Focus: one niche, a strong first second, reels that people send, and a profile that says why to follow."),
+    (10000, "Growing", "1,000 to 10,000. Focus: double down on your 2 best formats, start series, collab with creators your size, reply to every comment."),
+    (100000, "Established", "10,000 to 100,000. Focus: protect what works, test new formats with trial reels, build a media kit, and start brand deals."),
+    (float("inf"), "Pro", "100,000 or more. Focus: series and franchises, a team or editing system, more than one income stream, and audience quality over raw growth."),
+]
+
+
+def level_of(followers):
+    f = float(followers or 0)
+    for cap, name, focus in LEVELS:
+        if f < cap:
+            return {"level": name, "focus": focus}
+    return {"level": LEVELS[-1][1], "focus": LEVELS[-1][2]}
+
+
+COMMENT_KINDS = [
+    ("spam", r"(follow me|check my|dm for|promo|collab\?|link in bio|http|www\.|earn \$|crypto|giveaway)"),
+    ("question", r"(\?|\bhow\b|\bwhat\b|\bwhere\b|\bwhen\b|\bwhich\b|\bprice\b|kaise|kya|kitne|kaha|kab|kaun|settings\b)"),
+    ("request", r"(part 2|part two|next video|make (one|a)|do (one|a)|please (do|make)|plz|pls|tutorial|full video|more of)"),
+    ("criticism", r"(bad|worst|boring|fake|clickbait|cringe|waste|wrong|misleading|bekar|bakwas|ghatiya|unfollow|hate)"),
+    ("praise", r"(fire|love|best|amazing|great|awesome|op\b|goat|insane|mast|badhiya|zabardast|nice|helpful|thanks|thank you|🔥|❤|😍|👏|💯)"),
+]
+
+
+def classify_comments(text):
+    """Sort pasted comments into spam, questions, requests, criticism, praise and other. Keyword rules: a quick read, not a verdict."""
+    lines = [l.strip() for l in str(text or "").splitlines() if l.strip()]
+    out = {k: [] for k, _ in COMMENT_KINDS}
+    out["other"] = []
+    for l in lines:
+        low = l.lower()
+        for k, pat in COMMENT_KINDS:
+            if re.search(pat, low):
+                out[k].append(l)
+                break
+        else:
+            out["other"].append(l)
+    out["total"] = len(lines)
+    return out
+
+
 def audit(posts, followers=None):
     med, med_reach = score_posts(posts)
     ranked = sorted(posts, key=lambda p: -p["score"])
@@ -415,18 +566,22 @@ def audit(posts, followers=None):
            "by_hook": groups(posts, "hook"), "by_topic": groups(posts, "topic"),
            "drivers_reach": drivers(posts, "reach"), "drivers_sends": drivers(posts, "sends"),
            "drivers_follows": drivers(posts, "follows"),
-           "top": [], "bottom": [], "honest_notes": []}
+           "drivers_watch": drivers(posts, "watch"), "drivers_hold": drivers(posts, "hold"),
+           "top": [], "bottom": [], "honest_notes": [], "level": level_of(followers),
+           "reports": [post_report(p, med, med_reach) for p in sorted(posts, key=lambda p: p["time"] or dt.datetime.min, reverse=True)]}
     for p in ranked[:5]:
         g, b = why(p, med, med_reach)
-        res["top"].append({"id": p["id"], "caption": p["caption"][:90], "score": p["score"], "type": p["type"],
+        res["top"].append({"id": p["id"], "caption": p["caption"][:90], "score": p["score"], "stars": p["stars"], "type": p["type"],
                            "slot": p["slot"], "good": g, "bad": b, "link": p["link"]})
     for p in ranked[-5:][::-1]:
         g, b = why(p, med, med_reach)
-        res["bottom"].append({"id": p["id"], "caption": p["caption"][:90], "score": p["score"], "type": p["type"],
+        res["bottom"].append({"id": p["id"], "caption": p["caption"][:90], "score": p["score"], "stars": p["stars"], "type": p["type"],
                               "slot": p["slot"], "good": g, "bad": b, "link": p["link"]})
     if followers:
         eng = [((p.get("likes") or 0) + (p.get("comments") or 0)) / followers for p in posts]
         res["engagement_rate_by_followers"] = round(100 * _median(eng), 2)
+    if not any(p.get("avg_watch") for p in posts):
+        res["honest_notes"].append("No watch time in this export. Instagram says watch time matters most: add the Average watch time column from Insights if you can.")
     if len(posts) < 15:
         res["honest_notes"].append("Only %d posts: patterns below are early hints, not proof." % len(posts))
     if any(p.get("reach_is_views") for p in posts):
@@ -463,6 +618,13 @@ def audit_md(res):
         for g in res[key][:8]:
             L.append("| %s%s | %d | %s | %s | %s |" % (g["value"], " (thin)" if g["thin"] else "", g["posts"],
                      _r(g["median_score"]), _r(g["sends_per_k"], 1), _r(g["follows_per_k"], 1)))
+    if res.get("level"):
+        L += ["", "## Your level: %s" % res["level"]["level"], "", res["level"]["focus"]]
+    L += ["", "## Every post, rated", "", "Stars compare each post with your own typical post (3.5 stars = typical).", "",
+          "| Date | Post | Stars | Score | Next time |", "|---|---|---|---|---|"]
+    for r_ in res.get("reports", []):
+        L.append("| %s | %s | %s | %d | %s |" % (r_["time"][:10], (r_["caption"] or r_["id"])[:50].replace("|", "/"),
+                 "%.1f" % r_["stars"], r_["score"], (r_["next"][0] if r_["next"] else "").replace("|", "/")))
     for title, key in (("Your 5 best posts and why", "top"), ("Your 5 weakest posts and why", "bottom")):
         L += ["", "## " + title, ""]
         for p in res[key]:

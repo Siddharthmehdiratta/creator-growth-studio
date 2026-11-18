@@ -3,220 +3,220 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Creator Growth Studio: free Instagram, YouTube and Twitch growth analysis with an AI boardroom</title>
-<meta name="description" content="Free and private. Find what's holding your Instagram, YouTube or Twitch growth back: post-by-post diagnosis, a growth map, a 30-day content calendar, and an AI boardroom (CEO, SEO, marketing, social media expert) plus an AI audience that reacts to your post before you publish.">
+<title>Creator Growth Studio: star ratings for every Instagram post, and what to post next</title>
+<meta name="description" content="Free. Type your Instagram username and get a star rating for every post, why it worked or didn't, what to post next, and a 30-day plan. Uses Instagram's official API.">
 <meta property="og:title" content="Creator Growth Studio">
-<meta property="og:description" content="See what's holding your account back. Diagnosis, growth map, 30-day plan and an AI boardroom. Free, and your data stays in your browser.">
-<meta name="theme-color" content="#151922">
-<link rel="preload" href="fonts/unbounded-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<meta property="og:description" content="A star rating for every post, why it worked, and what to post next. Free, and your data stays in your browser.">
+<meta name="theme-color" content="#ffffff">
+<link rel="preload" href="fonts/geist-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/geist-sans-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23171a21'/%3E%3Cpath d='M9 21v-3M14 21v-7M19 21v-10M24 21V8' stroke='%2334d3b0' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="wrap">
-  <div class="bar">
-    <a class="brand" href="./" aria-label="Creator Growth Studio home"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Creator Growth Studio</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#171a21"/><path d="M9 21v-3M14 21v-7M19 21v-10M24 21V8" stroke="#34d3b0" stroke-width="3" stroke-linecap="round"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/></g></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></g></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m0 0-6-6m6 6 6-6"/></symbol>
+  <symbol id="i-upar" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0-6 6m6-6 6 6"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></g></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 7h10M18 7h2M4 17h4M12 17h8M16 5v4M10 15v4"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zm0 0v5h5"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></g></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></g></symbol>
+  <linearGradient id="g-half"><stop offset="50%" stop-color="#e3a008"/><stop offset="50%" stop-color="#e2e5ea"/></linearGradient>
+  <symbol id="i-star" viewBox="0 0 20 20"><path d="M10 1.8l2.4 5 5.4.7-4 3.8 1 5.4L10 14.1l-4.8 2.6 1-5.4-4-3.8 5.4-.7z"/></symbol>
+</svg>
+
+<!-- ===================== LANDING ===================== -->
+<div id="landing">
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="./"><svg aria-hidden="true"><use href="#i-logo"/></svg>Creator Growth Studio</a>
     <nav aria-label="Main">
-      <a href="guide.html">How to use it</a>
-      <a href="sample-boardroom.html" class="hide-s">Sample boardroom</a>
-      <a href="#studio" data-goto="board">AI boardroom</a>
-      <a href="#studio" data-goto="brand" class="hide-s">For brands</a>
-      <a href="https://github.com/Siddharthmehdiratta/creator-growth-studio" class="hide-s">GitHub</a>
+      <a href="#how">How it works</a>
+      <a href="#what">What you get</a>
+      <a href="#faq">Questions</a>
+      <a href="guide.html">Guide</a>
     </nav>
+    <div class="right">
+      <a class="btn ghost sm gh" href="https://github.com/Siddharthmehdiratta/creator-growth-studio">GitHub</a>
+      <button class="btn dark sm" data-sample><span class="lbl-l">See a sample report</span><span class="lbl-s">Sample report</span></button>
+    </div>
   </div>
+</header>
 
-  <section class="hero" aria-labelledby="h1">
+<main>
+<section class="hero">
+  <div class="wrap">
     <div>
-      <h1 id="h1">See what's holding your account back.</h1>
-      <p class="lead">Add your numbers or try the sample account. You get a post-by-post diagnosis, a growth map, a 30-day plan, and an AI boardroom that judges your next post before you publish it.</p>
-      <form class="quick" id="quick">
-        <div><label for="q-platform">Platform</label><select id="q-platform" data-bind="platform"></select></div>
-        <div><label for="q-niche">Niche</label><select id="q-niche" data-bind="niche"></select></div>
-        <div><label for="q-followers">Followers now</label><input id="q-followers" type="number" min="0" inputmode="numeric" data-bind="followers" placeholder="2300"></div>
-        <div><label for="q-goal">Goal</label><select id="q-goal" data-bind="goal"></select></div>
-        <div><label for="q-months">By</label><select id="q-months" data-bind="months"></select></div>
-        <div><label for="q-country">Main audience</label><select id="q-country" data-bind="country"></select></div>
-      </form>
-      <div class="actions">
-        <button class="btn go" id="start">Start my diagnosis</button>
-        <button class="btn line" id="sample">Try the sample account</button>
+      <h1>See which posts grow your Instagram, and why.</h1>
+      <p class="lead">Type your username. You get a star rating for every post, the reason each one worked or flopped, and what to post next. No forms to fill in.</p>
+      <div class="start">
+        <form id="lookup" class="lookup" autocomplete="off">
+          <label for="handle" class="sr">Instagram username or profile link</label>
+          <span class="at" aria-hidden="true">@</span>
+          <input id="handle" name="handle" placeholder="username or profile link" autocapitalize="none" spellcheck="false" enterkeyhint="go">
+          <button class="btn primary" type="submit">Get my report</button>
+        </form>
+        <p class="err" id="load-err" role="alert" hidden></p>
+        <div class="alts">
+          <button class="alt" id="connect" type="button"><span class="ic"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><span><b>Connect Instagram</b><span>Adds reach, watch time, skips and comments</span></span></button>
+          <label class="alt" id="drop" for="file" tabindex="0"><span class="ic"><svg aria-hidden="true"><use href="#i-up"/></svg></span><span><b>Upload an export</b><span>CSV from Meta Business Suite or YouTube</span></span></label>
+        </div>
+        <input type="file" id="file" accept=".csv,.txt,text/csv" class="sr">
+        <div class="row">
+          <button class="linkbtn small" data-sample type="button">Try it with a sample account</button>
+          <button class="linkbtn small" id="how-export" type="button" aria-expanded="false" aria-controls="export-help">How do I get my export?</button>
+        </div>
+        <div id="export-help" hidden>
+          <div class="grid g2" style="padding:8px 6px 6px">
+            <div><b class="small">Instagram (2 minutes, on a computer)</b>
+              <ol class="small muted" style="padding-left:18px;margin:6px 0 0">
+                <li>Open <a href="https://business.facebook.com/latest/insights/content" target="_blank" rel="noopener">Meta Business Suite</a> and go to Insights, then Content.</li>
+                <li>Pick the last 90 days.</li>
+                <li>Press Export data, then CSV, and drop the file here.</li>
+              </ol></div>
+            <div><b class="small">YouTube</b>
+              <ol class="small muted" style="padding-left:18px;margin:6px 0 0">
+                <li>Open YouTube Studio, then Analytics, then Advanced mode.</li>
+                <li>Pick the last 90 days, press Download, then CSV.</li>
+                <li>Drop the file called Table data.csv here.</li>
+              </ol></div>
+          </div>
+        </div>
       </div>
-      <p class="trust">Free and open source. Your numbers stay in this browser: nothing is uploaded and there's no login. Only the boardroom message you choose to paste into Claude leaves your device.</p>
+      <div class="trust">
+        <span><svg aria-hidden="true"><use href="#i-lock"/></svg>Instagram's official API. We never see your password</span>
+        <span><svg aria-hidden="true"><use href="#i-check"/></svg>Free, no sign-up</span>
+        <span><svg aria-hidden="true"><use href="#i-check"/></svg>From 1 follower to 1 million</span>
+      </div>
     </div>
-    <div class="rack">
-      <div class="rack-head"><b id="rack-title">Growth signals</b><span class="tally" id="rack-src">Sample account</span></div>
-      <div class="meters" id="meters"></div>
-      <div class="rack-foot" id="rack-foot">Each meter compares your last 10 posts with your usual post. Instagram says watch time, sends and likes per reach matter most.</div>
+    <div class="preview" aria-label="Example of a post report from the sample account">
+      <div class="frame">
+        <div class="bar"><b>Post report</b><span id="pv-date"></span><span class="pill good" id="pv-tag">Top post</span></div>
+        <div class="body">
+          <div style="display:flex;align-items:center;gap:10px"><span class="stars lg" id="pv-stars"></span><span class="score" id="pv-score"></span></div>
+          <p class="cap" id="pv-cap"></p>
+          <div id="pv-rows"></div>
+        </div>
+      </div>
+      <p class="note" id="pv-note"></p>
     </div>
-  </section>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="head"><h2>Three steps, under a minute</h2><p>No account to create and no questions to answer. The tool reads your posts and works the rest out.</p></div>
+    <ol class="steps3">
+      <li><h3>Type your username</h3><p>It reads your last 50 posts: likes, comments and Reel views. This works for any public Creator or Business account.</p></li>
+      <li><h3>Connect for the full picture</h3><p>Optional. Log in through Instagram to add reach, watch time, skip rate, sends, saves, follows and your comments.</p></li>
+      <li><h3>Read your report</h3><p>Every post rated, the patterns behind your best ones, what to post next, and a plan for the next 30 days.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section alt" id="what">
+  <div class="wrap">
+    <div class="head"><h2>What your report tells you</h2><p>Every number is compared with your own typical post, so a small account and a big one get answers that fit.</p></div>
+    <div class="feats">
+      <div class="feat"><h3>A star rating for every post</h3><p>One to five stars, based on what Instagram says matters most: watch time, sends, follows and likes per person reached.</p></div>
+      <div class="feat"><h3>Why it worked, or why it didn't</h3><p>Views, reach, watch time, skips, likes, comments, sends, saves and follows, each shown against your usual, with a plain-English reason.</p></div>
+      <div class="feat"><h3>What to post next</h3><p>Ideas built from your own winners: the format, the hook, the day and the time that work for your audience.</p></div>
+      <div class="feat"><h3>A 30-day plan and an AI boardroom</h3><p>A posting calendar you can add to Google Calendar, plus a ready message that gets Claude to review your account like a full team.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="head"><h2>Advice that fits your size</h2><p>A creator with 80 followers needs different advice from one with 80,000. Your report adjusts to your level.</p></div>
+    <div class="levels">
+      <div><b>Starter</b><span>Under 1,000</span><p>Find one niche and a first second that stops the scroll.</p></div>
+      <div><b>Growing</b><span>1,000 to 10,000</span><p>Double down on your two best formats and start series.</p></div>
+      <div><b>Established</b><span>10,000 to 100,000</span><p>Test new formats with trial reels and start brand deals.</p></div>
+      <div><b>Pro</b><span>100,000 and over</span><p>Build franchises, a team and more than one income stream.</p></div>
+      <div><b>Brands</b><span>Any size</span><p>Type a creator's username to check their engagement before you pay.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="faq">
+  <div class="wrap">
+    <div class="head"><h2>Questions</h2></div>
+    <div class="faq">
+      <details><summary>Can I just type my Instagram link?</summary><p>Yes. Type a username or paste a profile link, and the tool reads that account's public numbers through Instagram's official API: followers, likes, comments and Reel views for the last 50 posts. Reach, watch time, sends and saves are private, so Instagram only shares them after the owner presses Connect Instagram and logs in.</p></details>
+      <details><summary>Why doesn't my account show up?</summary><p>Instagram only lets apps read Creator and Business accounts. If yours is a personal account, switch it in the Instagram app: Settings, then Account type and tools, then Switch to professional account. It's free, takes a minute, and you can switch back.</p></details>
+      <details><summary>Is my data stored anywhere?</summary><p>No. Your report is worked out inside your own browser. Username lookups and Connect Instagram pass through a small connector that asks Instagram for the numbers and stores nothing. Your login token stays in your browser tab and is gone when you close it. Uploaded files never leave your browser at all.</p></details>
+      <details><summary>Does it work with a small account?</summary><p>Yes. Ratings compare each post with your own typical post, so they work from your first few posts. With fewer than 15 posts, the report says its patterns are early hints, not proof.</p></details>
+      <details><summary>How are the stars worked out?</summary><p>Each post gets a score where 100 is your typical post. It blends reach with quality signals per person reached: watch time and sends count most, then follows, then likes, saves, comments and hold rate. 3.5 stars is a typical post; 5 stars is twice as good as usual.</p></details>
+      <details><summary>Is it really free?</summary><p>Yes. It's open source under the MIT licence, and you can read every line on GitHub.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <div><h2>See it on a real-looking account first</h2><p class="muted" style="margin:8px 0 0">The sample is a fictional gaming creator with 40 posts.</p></div>
+    <button class="btn dark lg" data-sample>See a sample report</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Creator Growth Studio is free and open source (MIT), made by Siddharth Mehdiratta. It uses Instagram's official API, never sees your password, and stores nothing. Platform rules were checked on 18 November 2026.</p>
+    <div class="links"><a href="guide.html">Guide</a><a href="sample-boardroom.html">Sample boardroom</a><a href="https://github.com/Siddharthmehdiratta/creator-growth-studio">GitHub</a></div>
+  </div>
+</footer>
 </div>
 
-<div class="wrap">
-  <section class="studio" id="studio" aria-label="Growth studio">
-    <aside class="rail">
-      <ol id="rail"></ol>
-      <div class="strength"><span id="strength-label">Profile strength 0%</span><div class="track"><div class="fill" id="strength-fill" style="width:0"></div></div></div>
-    </aside>
-
-    <div>
-      <!-- 1 Account -->
-      <section class="step" data-step="account" aria-labelledby="t-account">
-        <header><h2 id="t-account">Your account</h2><p>Tell us about the account. The preview updates as you type, and every answer shapes the plan and the boardroom.</p></header>
-        <div class="two">
-          <div>
-            <div class="block">
-              <h3>Basics</h3>
-              <div class="grid2">
-                <div class="field"><label for="a-handle">Handle</label><input id="a-handle" data-bind="handle" placeholder="lowping.rohan"></div>
-                <div class="field"><label for="a-platform">Platform</label><select id="a-platform" data-bind="platform"></select></div>
-                <div class="field"><label for="a-niche">Niche</label><select id="a-niche" data-bind="niche"></select></div>
-                <div class="field"><label for="a-sub">Focus</label><select id="a-sub" data-bind="sub"></select></div>
-                <div class="field"><label for="a-followers">Followers now</label><input id="a-followers" type="number" min="0" data-bind="followers"></div>
-                <div class="field"><label for="a-following">Following</label><input id="a-following" type="number" min="0" data-bind="following"></div>
-                <div class="field"><label for="a-goal">Goal</label><select id="a-goal" data-bind="goal"></select></div>
-                <div class="field"><label for="a-months">By</label><select id="a-months" data-bind="months"></select></div>
-                <div class="field"><label for="a-country">Main audience country</label><select id="a-country" data-bind="country"></select></div>
-                <div class="field"><label for="a-tier">Main audience city</label><select id="a-tier" data-bind="tier"></select></div>
-                <div class="field"><label for="a-lang">Content language</label><select id="a-lang" data-bind="lang"></select></div>
-                <div class="field"><label for="a-aim">Main aim</label><select id="a-aim" data-bind="aim"></select></div>
-                <div class="field"><label for="a-pace">Posts per week you can keep</label><select id="a-pace" data-bind="pace"></select></div>
-                <div class="field"><label for="a-camera">On camera</label><select id="a-camera" data-bind="camera"></select></div>
-              </div>
-            </div>
-            <div class="block">
-              <h3>Profile</h3>
-              <div class="field"><label for="a-name">Name field</label><input id="a-name" data-bind="name" maxlength="64" placeholder="Rohan | GTA 6 and BGMI tips"></div>
-              <div class="field"><label for="a-bio">Bio <span id="bio-count" class="sub"></span></label><textarea id="a-bio" data-bind="bio" maxlength="150" placeholder="Who it's for, what they get, and why follow"></textarea></div>
-              <div class="grid2">
-                <div class="field"><label for="a-link">Link</label><input id="a-link" data-bind="link" placeholder="youtube.com/@yourname"></div>
-                <div class="field"><label for="a-hl">Highlights</label><select id="a-hl" data-bind="highlights"></select></div>
-              </div>
-              <div id="bio-tips"></div>
-            </div>
-            <div class="block">
-              <h3>What's on your profile today</h3>
-              <p class="sub small">Be honest: this is just for you. Each answer changes your profile strength.</p>
-              <div id="checks"></div>
-            </div>
-          </div>
-          <div class="phone" aria-label="Profile preview"><div id="phone"></div></div>
-        </div>
-        <div class="next"><span></span><button class="btn go" data-next="numbers">Next: add your numbers</button></div>
-      </section>
-
-      <!-- 2 Numbers -->
-      <section class="step" data-step="numbers" aria-labelledby="t-numbers">
-        <header><h2 id="t-numbers">Your numbers</h2><p>Upload the export from your app, or type a few posts. More posts give clearer answers; 30 or more is ideal.</p></header>
-        <div class="block">
-          <h3 id="export-title">Get your export</h3>
-          <ol id="export-steps" class="small"></ol>
-          <div class="drop" id="drop" tabindex="0">
-            <p><b>Drop your CSV here</b> or <label for="file" style="display:inline;color:var(--cyan);cursor:pointer;font-size:inherit">choose a file</label></p>
-            <input type="file" id="file" accept=".csv,.txt,text/csv" hidden>
-            <p class="small">Meta Business Suite, Instagram Insights, YouTube Studio or any CSV with Reach or Views columns.</p>
-          </div>
-          <div class="actions"><button class="btn line small" id="sample2">Use the sample account</button><button class="btn line small" id="addrow">Add a post by hand</button><button class="btn line small" id="clear">Clear posts</button></div>
-          <p class="note" id="load-msg">No posts yet.</p>
-        </div>
-        <div class="block" id="posts-block" hidden>
-          <h3>Label your posts</h3>
-          <p class="sub small">Pick the hook and topic for each post. The analysis then tells you which hooks and topics really work for you.</p>
-          <div class="scroll"><table class="tbl" id="posts-table"></table></div>
-        </div>
-        <div class="next"><button class="btn line" data-next="account">Back</button><button class="btn go" data-next="diagnosis">See my diagnosis</button></div>
-      </section>
-
-      <!-- 3 Diagnosis -->
-      <section class="step" data-step="diagnosis" aria-labelledby="t-diagnosis">
-        <header><h2 id="t-diagnosis">Diagnosis</h2><p>What's working, what's holding you back, and why, based on your own posts.</p></header>
-        <div id="diag"></div>
-        <div class="next"><button class="btn line" data-next="numbers">Back</button><button class="btn go" data-next="map">Next: growth map</button></div>
-      </section>
-
-      <!-- 4 Growth map -->
-      <section class="step" data-step="map" aria-labelledby="t-map">
-        <header><h2 id="t-map">Growth map</h2><p>What your goal really takes, what your current pace gets you, and the levers that close the gap.</p></header>
-        <div id="mapview"></div>
-        <div class="next"><button class="btn line" data-next="diagnosis">Back</button><button class="btn go" data-next="plan">Next: 30-day plan</button></div>
-      </section>
-
-      <!-- 5 Plan -->
-      <section class="step" data-step="plan" aria-labelledby="t-plan">
-        <header><h2 id="t-plan">30-day plan</h2><p>A calendar built from what works for you. Tap a day to see the hook, caption idea and hashtags. Download it to Google Calendar or any calendar app.</p></header>
-        <div class="block">
-          <div class="grid3">
-            <div class="field"><label for="p-start">Start date</label><input type="date" id="p-start" data-bind="start"></div>
-            <div class="field"><label for="p-time">Posting time</label><select id="p-time" data-bind="ptime"></select></div>
-            <div class="field"><label for="p-mix">Format mix</label><select id="p-mix" data-bind="mix"></select></div>
-          </div>
-          <p class="small sub" style="margin:0 0 6px;font-weight:700">Posting days</p><div class="chips" id="p-days"></div>
-          <p class="small sub" style="margin:14px 0 6px;font-weight:700">Content pillars</p><div class="chips" id="p-pillars"></div>
-        </div>
-        <div class="block"><div class="cal" id="cal"></div><div class="detail" id="cal-detail"></div></div>
-        <div class="actions"><button class="btn go" id="dl-ics">Download calendar</button><button class="btn line" id="dl-csv">Download as spreadsheet</button><button class="btn line" id="cp-plan">Copy the plan</button></div>
-        <p class="note">To post automatically, open Meta Business Suite (Planner) or YouTube Studio and schedule each item. They're free and official. Never give your password to a growth app.</p>
-        <div class="next"><button class="btn line" data-next="map">Back</button><button class="btn go" data-next="board">Next: AI boardroom</button></div>
-      </section>
-
-      <!-- 6 Boardroom -->
-      <section class="step" data-step="board" aria-labelledby="t-board">
-        <header><h2 id="t-board">AI boardroom</h2><p>Your advisers, plus an AI audience modelled on the followers you describe. They judge your account or your next post, disagree out loud, and the CEO makes the call.</p></header>
-        <div class="block">
-          <div class="grid2">
-            <div class="field"><label for="b-target">What should they review?</label><select id="b-target" data-bind="target"></select></div>
-            <div class="field"><label for="b-tone">How blunt?</label><select id="b-tone" data-bind="tone"></select></div>
-            <div class="field"><label for="b-panel">AI audience size</label><select id="b-panel" data-bind="panel"></select></div>
-            <div class="field"><label for="b-reply">Answer in</label><select id="b-reply" data-bind="reply"></select></div>
-          </div>
-          <div class="field"><label for="b-draft">Your draft (hook, script, caption, thumbnail idea or pitch)</label><textarea id="b-draft" data-bind="draft" placeholder="Hook: Everyone's buying a PS5 Pro for GTA 6. Don't, until you see this.&#10;Caption: 3 settings that matter more than your console...&#10;Thumbnail: my face, PS5 box, red X"></textarea></div>
-        </div>
-        <div class="block">
-          <h3>Who's in the room</h3>
-          <div class="seats" id="seats"></div>
-        </div>
-        <div class="block">
-          <h3>Who's in your audience</h3>
-          <div class="grid2">
-            <div><p class="small sub" style="margin:0 0 6px;font-weight:700">Ages</p><div class="chips" id="aud-ages"></div></div>
-            <div class="field"><label for="aud-gender">Gender split</label><select id="aud-gender" data-bind="gender"></select></div>
-          </div>
-          <p class="small sub" style="margin:14px 0 6px;font-weight:700">Where they live</p><div class="chips" id="aud-tiers"></div>
-          <p class="note">Use the numbers from Insights, then Audience (age, gender, top cities). Income is never shown by Instagram: the boardroom estimates it from city and age, and says so.</p>
-        </div>
-        <div class="block">
-          <h3>Run it</h3>
-          <p class="sub">Copy one message, paste it into Claude (free plan works; 10 viewers is lighter), and send. Your numbers and labels go with it.</p>
-          <div class="actions"><button class="btn go" id="copy-board">Copy the message for Claude</button><a class="btn line" href="https://claude.ai/new" target="_blank" rel="noopener">Open Claude</a><a class="btn line" href="sample-boardroom.html">See a sample result</a><button class="btn line" id="show-board">Preview the message</button></div>
-          <pre class="prompt" id="board-preview" hidden></pre>
-        </div>
-        <div class="next"><button class="btn line" data-next="plan">Back</button><button class="btn line" data-next="brand">For brands: check an influencer</button></div>
-      </section>
-
-      <!-- 7 Brand check -->
-      <section class="step" data-step="brand" aria-labelledby="t-brand">
-        <header><h2 id="t-brand">Influencer check, for brands and agencies</h2><p>Before you pay a creator: are the followers real, does the audience care, and are paid posts labelled? Uses public numbers only, which anyone can see on the profile.</p></header>
-        <div class="block">
-          <div class="grid3">
-            <div class="field"><label for="c-handle">Creator handle</label><input id="c-handle" placeholder="@creator"></div>
-            <div class="field"><label for="c-followers">Followers</label><input id="c-followers" type="number" min="0"></div>
-            <div class="field"><label for="c-following">Following</label><input id="c-following" type="number" min="0"></div>
-          </div>
-          <p class="sub small">Last 12 posts, newest first. Tick paid posts, and whether they carry a clear ad label at the start.</p>
-          <div class="scroll"><table class="tbl" id="c-table"></table></div>
-          <div class="actions"><button class="btn go" id="c-run">Check this creator</button><button class="btn line small" id="c-demo">Fill a demo creator</button></div>
-        </div>
-        <div id="c-result"></div>
-        <div class="next"><button class="btn line" data-next="board">Back</button><span></span></div>
-      </section>
+<!-- ===================== APP ===================== -->
+<div id="app" class="app" hidden>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="./" id="home" aria-label="Creator Growth Studio home"><svg aria-hidden="true"><use href="#i-logo"/></svg></a>
+    <div class="acct"><span class="av" id="av"></span><div style="min-width:0"><b id="acct-name"></b> <span id="acct-meta"></span></div></div>
+    <div class="right">
+      <button class="btn sm" id="open-adjust" aria-label="Adjust"><svg aria-hidden="true"><use href="#i-sliders"/></svg><span class="lbl-l">Adjust</span></button>
+      <button class="btn sm" id="new-file" aria-label="New report"><svg aria-hidden="true"><use href="#i-file"/></svg><span class="lbl-l">New file</span></button>
     </div>
-  </section>
+  </div>
+</header>
+<nav class="tabs" aria-label="Report sections">
+  <div class="wrap" role="tablist">
+    <button class="tab" role="tab" id="tab-overview" aria-controls="p-overview" aria-selected="true">Overview</button>
+    <button class="tab" role="tab" id="tab-posts" aria-controls="p-posts" aria-selected="false">Posts</button>
+    <button class="tab" role="tab" id="tab-ideas" aria-controls="p-ideas" aria-selected="false">What to post</button>
+    <button class="tab" role="tab" id="tab-plan" aria-controls="p-plan" aria-selected="false">Plan</button>
+    <button class="tab" role="tab" id="tab-board" aria-controls="p-board" aria-selected="false">AI boardroom</button>
+  </div>
+</nav>
+<main class="wrap">
+  <section class="panel" id="p-overview" role="tabpanel" aria-labelledby="tab-overview"></section>
+  <section class="panel" id="p-posts" role="tabpanel" aria-labelledby="tab-posts" hidden></section>
+  <section class="panel" id="p-ideas" role="tabpanel" aria-labelledby="tab-ideas" hidden></section>
+  <section class="panel" id="p-plan" role="tabpanel" aria-labelledby="tab-plan" hidden></section>
+  <section class="panel" id="p-board" role="tabpanel" aria-labelledby="tab-board" hidden></section>
+</main>
 </div>
 
-<footer><div class="wrap">
-  <p>Creator Growth Studio is free and open source (MIT). It reads only what you give it and never logs in to your accounts. AI advisers and AI audiences are simulations: use them to find weak spots, then test with real posts.</p>
-  <p id="sources"></p>
-</div></footer>
-<div class="mobilebar"><button class="btn line" id="m-back">Back</button><button class="btn go" id="m-next">Next</button></div>
-<div class="toast" id="toast" role="status"></div>
+<dialog id="adjust" aria-labelledby="adjust-title">
+  <form method="dialog">
+    <div class="dh2"><h3 id="adjust-title">Adjust your report</h3><button class="iconbtn" value="cancel" aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <div class="db" id="adjust-fields"></div>
+    <div class="df"><button class="btn" value="cancel">Cancel</button><button class="btn primary" value="save" id="adjust-save">Update report</button></div>
+  </form>
+</dialog>
+<div class="busy" id="busy" hidden><div class="box" role="status" aria-live="polite"><span class="spin" aria-hidden="true"></span><span id="busy-msg">Loading...</span></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
 <script src="engine.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>

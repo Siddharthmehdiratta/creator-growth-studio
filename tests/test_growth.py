@@ -75,7 +75,7 @@ class FindsThePlantedPatterns(unittest.TestCase):
 
     def test_face_hook_gets_more_sends(self):
         def mult(key, text):
-            d = drv(self.res, key, text)
+            d = [x for x in self.res[key] if x["feature"].startswith("hook: " + text)]
             return d[0]["multiplier"] if d else 1.0  # 1.0 when it is the baseline
         ratio = mult("drivers_sends", "Face to camera") / mult("drivers_sends", "Gameplay first")
         self.assertGreater(ratio, 1.4, self.res["drivers_sends"])
@@ -156,6 +156,64 @@ class HonestStatistics(unittest.TestCase):
         p = growth.load_posts(f)[0]
         self.assertEqual(p["reach"], 1234)
         self.assertEqual(p["avg_view_pct"], 45.5)
+
+
+class PostReports(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.res = growth.audit(growth.load_posts(SAMPLE), 2282)
+
+    def test_watch_time_and_skip_rate_are_read(self):
+        posts = growth.load_posts(SAMPLE)
+        reels = [p for p in posts if p["type"] == "reel"]
+        self.assertTrue(all(p["avg_watch"] for p in reels))
+        self.assertTrue(all(p["skip_rate"] is not None for p in reels))
+        self.assertTrue(all(p["profile_visits"] is not None for p in posts))
+
+    def test_every_post_has_stars_and_a_report(self):
+        self.assertEqual(len(self.res["reports"]), 40)
+        for r in self.res["reports"]:
+            self.assertIn(r["stars"], [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0])
+            self.assertTrue(r["rows"])
+
+    def test_star_bands(self):
+        self.assertEqual(growth.stars_of(100), 3.5)
+        self.assertEqual(growth.stars_of(250), 5.0)
+        self.assertEqual(growth.stars_of(10), 1.0)
+
+    def test_face_hooks_hold_attention(self):
+        d = [x for x in self.res["drivers_hold"] if x["feature"].startswith("hook: Face to camera")]
+        g = [x for x in self.res["drivers_hold"] if x["feature"].startswith("hook: Gameplay first")]
+        face = d[0]["multiplier"] if d else 1.0
+        game = g[0]["multiplier"] if g else 1.0
+        self.assertGreater(face / game, 1.2, self.res["drivers_hold"])
+
+    def test_advice_for_a_skipped_reel(self):
+        posts = growth.load_posts(SAMPLE)
+        med, mr = growth.score_posts(posts)
+        reel = max((p for p in posts if p["skip_rate"] is not None), key=lambda p: p["skip_rate"])
+        rep = growth.post_report(reel, med, mr)
+        self.assertTrue(any("first second" in a for a in rep["next"]), rep["next"])
+
+    def test_youtube_duration_format(self):
+        self.assertEqual(growth._secs("0:01:23"), 83)
+        self.assertEqual(growth._secs("1:05"), 65)
+        self.assertEqual(growth._secs("24.5"), 24.5)
+
+    def test_levels(self):
+        self.assertEqual(growth.level_of(1)["level"], "Starter")
+        self.assertIn("won't show audience", growth.level_of(50)["focus"])
+        self.assertEqual(growth.level_of(5000)["level"], "Growing")
+        self.assertEqual(growth.level_of(150000)["level"], "Pro")
+
+    def test_comment_sorting_english_and_hinglish(self):
+        c = growth.classify_comments("bro settings kya hai?\n🔥🔥🔥\npart 2 please\nclickbait hai ye\nfollow me for promo\nok")
+        self.assertEqual(c["total"], 6)
+        self.assertEqual(len(c["question"]), 1)
+        self.assertEqual(len(c["praise"]), 1)
+        self.assertEqual(len(c["request"]), 1)
+        self.assertEqual(len(c["criticism"]), 1)
+        self.assertEqual(len(c["spam"]), 1)
 
 
 class GrowthMap(unittest.TestCase):
