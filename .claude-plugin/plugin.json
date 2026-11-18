@@ -1,0 +1,10 @@
+{
+  "name": "creator-growth-studio",
+  "version": "1.0.0",
+  "description": "Grow Instagram, YouTube and Twitch organically with Claude: post-by-post audit from your own export, growth map, 30-day calendar, AI boardroom (CEO, SEO, marketing, social media expert) with an AI audience panel, writing, SEO, money and an influencer check for brands.",
+  "author": { "name": "Siddharth Mehdiratta" },
+  "homepage": "https://siddharthmehdiratta.github.io/creator-growth-studio/",
+  "repository": "https://github.com/Siddharthmehdiratta/creator-growth-studio",
+  "license": "MIT",
+  "keywords": ["instagram", "youtube", "twitch", "social media", "creator", "influencer", "content calendar", "seo", "growth"]
+}

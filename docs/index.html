@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Creator Growth Studio: free Instagram, YouTube and Twitch growth analysis with an AI boardroom</title>
+<meta name="description" content="Free and private. Find what's holding your Instagram, YouTube or Twitch growth back: post-by-post diagnosis, a growth map, a 30-day content calendar, and an AI boardroom (CEO, SEO, marketing, social media expert) plus an AI audience that reacts to your post before you publish.">
+<meta property="og:title" content="Creator Growth Studio">
+<meta property="og:description" content="See what's holding your account back. Diagnosis, growth map, 30-day plan and an AI boardroom. Free, and your data stays in your browser.">
+<meta name="theme-color" content="#151922">
+<link rel="preload" href="fonts/unbounded-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <a class="brand" href="./" aria-label="Creator Growth Studio home"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Creator Growth Studio</a>
+    <nav aria-label="Main">
+      <a href="guide.html">How to use it</a>
+      <a href="sample-boardroom.html" class="hide-s">Sample boardroom</a>
+      <a href="#studio" data-goto="board">AI boardroom</a>
+      <a href="#studio" data-goto="brand" class="hide-s">For brands</a>
+      <a href="https://github.com/Siddharthmehdiratta/creator-growth-studio" class="hide-s">GitHub</a>
+    </nav>
+  </div>
+
+  <section class="hero" aria-labelledby="h1">
+    <div>
+      <h1 id="h1">See what's holding your account back.</h1>
+      <p class="lead">Add your numbers or try the sample account. You get a post-by-post diagnosis, a growth map, a 30-day plan, and an AI boardroom that judges your next post before you publish it.</p>
+      <form class="quick" id="quick">
+        <div><label for="q-platform">Platform</label><select id="q-platform" data-bind="platform"></select></div>
+        <div><label for="q-niche">Niche</label><select id="q-niche" data-bind="niche"></select></div>
+        <div><label for="q-followers">Followers now</label><input id="q-followers" type="number" min="0" inputmode="numeric" data-bind="followers" placeholder="2,300"></div>
+        <div><label for="q-goal">Goal</label><select id="q-goal" data-bind="goal"></select></div>
+        <div><label for="q-months">By</label><select id="q-months" data-bind="months"></select></div>
+        <div><label for="q-country">Main audience</label><select id="q-country" data-bind="country"></select></div>
+      </form>
+      <div class="actions">
+        <button class="btn go" id="start">Start my diagnosis</button>
+        <button class="btn line" id="sample">Try the sample account</button>
+      </div>
+      <p class="trust">Free and open source. Your numbers stay in this browser: nothing is uploaded, and there's no login.</p>
+    </div>
+    <div class="rack" aria-live="polite">
+      <div class="rack-head"><b id="rack-title">Growth signals</b><span class="tally" id="rack-src">Sample account</span></div>
+      <div class="meters" id="meters"></div>
+      <div class="rack-foot" id="rack-foot">Each meter compares your last 10 posts with your usual post. Instagram says watch time, sends and likes per reach matter most.</div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap">
+  <section class="studio" id="studio" aria-label="Growth studio">
+    <aside class="rail">
+      <ol id="rail"></ol>
+      <div class="strength"><span id="strength-label">Profile strength 0%</span><div class="track"><div class="fill" id="strength-fill" style="width:0"></div></div></div>
+    </aside>
+
+    <div>
+      <!-- 1 Account -->
+      <section class="step" data-step="account" aria-labelledby="t-account">
+        <header><h2 id="t-account">Your account</h2><p>Tell us about the account. The preview updates as you type, and every answer shapes the plan and the boardroom.</p></header>
+        <div class="two">
+          <div>
+            <div class="block">
+              <h3>Basics</h3>
+              <div class="grid2">
+                <div class="field"><label for="a-handle">Handle</label><input id="a-handle" data-bind="handle" placeholder="lowping.rohan"></div>
+                <div class="field"><label for="a-platform">Platform</label><select id="a-platform" data-bind="platform"></select></div>
+                <div class="field"><label for="a-niche">Niche</label><select id="a-niche" data-bind="niche"></select></div>
+                <div class="field"><label for="a-sub">Focus</label><select id="a-sub" data-bind="sub"></select></div>
+                <div class="field"><label for="a-followers">Followers now</label><input id="a-followers" type="number" min="0" data-bind="followers"></div>
+                <div class="field"><label for="a-following">Following</label><input id="a-following" type="number" min="0" data-bind="following"></div>
+                <div class="field"><label for="a-goal">Goal</label><select id="a-goal" data-bind="goal"></select></div>
+                <div class="field"><label for="a-months">By</label><select id="a-months" data-bind="months"></select></div>
+                <div class="field"><label for="a-country">Main audience country</label><select id="a-country" data-bind="country"></select></div>
+                <div class="field"><label for="a-tier">Main audience city</label><select id="a-tier" data-bind="tier"></select></div>
+                <div class="field"><label for="a-lang">Content language</label><select id="a-lang" data-bind="lang"></select></div>
+                <div class="field"><label for="a-aim">Main aim</label><select id="a-aim" data-bind="aim"></select></div>
+                <div class="field"><label for="a-pace">Posts per week you can keep</label><select id="a-pace" data-bind="pace"></select></div>
+                <div class="field"><label for="a-camera">On camera</label><select id="a-camera" data-bind="camera"></select></div>
+              </div>
+            </div>
+            <div class="block">
+              <h3>Profile</h3>
+              <div class="field"><label for="a-name">Name field</label><input id="a-name" data-bind="name" maxlength="64" placeholder="Rohan | GTA 6 and BGMI tips"></div>
+              <div class="field"><label for="a-bio">Bio <span id="bio-count" class="sub"></span></label><textarea id="a-bio" data-bind="bio" maxlength="150" placeholder="Who it's for, what they get, and why follow"></textarea></div>
+              <div class="grid2">
+                <div class="field"><label for="a-link">Link</label><input id="a-link" data-bind="link" placeholder="youtube.com/@yourname"></div>
+                <div class="field"><label for="a-hl">Highlights</label><select id="a-hl" data-bind="highlights"></select></div>
+              </div>
+              <div id="bio-tips"></div>
+            </div>
+            <div class="block">
+              <h3>What's on your profile today</h3>
+              <p class="sub small">Be honest: this is just for you. Each answer changes your profile strength.</p>
+              <div id="checks"></div>
+            </div>
+          </div>
+          <div class="phone" aria-label="Profile preview"><div id="phone"></div></div>
+        </div>
+        <div class="next"><span></span><button class="btn go" data-next="numbers">Next: add your numbers</button></div>
+      </section>
+
+      <!-- 2 Numbers -->
+      <section class="step" data-step="numbers" aria-labelledby="t-numbers">
+        <header><h2 id="t-numbers">Your numbers</h2><p>Upload the export from your app, or type a few posts. More posts give clearer answers; 30 or more is ideal.</p></header>
+        <div class="block">
+          <h3 id="export-title">Get your export</h3>
+          <ol id="export-steps" class="small"></ol>
+          <div class="drop" id="drop" tabindex="0">
+            <p><b>Drop your CSV here</b> or <label for="file" style="display:inline;color:var(--cyan);cursor:pointer;font-size:inherit">choose a file</label></p>
+            <input type="file" id="file" accept=".csv,.txt,text/csv" hidden>
+            <p class="small">Meta Business Suite, Instagram Insights, YouTube Studio or any CSV with Reach or Views columns.</p>
+          </div>
+          <div class="actions"><button class="btn line small" id="sample2">Use the sample account</button><button class="btn line small" id="addrow">Add a post by hand</button><button class="btn line small" id="clear">Clear posts</button></div>
+          <p class="note" id="load-msg">No posts yet.</p>
+        </div>
+        <div class="block" id="posts-block" hidden>
+          <h3>Label your posts</h3>
+          <p class="sub small">Pick the hook and topic for each post. The analysis then tells you which hooks and topics really work for you.</p>
+          <div class="scroll"><table class="tbl" id="posts-table"></table></div>
+        </div>
+        <div class="next"><button class="btn line" data-next="account">Back</button><button class="btn go" data-next="diagnosis">See my diagnosis</button></div>
+      </section>
+
+      <!-- 3 Diagnosis -->
+      <section class="step" data-step="diagnosis" aria-labelledby="t-diagnosis">
+        <header><h2 id="t-diagnosis">Diagnosis</h2><p>What's working, what's holding you back, and why, based on your own posts.</p></header>
+        <div id="diag"></div>
+        <div class="next"><button class="btn line" data-next="numbers">Back</button><button class="btn go" data-next="map">Next: growth map</button></div>
+      </section>
+
+      <!-- 4 Growth map -->
+      <section class="step" data-step="map" aria-labelledby="t-map">
+        <header><h2 id="t-map">Growth map</h2><p>What your goal really takes, what your current pace gets you, and the levers that close the gap.</p></header>
+        <div id="mapview"></div>
+        <div class="next"><button class="btn line" data-next="diagnosis">Back</button><button class="btn go" data-next="plan">Next: 30-day plan</button></div>
+      </section>
+
+      <!-- 5 Plan -->
+      <section class="step" data-step="plan" aria-labelledby="t-plan">
+        <header><h2 id="t-plan">30-day plan</h2><p>A calendar built from what works for you. Tap a day to see the hook, caption idea and hashtags. Download it to Google Calendar or any calendar app.</p></header>
+        <div class="block">
+          <div class="grid3">
+            <div class="field"><label for="p-start">Start date</label><input type="date" id="p-start" data-bind="start"></div>
+            <div class="field"><label for="p-time">Posting time</label><select id="p-time" data-bind="ptime"></select></div>
+            <div class="field"><label for="p-mix">Format mix</label><select id="p-mix" data-bind="mix"></select></div>
+          </div>
+          <label>Posting days</label><div class="chips" id="p-days"></div>
+          <label style="margin-top:14px">Content pillars</label><div class="chips" id="p-pillars"></div>
+        </div>
+        <div class="block"><div class="cal" id="cal"></div><div class="detail" id="cal-detail"></div></div>
+        <div class="actions"><button class="btn go" id="dl-ics">Download calendar</button><button class="btn line" id="dl-csv">Download as spreadsheet</button><button class="btn line" id="cp-plan">Copy the plan</button></div>
+        <p class="note">To post automatically, open Meta Business Suite (Planner) or YouTube Studio and schedule each item. They're free and official. Never give your password to a growth app.</p>
+        <div class="next"><button class="btn line" data-next="map">Back</button><button class="btn go" data-next="board">Next: AI boardroom</button></div>
+      </section>
+
+      <!-- 6 Boardroom -->
+      <section class="step" data-step="board" aria-labelledby="t-board">
+        <header><h2 id="t-board">AI boardroom</h2><p>Your advisers and an AI audience built from your real followers. They judge your account or your next post, disagree out loud, and the CEO makes the call.</p></header>
+        <div class="block">
+          <div class="grid2">
+            <div class="field"><label for="b-target">What should they review?</label><select id="b-target" data-bind="target"></select></div>
+            <div class="field"><label for="b-tone">How blunt?</label><select id="b-tone" data-bind="tone"></select></div>
+            <div class="field"><label for="b-panel">AI audience size</label><select id="b-panel" data-bind="panel"></select></div>
+            <div class="field"><label for="b-reply">Answer in</label><select id="b-reply" data-bind="reply"></select></div>
+          </div>
+          <div class="field"><label for="b-draft">Your draft (hook, script, caption, thumbnail idea or pitch)</label><textarea id="b-draft" data-bind="draft" placeholder="Hook: Everyone's buying a PS5 Pro for GTA 6. Don't, until you see this.&#10;Caption: 3 settings that matter more than your console...&#10;Thumbnail: my face, PS5 box, red X"></textarea></div>
+        </div>
+        <div class="block">
+          <h3>Who's in the room</h3>
+          <div class="seats" id="seats"></div>
+        </div>
+        <div class="block">
+          <h3>Who's in your audience</h3>
+          <div class="grid2">
+            <div><label>Ages</label><div class="chips" id="aud-ages"></div></div>
+            <div class="field"><label for="aud-gender">Gender split</label><select id="aud-gender" data-bind="gender"></select></div>
+          </div>
+          <label style="margin-top:14px">Where they live</label><div class="chips" id="aud-tiers"></div>
+          <p class="note">Use the numbers from Insights, then Audience (age, gender, top cities). Income is never shown by Instagram: the boardroom estimates it from city and age, and says so.</p>
+        </div>
+        <div class="block">
+          <h3>Run it</h3>
+          <p class="sub">Copy one message, paste it into Claude (free plan works; 10 viewers is lighter), and send. Your numbers and labels go with it.</p>
+          <div class="actions"><button class="btn go" id="copy-board">Copy the message for Claude</button><a class="btn line" href="https://claude.ai/new" target="_blank" rel="noopener">Open Claude</a><a class="btn line" href="sample-boardroom.html">See a sample result</a><button class="btn line" id="show-board">Preview the message</button></div>
+          <pre class="prompt" id="board-preview" hidden></pre>
+        </div>
+        <div class="next"><button class="btn line" data-next="plan">Back</button><button class="btn line" data-next="brand">For brands: check an influencer</button></div>
+      </section>
+
+      <!-- 7 Brand check -->
+      <section class="step" data-step="brand" aria-labelledby="t-brand">
+        <header><h2 id="t-brand">Influencer check, for brands and agencies</h2><p>Before you pay a creator: are the followers real, does the audience care, and are paid posts labelled? Uses public numbers only, which anyone can see on the profile.</p></header>
+        <div class="block">
+          <div class="grid3">
+            <div class="field"><label for="c-handle">Creator handle</label><input id="c-handle" placeholder="@creator"></div>
+            <div class="field"><label for="c-followers">Followers</label><input id="c-followers" type="number" min="0"></div>
+            <div class="field"><label for="c-following">Following</label><input id="c-following" type="number" min="0"></div>
+          </div>
+          <p class="sub small">Last 12 posts, newest first. Tick paid posts, and whether they carry a clear ad label at the start.</p>
+          <div class="scroll"><table class="tbl" id="c-table"></table></div>
+          <div class="actions"><button class="btn go" id="c-run">Check this creator</button><button class="btn line small" id="c-demo">Fill a demo creator</button></div>
+        </div>
+        <div id="c-result"></div>
+        <div class="next"><button class="btn line" data-next="board">Back</button><span></span></div>
+      </section>
+    </div>
+  </section>
+</div>
+
+<footer><div class="wrap">
+  <p>Creator Growth Studio is free and open source (MIT). It reads only what you give it and never logs in to your accounts. AI advisers and AI audiences are simulations: use them to find weak spots, then test with real posts.</p>
+  <p id="sources"></p>
+</div></footer>
+<div class="mobilebar"><button class="btn line" id="m-back">Back</button><button class="btn go" id="m-next">Next</button></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="engine.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

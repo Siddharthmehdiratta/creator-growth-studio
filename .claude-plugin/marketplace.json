@@ -1,0 +1,5 @@
+{
+  "name": "creator-growth-studio",
+  "owner": { "name": "Siddharth Mehdiratta" },
+  "plugins": [{ "name": "creator-growth-studio", "source": "./", "description": "Instagram, YouTube and Twitch growth studio with an AI boardroom." }]
+}
