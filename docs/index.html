@@ -31,7 +31,7 @@
       <form class="quick" id="quick">
         <div><label for="q-platform">Platform</label><select id="q-platform" data-bind="platform"></select></div>
         <div><label for="q-niche">Niche</label><select id="q-niche" data-bind="niche"></select></div>
-        <div><label for="q-followers">Followers now</label><input id="q-followers" type="number" min="0" inputmode="numeric" data-bind="followers" placeholder="2,300"></div>
+        <div><label for="q-followers">Followers now</label><input id="q-followers" type="number" min="0" inputmode="numeric" data-bind="followers" placeholder="2300"></div>
         <div><label for="q-goal">Goal</label><select id="q-goal" data-bind="goal"></select></div>
         <div><label for="q-months">By</label><select id="q-months" data-bind="months"></select></div>
         <div><label for="q-country">Main audience</label><select id="q-country" data-bind="country"></select></div>
@@ -40,9 +40,9 @@
         <button class="btn go" id="start">Start my diagnosis</button>
         <button class="btn line" id="sample">Try the sample account</button>
       </div>
-      <p class="trust">Free and open source. Your numbers stay in this browser: nothing is uploaded, and there's no login.</p>
+      <p class="trust">Free and open source. Your numbers stay in this browser: nothing is uploaded and there's no login. Only the boardroom message you choose to paste into Claude leaves your device.</p>
     </div>
-    <div class="rack" aria-live="polite">
+    <div class="rack">
       <div class="rack-head"><b id="rack-title">Growth signals</b><span class="tally" id="rack-src">Sample account</span></div>
       <div class="meters" id="meters"></div>
       <div class="rack-foot" id="rack-foot">Each meter compares your last 10 posts with your usual post. Instagram says watch time, sends and likes per reach matter most.</div>
@@ -148,8 +148,8 @@
             <div class="field"><label for="p-time">Posting time</label><select id="p-time" data-bind="ptime"></select></div>
             <div class="field"><label for="p-mix">Format mix</label><select id="p-mix" data-bind="mix"></select></div>
           </div>
-          <label>Posting days</label><div class="chips" id="p-days"></div>
-          <label style="margin-top:14px">Content pillars</label><div class="chips" id="p-pillars"></div>
+          <p class="small sub" style="margin:0 0 6px;font-weight:700">Posting days</p><div class="chips" id="p-days"></div>
+          <p class="small sub" style="margin:14px 0 6px;font-weight:700">Content pillars</p><div class="chips" id="p-pillars"></div>
         </div>
         <div class="block"><div class="cal" id="cal"></div><div class="detail" id="cal-detail"></div></div>
         <div class="actions"><button class="btn go" id="dl-ics">Download calendar</button><button class="btn line" id="dl-csv">Download as spreadsheet</button><button class="btn line" id="cp-plan">Copy the plan</button></div>
@@ -159,7 +159,7 @@
 
       <!-- 6 Boardroom -->
       <section class="step" data-step="board" aria-labelledby="t-board">
-        <header><h2 id="t-board">AI boardroom</h2><p>Your advisers and an AI audience built from your real followers. They judge your account or your next post, disagree out loud, and the CEO makes the call.</p></header>
+        <header><h2 id="t-board">AI boardroom</h2><p>Your advisers, plus an AI audience modelled on the followers you describe. They judge your account or your next post, disagree out loud, and the CEO makes the call.</p></header>
         <div class="block">
           <div class="grid2">
             <div class="field"><label for="b-target">What should they review?</label><select id="b-target" data-bind="target"></select></div>
@@ -176,10 +176,10 @@
         <div class="block">
           <h3>Who's in your audience</h3>
           <div class="grid2">
-            <div><label>Ages</label><div class="chips" id="aud-ages"></div></div>
+            <div><p class="small sub" style="margin:0 0 6px;font-weight:700">Ages</p><div class="chips" id="aud-ages"></div></div>
             <div class="field"><label for="aud-gender">Gender split</label><select id="aud-gender" data-bind="gender"></select></div>
           </div>
-          <label style="margin-top:14px">Where they live</label><div class="chips" id="aud-tiers"></div>
+          <p class="small sub" style="margin:14px 0 6px;font-weight:700">Where they live</p><div class="chips" id="aud-tiers"></div>
           <p class="note">Use the numbers from Insights, then Audience (age, gender, top cities). Income is never shown by Instagram: the boardroom estimates it from city and age, and says so.</p>
         </div>
         <div class="block">

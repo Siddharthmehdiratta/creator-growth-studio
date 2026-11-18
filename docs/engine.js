@@ -47,12 +47,14 @@
     }
     row.push(cell); if (row.some(x => x !== "")) rows.push(row);
     if (!rows.length) return [];
+    parseCSV.lastDelimiter = delim;
     const h = rows[0];
     return rows.slice(1).map(r => Object.fromEntries(h.map((k, i) => [k, r[i] === undefined ? "" : r[i]])));
   }
-  function num(v) {
+  function num(v, decimalComma) {
     if (v === null || v === undefined) return null;
-    const s = String(v).trim().replace(/,/g, "").replace(/%/g, "");
+    let s = String(v).trim().replace(/%/g, "");
+    s = decimalComma ? s.replace(/\./g, "").replace(/,/g, ".") : s.replace(/,/g, "");
     if (["", "-", "--", "n/a", "N/A"].includes(s)) return null;
     const n = Number(s); return isFinite(n) ? n : null;
   }
@@ -80,7 +82,8 @@
     return out;
   }
   function loadPosts(raw) {
-    if (typeof raw === "string") raw = parseCSV(raw);
+    let dc = false;
+    if (typeof raw === "string") { raw = parseCSV(raw); dc = parseCSV.lastDelimiter === ";"; }
     if (!Array.isArray(raw) || !raw.length) throw new Error("No rows found. Export your posts as a CSV and try again.");
     const headers = [...new Set(raw.flatMap(r => Object.keys(r)))];
     const cm = colmap(headers);
@@ -88,11 +91,11 @@
     const posts = [];
     raw.forEach((r, i) => {
       const g = k => (k in cm ? r[cm[k]] : null);
-      if (String(g("caption") || "").trim().toLowerCase() === "total") return;
+      if ([g("caption"), g("id")].some(v => String(v || "").trim().toLowerCase() === "total")) return;
       const p = { id: String(g("id") || "P" + String(i + 1).padStart(3, "0")), caption: String(g("caption") || ""), time: time(g("time")),
-        type: "type" in cm ? fmt(g("type")) : (num(g("duration")) ? "reel" : "unknown"), link: String(g("link") || ""),
+        type: "type" in cm ? fmt(g("type")) : (num(g("duration")) ? "reel" : "unknown"), link: /^https?:\/\//i.test(String(g("link") || "").trim()) ? String(g("link")).trim() : "",
         hook: String(g("hook") || "").trim() || null, topic: String(g("topic") || "").trim() || null };
-      ["reach", "views", "likes", "comments", "shares", "saves", "follows", "duration", "watch_hours", "avg_view_pct", "ctr"].forEach(k => { p[k] = num(g(k)); });
+      ["reach", "views", "likes", "comments", "shares", "saves", "follows", "duration", "watch_hours", "avg_view_pct", "ctr"].forEach(k => { p[k] = num(g(k), dc); });
       if (p.reach === null) { p.reach = p.views; p.reach_is_views = true; }
       if (!p.reach) return;
       posts.push(p);
@@ -161,20 +164,46 @@
     feats.forEach(([name, col]) => { const k = col.join(""); if (seen.has(k)) { seen.get(k)[0] += " / " + name; return; } const it = [name, col]; seen.set(k, it); out.push(it); });
     return out;
   }
-  function drivers(posts, target = "reach", ridge = 1.0) {
+  function inv(A) {
+    const n = A.length, M = A.map((r, i) => r.concat(Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))));
+    for (let c = 0; c < n; c++) {
+      let piv = c; for (let r = c; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[piv][c])) piv = r;
+      [M[c], M[piv]] = [M[piv], M[c]]; const d = M[c][c]; if (Math.abs(d) < 1e-12) return null;
+      M[c] = M[c].map(x => x / d);
+      for (let r = 0; r < n; r++) if (r !== c && M[r][c]) { const f = M[r][c]; M[r] = M[r].map((x, j) => x - f * M[c][j]); }
+    }
+    return M.map(r => r.slice(n));
+  }
+  function erfc(x) { // Numerical Recipes erfcc, relative error < 1.2e-7
+    const z = Math.abs(x), t = 1 / (1 + 0.5 * z);
+    const r = t * Math.exp(-z * z - 1.26551223 + t * (1.00002368 + t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 + t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 + t * (-0.82215223 + t * 0.17087277)))))))));
+    return x >= 0 ? r : 2 - r;
+  }
+  function zCrit(p) { let lo = 0, hi = 10; for (let i = 0; i < 80; i++) { const mid = (lo + hi) / 2; if (erfc(mid / Math.SQRT2) > p) lo = mid; else hi = mid; } return hi; }
+  function drivers(posts, target = "reach", ridge = 1.0, families = 2) {
     const ys = posts.map(p => { const v = target === "reach" ? p.reach : (p.signals || {})[target]; return v && v > 0 ? Math.log(v) : null; });
     const idx = ys.map((y, i) => (y === null ? -1 : i)).filter(i => i >= 0);
     if (idx.length < 12) return [];
     const sub = idx.map(i => posts[i]), y = idx.map(i => ys[i]), feats = features(sub);
     if (!feats.length) return [];
-    const X = sub.map((_, r) => [1].concat(feats.map(f => f[1][r]))), k = X[0].length;
-    const A = [], b = [];
-    for (let i = 0; i < k; i++) { A.push([]); for (let j = 0; j < k; j++) { let s = 0; for (let r = 0; r < X.length; r++) s += X[r][i] * X[r][j]; A[i].push(s + (i === j && i > 0 ? ridge : 0)); } let t = 0; for (let r = 0; r < X.length; r++) t += X[r][i] * y[r]; b.push(t); }
-    const beta = solve(A, b);
-    const resid = X.map((row, r) => y[r] - row.reduce((s, x, j) => s + x * beta[j], 0));
-    const sigma = Math.sqrt(resid.reduce((s, e) => s + e * e, 0) / Math.max(1, X.length - k));
-    const out = feats.map(([name, col], j0) => { const j = j0 + 1, n = col.reduce((a, c) => a + c, 0), se = sigma * Math.sqrt(1 / n + 1 / Math.max(1, col.length - n)), z = se ? Math.abs(beta[j]) / se : 0;
-      return { feature: name, multiplier: Math.round(Math.exp(beta[j]) * 100) / 100, posts: n, confidence: z >= 2.5 ? "strong" : z >= 1.5 ? "medium" : "weak" }; });
+    const times = sub.map(p => (p.time ? p.time.getTime() / 1000 : null)), known = times.filter(t => t !== null);
+    let trend = null;
+    if (known.length >= 6 && Math.max(...known) > Math.min(...known)) { const lo = Math.min(...known), hi = Math.max(...known), mid = (lo + hi) / 2; trend = times.map(t => ((t === null ? mid : t) - lo) / (hi - lo) - 0.5); }
+    const off = trend ? 2 : 1;
+    const X = sub.map((_, r) => [1].concat(trend ? [trend[r]] : [], feats.map(f => f[1][r]))), k = X[0].length, n = X.length;
+    if (n - k < 4) return [];
+    const XtX = [], b = [];
+    for (let i = 0; i < k; i++) { XtX.push([]); for (let j = 0; j < k; j++) { let s2 = 0; for (let r = 0; r < n; r++) s2 += X[r][i] * X[r][j]; XtX[i].push(s2); } let t = 0; for (let r = 0; r < n; r++) t += X[r][i] * y[r]; b.push(t); }
+    const A = XtX.map((row, i) => row.map((v, j) => v + (i === j && i >= off ? ridge : 0)));
+    const Ai = inv(A); if (!Ai) return [];
+    const beta = Ai.map(row => row.reduce((s2, v, j) => s2 + v * b[j], 0));
+    const resid = X.map((row, r) => y[r] - row.reduce((s2, x, j) => s2 + x * beta[j], 0));
+    const sigma2 = resid.reduce((s2, e) => s2 + e * e, 0) / Math.max(1, n - k);
+    const T = Ai.map(row => XtX[0].map((_, j) => row.reduce((s2, v, m) => s2 + v * XtX[m][j], 0)));
+    const m = feats.length * families, zMed = zCrit(0.05 / m), zStrong = zCrit(0.01 / m);
+    const out = feats.map(([name, col], jf) => { const j = jf + off; let v = 0; for (let q = 0; q < k; q++) v += T[j][q] * Ai[q][j];
+      const se = Math.sqrt(Math.max(sigma2 * v, 1e-12)), z = Math.abs(beta[j]) / se;
+      return { feature: name, multiplier: Math.round(Math.exp(beta[j]) * 100) / 100, posts: col.reduce((a, c) => a + c, 0), z: Math.round(z * 100) / 100, confidence: z >= zStrong ? "strong" : z >= zMed ? "medium" : "weak" }; });
     out.sort((a, c) => Math.abs(Math.log(c.multiplier)) - Math.abs(Math.log(a.multiplier)));
     return out;
   }
@@ -208,7 +237,8 @@
     const monthly = Math.pow(goal / followers, 1 / months) - 1, need = goal - followers;
     const out = { followers, goal, months, monthly_growth_needed_pct: Math.round(1000 * monthly) / 10, followers_needed: need, per_day: Math.round(10 * need / (months * 30.4)) / 10, milestones: [] };
     for (let m = 1; m <= months; m++) out.milestones.push({ month: m, followers: Math.round(followers * Math.pow(1 + monthly, m)) });
-    if (fpp) {
+    if (fpp !== null && fpp !== undefined && fpp <= 0) out.follows_per_post_now = 0;
+    else if (fpp) {
       const postsNeeded = need / fpp;
       out.follows_per_post_now = Math.round(fpp * 10) / 10; out.posts_needed_at_current_rate = Math.ceil(postsNeeded);
       out.posts_per_week_needed = Math.round(10 * postsNeeded / (months * 4.345)) / 10;
@@ -219,27 +249,30 @@
         out.months_to_goal_at_your_pace = Math.round(10 * need / (fpp * perWeek * 4.345)) / 10;
       }
     }
-    out.verdict = monthly <= 0.15 ? "realistic" : monthly <= 0.35 ? "ambitious" : "very hard without a viral hit";
+    out.verdict = monthly <= 0.05 ? "realistic" : monthly <= 0.15 ? "ambitious" : "very hard without a viral hit";
+    out.note = "Follows per post are counted before unfollows, so real growth at your pace will be a little lower.";
     return out;
   }
-  const TIERS = [[10000, "nano", [2.0, 7.0]], [100000, "micro", [1.0, 5.0]], [500000, "mid", [0.5, 3.5]], [1000000, "macro", [0.3, 2.5]], [Infinity, "mega", [0.2, 2.0]]];
+  // Median engagement by tier: Buffer, 27M posts, 2026 (via IQFluence). Normal range: half to 3x the median.
+  const TIERS = [[10000, "nano", 4.25], [100000, "micro", 3.4], [500000, "mid", 3.6], [1000000, "macro", 2.7], [Infinity, "mega", 3.9]];
   function check(profile) {
     const f = Number(profile.followers || 0), posts = profile.posts || [];
     if (!(f > 0) || posts.length < 6) throw new Error("Add the follower count and at least 6 recent posts.");
-    const [, tier, [lo, hi]] = TIERS.find(t => f < t[0]);
+    const [, tier, med] = TIERS.find(t => f < t[0]), lo = med / 2, hi = med * 3;
     const likes = posts.map(p => Number(p.likes || 0)), comments = posts.map(p => Number(p.comments || 0));
     const er = 100 * median(likes.map((l, i) => (l + comments[i]) / f));
     const S = []; const add = (level, text) => S.push({ level, text });
-    if (er < lo) add("watch", `Engagement ${er.toFixed(2)}% is below the usual ${tier}-tier range (${lo.toFixed(1)}-${hi.toFixed(1)}%): many followers may not be active.`);
-    else if (er > hi * 2) add("watch", `Engagement ${er.toFixed(2)}% is far above the ${tier}-tier range: check for giveaways or engagement groups.`);
-    else add("ok", `Engagement ${er.toFixed(2)}% is within or above the usual ${tier}-tier range (${lo.toFixed(1)}-${hi.toFixed(1)}%).`);
+    if (er < lo) add("watch", `Engagement ${er.toFixed(2)}% is below half the typical ${tier}-tier median (${med.toFixed(1)}%): many followers may not be active.`);
+    else if (er > hi) add("watch", `Engagement ${er.toFixed(2)}% is far above the ${tier}-tier range: check for giveaways or engagement groups.`);
+    else add("ok", `Engagement ${er.toFixed(2)}% is in the normal range for ${tier} accounts (typical median ${med.toFixed(1)}%).`);
     const cl = median(likes.map((l, i) => (l > 0 ? comments[i] / l : null)).filter(x => x !== null)) || 0;
-    if (cl < 0.005) add("watch", `Very few comments per like (${(100 * cl).toFixed(1)} per 100 likes): likes may be bought, or the audience is passive.`);
+    if (!likes.some(l => l > 0)) add("watch", "Likes are hidden or zero on every post: ask the creator for their Insights.");
+    else if (cl < 0.005) add("watch", `Very few comments per like (${(100 * cl).toFixed(1)} per 100 likes): likes may be bought, or the audience is passive.`);
     else add("ok", `${(100 * cl).toFixed(1)} comments per 100 likes: real conversation is happening.`);
     const mean = likes.reduce((a, b) => a + b, 0) / likes.length;
     if (likes.length >= 6 && mean > 0) { const sd = Math.sqrt(likes.reduce((a, b) => a + (b - mean) ** 2, 0) / likes.length); if (sd / mean < 0.08) add("watch", `Likes are almost identical on every post (variation ${Math.round(100 * sd / mean)}%): real audiences vary more.`); }
     const views = posts.filter(p => p.views).map(p => Number(p.views));
-    if (views.length) { const vf = median(views) / f; add(vf >= 0.2 ? "ok" : "watch", `Reels reach ${Math.round(100 * vf)}% of follower count on average${vf >= 0.2 ? "" : ": low for an active audience"}.`); }
+    if (views.length) { const vf = median(views) / f; add(vf >= 0.2 ? "ok" : "watch", `Typical reel views are ${Math.round(100 * vf)}% of follower count (median)${vf >= 0.2 ? "" : ": low for an active audience"}.`); }
     const paid = posts.filter(p => p.paid);
     add("info", `${paid.length} of ${posts.length} recent posts are paid (${Math.round(100 * paid.length / posts.length)}%).`);
     if (paid.length / posts.length > 0.5) add("watch", "More than half the feed is paid: recommendations may carry less weight with followers.");
@@ -261,7 +294,8 @@
     const utc = `${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1)}${pad(now.getUTCDate())}T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}00Z`;
     items.forEach((it, i) => { const [y, mo, d] = it.date.split("-").map(Number), [h, mi] = (it.time || "19:00").split(":").map(Number);
       const s = new Date(y, mo - 1, d, h, mi), e = new Date(s.getTime() + (it.minutes || 30) * 60000);
-      L.push("BEGIN:VEVENT", `UID:cgs-${i}-${stamp(s)}@creator-growth-studio`, "DTSTAMP:" + utc, `DTSTART;TZID=${tz}:${stamp(s)}`, `DTEND;TZID=${tz}:${stamp(e)}`, "SUMMARY:" + esc(it.title), "DESCRIPTION:" + esc(it.notes), "END:VEVENT"); });
+      const z = d2 => `${d2.getUTCFullYear()}${pad(d2.getUTCMonth() + 1)}${pad(d2.getUTCDate())}T${pad(d2.getUTCHours())}${pad(d2.getUTCMinutes())}00Z`;
+      L.push("BEGIN:VEVENT", `UID:cgs-${i}-${stamp(s)}@creator-growth-studio`, "DTSTAMP:" + utc, `DTSTART:${z(s)}`, `DTEND:${z(e)}`, "SUMMARY:" + esc(it.title), "DESCRIPTION:" + esc(it.notes), "END:VEVENT"); });
     L.push("END:VCALENDAR"); return L.join("\r\n") + "\r\n";
   }
   const API = { parseCSV, loadPosts, scorePosts, groups, drivers, audit, growthMap, check, ics, median, SIGNALS };

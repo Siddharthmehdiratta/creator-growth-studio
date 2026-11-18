@@ -15,7 +15,8 @@ eq(js.median_reach, py.median_reach, "median reach");
 eq(js.engagement_rate_by_followers, py.engagement_rate_by_followers, "ER");
 ["drivers_reach", "drivers_sends"].forEach(k => { eq(js[k].length, py[k].length, k + " count");
   const pm = Object.fromEntries(py[k].map(d => [d.feature, d.multiplier]));
-  js[k].forEach(d => eq(d.multiplier, pm[d.feature], k + " " + d.feature)); });
+  const pc = Object.fromEntries(py[k].map(d => [d.feature, d.confidence]));
+  js[k].forEach(d => { eq(d.multiplier, pm[d.feature], k + " " + d.feature); eq(d.confidence, pc[d.feature], k + " confidence " + d.feature); }); });
 ["top", "bottom"].forEach(k => js[k].forEach((p, i) => { eq(p.id, py[k][i].id, k + " id " + i); eq(p.score, py[k][i].score, k + " score " + i, 0); }));
 ["by_format", "by_slot"].forEach(k => js[k].forEach((g, i) => { eq(g.value, py[k][i].value, k + " " + i); eq(g.median_score, py[k][i].median_score, k + " score " + i); }));
 // growth map and brand check parity

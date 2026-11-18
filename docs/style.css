@@ -6,7 +6,7 @@
 @font-face{font-family:"Atkinson Hyperlegible";font-weight:700;font-display:swap;src:url(fonts/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2")}
 :root{
   --display:"Unbounded","Arial Black",system-ui,sans-serif; --text:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --desk:#151922; --panel:#1d2230; --panel-2:#232a3a; --rule:#323b50; --ink:#eef1f7; --sub:#aab3c7; --faint:#7d879d;
+  --desk:#151922; --panel:#1d2230; --panel-2:#232a3a; --rule:#323b50; --ink:#eef1f7; --sub:#aab3c7; --faint:#8b95ab;
   --red:#ff5468; --amber:#ffb547; --green:#3ddc97; --cyan:#4cc9f0; --violet:#b39dfa;
   --focus:#ffd166;
   --s1:.8125rem; --s2:1rem; --s3:1.0625rem; --s4:1.3125rem; --s5:1.75rem; --s6:2.5rem; --s7:3.5rem;
@@ -204,7 +204,7 @@ footer{border-top:1px solid var(--rule);padding:28px 0 60px;color:var(--faint);f
   .brand{font-size:.875rem;white-space:nowrap}.bar{gap:8px}.bar nav a{padding:8px 6px;font-size:var(--s1)}.bar nav a[data-goto="board"]{display:none}
   .mobilebar[hidden]{display:none}
   .bars .row{grid-template-columns:100px 1fr 44px}
-  .cal{grid-template-columns:repeat(2,1fr)}.cal .dh{display:none}.day:not(.has){display:none}
+  .cal{grid-template-columns:repeat(2,1fr)}.cal .dh,.cal .blank{display:none}.day:not(.has){display:none}
   .mobilebar{display:flex;position:fixed;left:0;right:0;bottom:0;gap:10px;padding:10px 16px;background:rgba(21,25,34,.96);border-top:1px solid var(--rule);z-index:20}
   .mobilebar .btn{flex:1}
   footer{padding-bottom:110px}

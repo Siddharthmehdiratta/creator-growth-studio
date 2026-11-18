@@ -36,7 +36,19 @@
     seats: D.board.filter(b => b.default).map(b => b.id), ages: ["18-24", "25-34"], gender: "70/30 men", tiers: [D.audiences.tiers[0], D.audiences.tiers[1]], fixes: [], step: "account", seen: {} };
   let S = load(), A = null, SAMPLE = null, picked = null;
 
-  function load() { try { const s = JSON.parse(localStorage.getItem("cgs-v1") || "null"); return s ? Object.assign({}, DEF, s) : Object.assign({}, DEF); } catch (e) { return Object.assign({}, DEF); } }
+  function load() {
+    let s = null; try { s = JSON.parse(localStorage.getItem("cgs-v1") || "null"); } catch (e) { s = null; }
+    const out = Object.assign({}, DEF);
+    if (s && typeof s === "object") Object.keys(DEF).forEach(k => { const d = DEF[k], v = s[k];
+      if (v === undefined || v === null) return;
+      if (Array.isArray(d) ? Array.isArray(v) : (d && typeof d === "object" ? typeof v === "object" && !Array.isArray(v) : typeof v === typeof d || d === "" || d === null)) out[k] = v; });
+    if (s && s.fixLabels && typeof s.fixLabels === "object") out.fixLabels = s.fixLabels;
+    if (!STEPS.some(x => x[0] === out.step)) out.step = "account";
+    if (!D.platforms[out.platform]) out.platform = "instagram";
+    if (!D.niches.some(n => n.id === out.niche)) out.niche = "gaming";
+    out.rows = out.rows.filter(r => r && typeof r === "object");
+    return out;
+  }
   function save() { try { localStorage.setItem("cgs-v1", JSON.stringify(S)); } catch (e) { /* private mode: keep going in memory */ } }
   function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 2200); }
   const niche = () => D.niches.find(n => n.id === S.niche) || D.niches[0];
@@ -61,6 +73,7 @@
         S[key] = v;
         if (key === "niche") { S.sub = niche().subs[0]; S.pillars = null; }
         if (key === "platform") S.checks = {};
+        if (key === "pace") { const n = Math.min(7, Number(v)), spread = [[4], [2, 5], [1, 3, 5], [1, 3, 5, 6], [1, 2, 4, 5, 6], [1, 2, 3, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7]][n - 1]; S.days = spread.slice(); }
         document.querySelectorAll(`[data-bind="${key}"]`).forEach(o => { if (o !== el) o.value = el.value; });
         if (key === "niche" || key === "platform") document.querySelectorAll('[data-bind="sub"]').forEach(o => fillSelect(o, "sub"));
         save(); refresh(key);
@@ -78,6 +91,7 @@
     if (!res || !res.list) return null;
     const ps = res.list.filter(p => p.time).sort((a, b) => b.time - a.time);
     const recent = ps.slice(0, 10);
+    if (!recent.length) return METERS.map(() => null);
     return METERS.map(([k]) => { const all = res.median[k], now = E.median(recent.map(p => p.signals[k])); return all && now != null ? Math.round(100 * now / all) : null; });
   }
   function drawMeters(vals, src, foot) {
@@ -89,7 +103,7 @@
     $("rack-src").textContent = src; if (foot) $("rack-foot").textContent = foot;
   }
   function heroMeters() {
-    if (A && A.list) { drawMeters(meterValues(A), S.source === "sample" ? "Sample account" : "Your account", "Last 10 posts compared with your usual post. 100% means normal for you. Instagram says watch time, sends and likes per reach matter most."); return; }
+    if (A && A.list) { drawMeters(meterValues(A), S.source === "sample" ? "Sample account" : "Your account", "Last 10 posts compared with your usual post. 100% means normal for you." + (S.platform === "instagram" ? " Instagram says watch time, sends and likes per reach matter most." : "")); return; }
     if (SAMPLE) drawMeters(meterValues(SAMPLE), "Sample account", "This is a sample gaming account. Add your own numbers to see yours.");
     else drawMeters(null, "Waiting for numbers");
   }
@@ -109,7 +123,7 @@
     S.step = id; S.seen[id] = true; save();
     document.querySelectorAll(".step").forEach(s => s.classList.toggle("active", s.dataset.step === id));
     drawRail(); renderStep(id);
-    if (scroll) $("studio").scrollIntoView({ behavior: "smooth", block: "start" });
+    if (scroll) $("studio").scrollIntoView({ behavior: window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   }
 
   /* ---------- account step ---------- */
@@ -144,7 +158,7 @@
     const handle = S.handle || "yourhandle", initials = (S.name || handle).replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("") || "?";
     const posts = A && A.list ? A.list.slice().sort((a, b) => (b.time || 0) - (a.time || 0)).slice(0, 9) : [];
     const tile = p => { const s = Math.max(20, Math.min(220, p.score)), h = s >= 130 ? "var(--green)" : s >= 85 ? "var(--amber)" : "var(--red)";
-      return `<i style="background:linear-gradient(160deg,#232a39,${h})"><b>${p.type === "reel" ? "Reel" : p.type === "carousel" ? "Carousel" : "Photo"} ${p.score}</b></i>`; };
+      return `<i style="background:linear-gradient(160deg,#232a39,${h})"><b>${p.type === "reel" ? (S.platform === "youtube" ? "Video" : "Reel") : p.type === "carousel" ? "Carousel" : "Photo"} ${p.score}</b></i>`; };
     $("phone").innerHTML = `<div class="ph-top"><div class="avatar">${esc(initials)}</div><div class="ph-stats"><div><b>${A && A.list ? A.list.length : "-"}</b>posts</div><div><b>${fmtN(S.followers)}</b>${unit()}</div><div><b>${fmtN(S.following)}</b>following</div></div></div>
       <div class="ph-name">${esc(S.name || handle)}</div><div class="ph-bio">${esc(S.bio || "Your bio appears here.")}</div>${S.link ? `<div class="ph-link">${esc(S.link)}</div>` : ""}
       <div class="ph-hl">${Array.from({ length: Number(S.highlights) || 0 }, () => "<span></span>").join("")}</div>
@@ -160,8 +174,8 @@
   }
   function useText(text, source) {
     try { const posts = E.loadPosts(text); S.rows = posts.map(canon); S.source = source; save(); analyse(); refresh("rows");
-      $("load-msg").textContent = `Loaded ${posts.length} posts${source === "sample" ? " from the sample account (fictional, for practice)" : ""}. Label hooks and topics below, then open your diagnosis.`;
-      toast(`${posts.length} posts loaded`);
+      $("load-msg").textContent = `Loaded ${posts.length} ${posts.length === 1 ? "post" : "posts"}${source === "sample" ? " from the sample account (fictional, for practice)" : ""}. Label hooks and topics below, then open your diagnosis.`;
+      toast(`${posts.length} ${posts.length === 1 ? "post" : "posts"} loaded`);
     } catch (e) { $("load-msg").textContent = e.message; toast("That file didn't work. See the message under the upload box."); }
   }
   function drawExport() {
@@ -175,11 +189,11 @@
     const topics = [...new Set(niche().pillars.concat(S.rows.map(r => r.topic).filter(Boolean)))];
     const scoreOf = {}; if (A && A.list) A.list.forEach(p => { scoreOf[p.id] = p.score; });
     $("posts-table").innerHTML = `<thead><tr><th>Date</th><th>Post</th><th>Format</th><th>Hook</th><th>Topic</th><th class="num">Reach</th><th class="num">Sends</th><th class="num">Follows</th><th class="num">Score</th></tr></thead><tbody>` +
-      S.rows.map((r, i) => `<tr><td class="num">${esc((r.time || "").slice(0, 10))}</td><td>${r.manual ? `<input data-row="${i}" data-f="caption" value="${esc(r.caption)}" placeholder="What was it about?">` : esc((r.caption || "").slice(0, 40))}</td>
-        <td><select data-row="${i}" data-f="type">${["reel", "carousel", "image", "story"].map(f => `<option ${r.type === f ? "selected" : ""}>${f}</option>`).join("")}</select></td>
-        <td><select data-row="${i}" data-f="hook"><option value="">Pick</option>${HOOKS.map(h => `<option ${r.hook === h ? "selected" : ""}>${h}</option>`).join("")}</select></td>
-        <td><select data-row="${i}" data-f="topic"><option value="">Pick</option>${topics.map(h => `<option ${r.topic === h ? "selected" : ""}>${esc(h)}</option>`).join("")}</select></td>
-        ${["reach", "shares", "follows"].map(f => r.manual ? `<td><input type="number" min="0" data-row="${i}" data-f="${f}" value="${r[f] == null ? "" : r[f]}" style="width:84px"></td>` : `<td class="num">${fmtN(r[f] == null && f === "reach" ? r.views : r[f])}</td>`).join("")}
+      S.rows.map((r, i) => `<tr><td class="num">${r.manual ? `<input type="date" aria-label="Post ${i + 1} date" data-row="${i}" data-f="date" value="${esc((r.time || "").slice(0, 10))}">` : esc((r.time || "").slice(0, 10))}</td><td>${r.manual ? `<input aria-label="Post ${i + 1} topic or caption" data-row="${i}" data-f="caption" value="${esc(r.caption)}" placeholder="What was it about?">` : esc((r.caption || "").slice(0, 40))}</td>
+        <td><select aria-label="Post ${i + 1} format" data-row="${i}" data-f="type">${["reel", "carousel", "image", "story"].map(f => `<option ${r.type === f ? "selected" : ""}>${f}</option>`).join("")}</select></td>
+        <td><select aria-label="Post ${i + 1} hook" data-row="${i}" data-f="hook"><option value="">Pick</option>${HOOKS.map(h => `<option ${r.hook === h ? "selected" : ""}>${h}</option>`).join("")}</select></td>
+        <td><select aria-label="Post ${i + 1} topic" data-row="${i}" data-f="topic"><option value="">Pick</option>${topics.map(h => `<option ${r.topic === h ? "selected" : ""}>${esc(h)}</option>`).join("")}</select></td>
+        ${["reach", "shares", "follows"].map(f => r.manual ? `<td><input type="number" min="0" aria-label="Post ${i + 1} ${f === "shares" ? "sends" : f}" data-row="${i}" data-f="${f}" value="${r[f] == null ? "" : r[f]}" style="width:84px"></td>` : `<td class="num">${fmtN(r[f] == null && f === "reach" ? r.views : r[f])}</td>`).join("")}
         <td class="num">${scoreOf[r.id] != null ? scoreOf[r.id] : "-"}</td></tr>`).join("") + "</tbody>";
   }
 
@@ -202,7 +216,7 @@
     const good = [], bad = [];
     if (A && A.list) {
       const conf = d => d.confidence !== "weak";
-      A.drivers_reach.filter(conf).forEach(d => (d.multiplier >= 1.15 ? good : d.multiplier <= 0.87 ? bad : []).push({ k: "r:" + d.feature, t: plain(d.feature, d.multiplier, "reach"), why: `All else equal: compared like with like across ${d.posts} posts (${d.confidence} evidence).`, w: Math.abs(Math.log(d.multiplier)) * 10 }));
+      A.drivers_reach.filter(conf).forEach(d => (d.multiplier >= 1.15 ? good : d.multiplier <= 0.87 ? bad : []).push({ k: "r:" + d.feature, t: plain(d.feature, d.multiplier, "reach"), why: `Linked in your posts after adjusting for format, time, hook and tags (${d.posts} posts, ${d.confidence} evidence). A pattern, not proof: test it.`, w: Math.abs(Math.log(d.multiplier)) * 10 }));
       A.drivers_sends.filter(conf).slice(0, 4).forEach(d => (d.multiplier >= 1.2 ? good : d.multiplier <= 0.8 ? bad : []).push({ k: "s:" + d.feature, t: plain(d.feature, d.multiplier, "sends"), why: "Sends per reach is a top signal for reaching people who don't follow you.", w: Math.abs(Math.log(d.multiplier)) * 9 }));
       const mv = meterValues(A);
       METERS.forEach(([k, label], i) => { const v = mv[i]; if (v != null && v < 80) bad.push({ k: "m:" + k, t: `${label} are down: last 10 posts at ${v}% of your usual`, why: "A recent slide. Compare your last 10 posts with your best ones below.", w: (100 - v) / 8 });
@@ -237,7 +251,7 @@
   function adjBars(title, rows, color) {
     if (!rows || rows.length < 2) return "";
     const max = Math.max(...rows.map(r => r.m));
-    return `<div class="block"><h3>${title}</h3><div class="bars">${rows.map(r => `<div class="row"><span>${esc(NOUN[r.value] || r.value)}</span><span class="track"><i style="width:${Math.round(100 * r.m / max)}%;background:${r.conf === "weak" ? "var(--faint)" : color}"></i></span><span class="num">${r.m.toFixed(2)}x</span></div>`).join("")}</div><p class="small sub">Reach compared with ${esc(NOUN[rows.find(r => r.m === 1).value] || rows.find(r => r.m === 1).value)} (1.00x), all else equal. Grey bars are weak evidence.</p></div>`;
+    return `<div class="block"><h3>${title}</h3><div class="bars">${rows.map(r => `<div class="row"><span>${esc(NOUN[r.value] || r.value)}</span><span class="track"><i style="width:${Math.round(100 * r.m / max)}%;background:${r.conf === "weak" ? "var(--faint)" : color}"></i></span><span class="num">${r.m.toFixed(2)}x</span></div>`).join("")}</div><p class="small sub">Reach compared with ${esc(NOUN[rows.find(r => r.m === 1).value] || rows.find(r => r.m === 1).value)} (1.00x), after adjusting for the rest. Grey bars are weak evidence.</p></div>`;
   }
   function renderDiag() {
     const [good, bad] = findings(), st = strength();
@@ -246,7 +260,7 @@
     const f = Number(S.followers);
     let er = A && A.engagement_rate_by_followers, b = f ? bench(f) : null;
     const mv = A && A.list ? meterValues(A) : null;
-    const mom = mv ? Math.round(E.median(mv.filter(v => v != null))) : null;
+    const momRaw = mv ? E.median(mv.filter(v => v != null)) : null, mom = momRaw == null ? null : Math.round(momRaw);
     const parts = [["Profile", st, "How complete and clear your profile is."]];
     if (mom != null) parts.push(["Momentum", Math.max(0, Math.min(100, Math.round(mom / 2))), `Last 10 posts at ${mom}% of your usual (50 = normal).`]);
     if (er != null && b) parts.push(["Engagement", Math.max(0, Math.min(100, Math.round(50 * er / b[2]))), `${er}% vs about ${b[2]}% typical for ${b[1]} accounts (50 = typical).`]);
@@ -254,11 +268,12 @@
     h += `<div class="block"><div class="score"><div class="big num">${total}</div><div><span class="pill ${cls}">${total >= 65 ? "In good shape" : total >= 45 ? "Fixable gaps" : "Needs work"}</span><p class="sub" style="margin-top:8px">Growth readiness out of 100: the average of the parts below.</p></div></div>
       <div class="grid3" style="margin-top:16px">${parts.map(p => `<div><b class="num">${p[1]}</b> ${p[0]}<div class="small sub">${esc(p[2])}</div></div>`).join("")}</div>
       ${er != null ? `<p class="note">Engagement benchmarks vary by study: ${esc(D.sources.er.text)} <a href="${D.sources.er.url}" target="_blank" rel="noopener">Source</a></p>` : ""}</div>`;
-    h += `<div class="block"><h3>What's holding you back</h3>${bad.length ? bad.map(x => findRow(x, x.k.startsWith("c:") && S.checks[x.k.slice(2)] === 1 ? "a" : "r")).join("") : "<p class='sub'>Nothing big found yet. Add numbers and answer the profile checks for a full read.</p>"}<p class="small sub" style="margin-top:12px">Pick up to 3 fixes. People who choose a few specific actions follow through far more than people who try everything.</p></div>`;
+    h += `<div class="block"><h3>What's holding you back</h3>${bad.length ? bad.map(x => findRow(x, x.k.startsWith("c:") && S.checks[x.k.slice(2)] === 1 ? "a" : "r")).join("") : "<p class='sub'>Nothing big found yet. Add numbers and answer the profile checks for a full read.</p>"}<p class="small sub" style="margin-top:12px">Pick up to 3 fixes. A few specific fixes are easier to finish, and easier to measure.</p></div>`;
     if (good.length) h += `<div class="block"><h3>What's working</h3>${good.map(x => findRow(x, "g")).join("")}</div>`;
+    if (A && A.list && !A.drivers_reach.concat(A.drivers_sends).some(d => d.confidence !== "weak")) h += `<div class="block"><h3>No clear pattern yet</h3><p class="sub">Nothing in your posts passes the evidence bar, so nothing is shown as a fact. Label your hooks and topics, post for 4 more weeks, and change one thing at a time.</p></div>`;
     if (A && A.list) {
       const ab = (key, label, title, color) => adjBars(title, adjusted(key, label), color) || bars(title + " (simple averages)", A["by_" + key], color);
-      h += `<div class="block flat"><h3>Like for like</h3><p class="sub small">Simple averages can mislead: if most of your night posts were reels, night looks good partly because reels do. These charts compare like with like, so each one shows the effect of that one choice.</p></div>`;
+      h += `<div class="block flat"><h3>Like for like</h3><p class="sub small">Simple averages can mislead: if most of your night posts were reels, night looks good partly because reels do. These charts adjust for format, time, hook, tags and your account's overall trend, so each one isolates one choice as far as your data allows. Grey bars aren't proven.</p></div>`;
       h += ab("format", "format", "Format", "var(--red)") + ab("slot", "time", "Time of day (in your export's time zone)", "var(--amber)") + ab("hook", "hook", "Hook", "var(--green)") + ab("length", "length", "Reel length", "var(--violet)") + bars("Day of week (simple averages, few posts per day)", A.by_weekday, "var(--cyan)");
       const card = p => `<div class="post"><b>${esc(p.caption || p.id)}</b> <span class="pill ${p.score >= 130 ? "g" : p.score >= 85 ? "a" : "r"} num">${p.score}</span><div class="small sub">${esc(p.type)}, ${esc(p.slot)}${p.link ? `, <a href="${esc(p.link)}" target="_blank" rel="noopener">open</a>` : ""}</div>
         <div class="small">${p.good.length ? "Did well: " + esc(p.good.join("; ")) : ""}${p.good.length && p.bad.length ? "<br>" : ""}${p.bad.length ? "Held back: " + esc(p.bad.join("; ")) : ""}</div></div>`;
@@ -281,11 +296,12 @@
     const cls = M.verdict === "realistic" ? "g" : M.verdict === "ambitious" ? "a" : "r";
     let h = `<div class="block"><span class="pill ${cls}">${M.verdict[0].toUpperCase() + M.verdict.slice(1)}</span>
       <p style="margin-top:12px;font-size:var(--s4)">To reach <b>${fmtN(g)}</b> ${unit()} by ${when}, you need about <b class="num">${fmtN(M.per_day)}</b> new ${unit()} a day: <b class="num">${M.monthly_growth_needed_pct}%</b> growth every month.</p>`;
-    if (M.follows_per_post_now != null) h += `<p>Your posts bring a median of <b>${M.follows_per_post_now}</b> new ${unit()} each. At ${S.pace} posts a week you'd reach about <b>${fmtN(M.followers_at_your_pace)}</b> by ${when}. To hit the goal at that pace, each post needs about <b>${fmtN(M.follows_per_post_needed_at_your_pace)}</b>: <b>${M.multiplier_needed}x</b> today's rate.</p>`;
+    if (M.follows_per_post_now === 0) h += `<p>Your posts in this export brought a median of 0 new ${unit()} each. Start with the profile fixes and the levers below.</p>`;
+    else if (M.follows_per_post_now != null) h += `<p>Your posts bring a median of <b>${M.follows_per_post_now}</b> new ${unit()} each. At ${S.pace} posts a week you'd reach about <b>${fmtN(M.followers_at_your_pace)}</b> by ${when}. To hit the goal at that pace, each post needs about <b>${fmtN(M.follows_per_post_needed_at_your_pace)}</b>: <b>${M.multiplier_needed}x</b> today's rate.</p><p class="small sub">${esc(M.note)}</p>`;
     else h += `<p class="sub">Add your numbers to see what your posts bring in today.</p>`;
     h += chart(M, f) + `</div>`;
-    const real = Math.round(f * Math.pow(1.15, m)), amb = Math.round(f * Math.pow(1.35, m));
-    h += `<div class="block"><h3>Three honest targets for ${m} months</h3><div class="grid3"><div><b class="num">${fmtN(real)}</b><div class="small sub">Realistic: about 15% a month, steady work.</div></div><div><b class="num">${fmtN(amb)}</b><div class="small sub">Ambitious: about 35% a month, needs collabs and a few breakout posts.</div></div><div><b class="num">${fmtN(g)}</b><div class="small sub">Your goal: ${M.monthly_growth_needed_pct}% a month.</div></div></div><p class="small sub" style="margin-top:10px">These growth rates are rules of thumb, not promises. Your own numbers will tell you within 4 weeks.</p></div>`;
+    const real = Math.round(f * Math.pow(1.05, m)), amb = Math.round(f * Math.pow(1.15, m));
+    h += `<div class="block"><h3>Three honest targets for ${m} months</h3><div class="grid3"><div><b class="num">${fmtN(real)}</b><div class="small sub">Steady: about 5% a month from consistent posting.</div></div><div><b class="num">${fmtN(amb)}</b><div class="small sub">Ambitious: about 15% a month, needs collabs and a few breakout posts.</div></div><div><b class="num">${fmtN(g)}</b><div class="small sub">Your goal: ${M.monthly_growth_needed_pct}% a month.</div></div></div><p class="small sub" style="margin-top:10px">These growth rates are cautious rules of thumb, not promises or published benchmarks. Your own numbers will tell you within 4 weeks.</p></div>`;
     h += `<div class="block"><h3>Levers that close the gap</h3>` + levers().map(l => `<div class="find"><span class="lamp c"></span><div><b>${esc(l[0])}</b><span class="small sub">${l[1]}</span></div><span></span></div>`).join("") + `</div>`;
     h += money();
     $("mapview").innerHTML = h;
@@ -305,12 +321,12 @@
     if (A && A.list) {
       const best = A.drivers_reach.concat(A.drivers_sends).filter(d => d.multiplier >= 1.2 && d.confidence !== "weak").sort((a, b) => b.multiplier - a.multiplier)[0];
       const nm = best && best.feature.split(" (vs")[0], lab = !nm ? "" : nm.startsWith("hook: ") ? `Use more "${nm.slice(6)}" hooks` : nm.startsWith("format: ") ? `Post more ${(NOUN[nm.slice(8)] || nm.slice(8)).toLowerCase()}` : nm.startsWith("time: ") ? `Post more in the ${nm.slice(6)}` : nm.startsWith("#") ? `Make more posts like your ${nm.split(" / ")[0]} ones` : `Do more of "${nm}"`;
-      if (best) L.push([lab, `${best.multiplier.toFixed(1)}x for you, all else equal. Make it most of next month's posts, then check again.`]);
+      if (best) L.push([lab, `Linked with ${best.multiplier.toFixed(1)}x in your posts (${best.confidence} evidence). Make it most of next month's posts, then check whether it holds.`]);
     }
     L.push(["Test 2 trial reels a week", esc(D.sources.trial.text) + src("trial")]);
     L.push(["Make every post worth sending", "End with a reason to send it to one friend. " + esc(D.sources.signals.text) + src("signals")]);
     L.push(["Collab monthly with creators your size", "Collab posts show you to a similar audience that already trusts the other creator."]);
-    if (S.niche === "gaming") L.push(["Own GTA 6 launch week", esc(D.sources.gta6.text) + " Plan first-hour reactions, settings, and 'things nobody told you' posts." + src("gta6")]);
+    if (S.niche === "gaming" && iso(new Date()) <= "2026-11-26") L.push(["Own GTA 6 launch week", esc(D.sources.gta6.text) + " Plan first-hour reactions, settings, and 'things nobody told you' posts." + src("gta6")]);
     if (strength() < 70) L.push(["Fix your profile first", `Profile strength is ${strength()}%. Visitors who land from a good post decide in seconds whether to follow.`]);
     L.push(["Original over reposted", esc(D.sources.original.text) + src("original")]);
     return L;
@@ -357,16 +373,18 @@
   }
   function renderPlan() {
     fillSelect($("p-time"), "ptime"); fillSelect($("p-mix"), "mix"); $("p-start").value = S.start;
+    $("p-days").setAttribute("role", "group"); $("p-days").setAttribute("aria-label", "Posting days"); $("p-pillars").setAttribute("role", "group"); $("p-pillars").setAttribute("aria-label", "Content pillars");
     $("p-days").innerHTML = DAYN.map((d, i) => `<button class="chip" data-day="${i + 1}" aria-pressed="${S.days.includes(i + 1)}">${d}</button>`).join("");
     $("p-pillars").innerHTML = niche().pillars.map(p => `<button class="chip" data-pillar="${esc(p)}" aria-pressed="${pillars().includes(p)}">${esc(p)}</button>`).join("");
     const items = plan(); renderPlan.items = items;
     const start = new Date(S.start + "T00:00:00"), lead = (start.getDay() + 6) % 7, byDate = {};
     items.forEach((it, i) => { (byDate[it.date] = byDate[it.date] || []).push(i); });
-    let h = DAYN.map(d => `<div class="dh">${d}</div>`).join("") + Array.from({ length: lead }, () => "<div></div>").join("");
+    let h = DAYN.map(d => `<div class="dh">${d}</div>`).join("") + Array.from({ length: lead }, () => '<div class="blank"></div>').join("");
     for (let d = 0; d < 30; d++) { const day = new Date(start.getTime() + d * 864e5), key = iso(day), its = byDate[key] || [];
       h += `<div class="day${its.length ? " has" : ""}" ${its.length ? `data-item="${its[0]}" tabindex="0" role="button" aria-label="${esc(items[its[0]].title)} on ${key}"` : ""}><span class="d">${day.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>${its.map(i => `<div><span class="f ${items[i].fmt.split(" ")[0]}">${esc(items[i].fmt)}</span> ${esc(items[i].time)}<br>${esc(items[i].special ? "GTA 6 week" : items[i].pillar)}</div>`).join("")}</div>`; }
     $("cal").innerHTML = h;
-    $("cal-detail").innerHTML = items.length ? `<p class="small sub">${items.length} posts in 30 days. Tap a day for its details.</p>` : `<p class="sub">Pick at least one posting day.</p>`;
+    const perWeek = S.days.length * (Number(S.pace) > 7 ? 2 : 1), warn = perWeek !== Number(S.pace) ? ` Your ticked days give ${perWeek} posts a week, but your plan says ${S.pace}. Tick ${Math.min(7, Number(S.pace))} days to match.` : "";
+    $("cal-detail").innerHTML = items.length ? `<p class="small sub">${items.length} posts in 30 days. Tap a day for its details.${esc(warn)}</p>` : `<p class="sub">Pick at least one posting day.</p>`;
   }
   function showItem(i) {
     const it = renderPlan.items[i]; if (!it) return;
@@ -379,6 +397,7 @@
   /* ---------- boardroom ---------- */
   function renderBoard() {
     $("seats").innerHTML = D.board.map(b => `<label class="seat"><input type="checkbox" data-seat="${b.id}" ${S.seats.includes(b.id) ? "checked" : ""}><span><b>${esc(b.name)}</b><span>${esc(b.job)}</span></span></label>`).join("");
+    $("aud-ages").setAttribute("role", "group"); $("aud-ages").setAttribute("aria-label", "Audience ages"); $("aud-tiers").setAttribute("role", "group"); $("aud-tiers").setAttribute("aria-label", "Where your audience lives");
     $("aud-ages").innerHTML = D.audiences.ages.map(a => `<button class="chip" data-age="${a}" aria-pressed="${S.ages.includes(a)}">${a}</button>`).join("");
     $("aud-tiers").innerHTML = D.audiences.tiers.map(a => `<button class="chip" data-tier="${esc(a)}" aria-pressed="${S.tiers.includes(a)}">${esc(a.split(" (")[0])}</button>`).join("");
     if (!$("board-preview").hidden) $("board-preview").textContent = boardPrompt();
@@ -431,7 +450,7 @@
   function drawBrandTable(rows) {
     rows = rows || Array.from({ length: 12 }, () => ({}));
     $("c-table").innerHTML = `<thead><tr><th>#</th><th>Likes</th><th>Comments</th><th>Views (reels)</th><th>Paid?</th><th>Ad label?</th></tr></thead><tbody>` +
-      rows.map((r, i) => `<tr><td>${i + 1}</td>${["likes", "comments", "views"].map(f => `<td><input type="number" min="0" data-c="${f}" data-i="${i}" value="${r[f] == null ? "" : r[f]}" style="width:96px"></td>`).join("")}<td><input type="checkbox" data-c="paid" data-i="${i}" ${r.paid ? "checked" : ""} style="width:auto"></td><td><input type="checkbox" data-c="disclosed" data-i="${i}" ${r.disclosed ? "checked" : ""} style="width:auto"></td></tr>`).join("") + "</tbody>";
+      rows.map((r, i) => `<tr><td>${i + 1}</td>${["likes", "comments", "views"].map(f => `<td><input type="number" min="0" aria-label="Post ${i + 1} ${f}" data-c="${f}" data-i="${i}" value="${r[f] == null ? "" : r[f]}" style="width:96px"></td>`).join("")}<td><input type="checkbox" aria-label="Post ${i + 1} is paid" data-c="paid" data-i="${i}" ${r.paid ? "checked" : ""} style="width:auto"></td><td><input type="checkbox" aria-label="Post ${i + 1} has an ad label" data-c="disclosed" data-i="${i}" ${r.disclosed ? "checked" : ""} style="width:auto"></td></tr>`).join("") + "</tbody>";
   }
   function runCheck() {
     const posts = []; for (let i = 0; i < 12; i++) { const g = f => document.querySelector(`[data-c="${f}"][data-i="${i}"]`);
@@ -461,8 +480,8 @@
 
   /* ---------- events ---------- */
   document.addEventListener("click", e => {
-    const t = e.target.closest("button, [data-go], [data-item]"); if (!t) return;
-    if (t.dataset.go) { e.preventDefault(); go(t.dataset.go, true); return; }
+    const t = e.target.closest("button, [data-go], [data-goto], [data-item]"); if (!t) return;
+    if (t.dataset.go || t.dataset.goto) { e.preventDefault(); go(t.dataset.go || t.dataset.goto, true); return; }
     if (t.dataset.next) { go(t.dataset.next, true); return; }
     if (t.dataset.check) { S.checks[t.dataset.check] = +t.dataset.v; save(); drawChecks(); drawRail(); return; }
     if (t.dataset.usebio) { S.bio = bioTips.drafts[+t.dataset.usebio]; $("a-bio").value = S.bio; save(); bioTips(); drawPhone(); return; }
@@ -482,9 +501,9 @@
       case "clear": S.rows = []; S.source = "none"; save(); analyse(); refresh("rows"); break;
       case "dl-ics": { const items = renderPlan.items || []; if (!items.length) { toast("Pick posting days first"); break; }
         download("growth-plan.ics", E.ics(items.map(it => ({ date: it.date, time: it.time, title: it.title, notes: itemText(it) })), S.country === "India" ? "Asia/Kolkata" : Intl.DateTimeFormat().resolvedOptions().timeZone), "text/calendar"); break; }
-      case "dl-csv": { const items = renderPlan.items || []; const rows = [["Date", "Time", "Format", "Pillar", "Hook idea", "Psychology", "End with", "Hashtags"]].concat(items.map(i => [i.date, i.time, i.fmt, i.pillar, i.hook, i.principle, i.cta, i.tags]));
+      case "dl-csv": { const items = renderPlan.items || []; if (!items.length) { toast("Pick posting days first"); break; } const rows = [["Date", "Time", "Format", "Pillar", "Hook idea", "Psychology", "End with", "Hashtags"]].concat(items.map(i => [i.date, i.time, i.fmt, i.pillar, i.hook, i.principle, i.cta, i.tags]));
         download("growth-plan.csv", rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n"), "text/csv"); break; }
-      case "cp-plan": copy((renderPlan.items || []).map(itemText).join("\n\n"), "Plan copied"); break;
+      case "cp-plan": if (!(renderPlan.items || []).length) { toast("Pick posting days first"); break; } copy((renderPlan.items || []).map(itemText).join("\n\n"), "Plan copied"); break;
       case "copy-board": copy(boardPrompt(), "Copied. Paste it into Claude and send."); break;
       case "show-board": { const p = $("board-preview"); p.hidden = !p.hidden; p.textContent = boardPrompt(); t.textContent = p.hidden ? "Preview the message" : "Hide the preview"; break; }
       case "c-run": runCheck(); break;
@@ -496,7 +515,9 @@
   document.addEventListener("keydown", e => { const d = e.target.closest && e.target.closest("[data-item]"); if (d && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); showItem(+d.dataset.item); } });
   document.addEventListener("change", e => {
     const t = e.target;
-    if (t.dataset.row != null) { const r = S.rows[+t.dataset.row], f = t.dataset.f; r[f] = t.type === "number" ? (t.value === "" ? null : +t.value) : t.value; save(); analyse(); heroMeters(); return; }
+    if (t.dataset.row != null) { const r = S.rows[+t.dataset.row], f = t.dataset.f;
+      if (f === "date") r.time = t.value ? t.value + "T21:00:00" : ""; else r[f] = t.type === "number" ? (t.value === "" ? null : +t.value) : t.value;
+      save(); analyse(); heroMeters(); return; }
     if (t.dataset.seat) { S.seats = t.checked ? S.seats.concat(t.dataset.seat) : S.seats.filter(x => x !== t.dataset.seat); save(); renderBoard(); return; }
     if (t.id === "file" && t.files[0]) { const fr = new FileReader(); fr.onload = () => useText(fr.result, "file"); fr.readAsText(t.files[0]); }
     if (["p-start", "p-time", "p-mix"].includes(t.id)) setTimeout(renderPlan, 0);
@@ -505,7 +526,8 @@
   ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
   ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
   drop.addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (f) { const fr = new FileReader(); fr.onload = () => useText(fr.result, "file"); fr.readAsText(f); } });
-  drop.addEventListener("keydown", e => { if (e.key === "Enter") $("file").click(); });
+  drop.setAttribute("role", "button"); drop.setAttribute("aria-label", "Upload your CSV export");
+  drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("file").click(); } });
   function download(name, text, type) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
 
   function loadSample(apply) {
@@ -521,8 +543,11 @@
   }
 
   if ("IntersectionObserver" in window) { const mb = document.querySelector(".mobilebar"); mb.hidden = true; new IntersectionObserver(es => es.forEach(en => { mb.hidden = !en.isIntersecting; }), { threshold: 0.05 }).observe($("studio")); }
+  $("quick").addEventListener("submit", e => { e.preventDefault(); go(S.rows.length ? "diagnosis" : "account", true); });
   /* ---------- start ---------- */
   window.__cgs = { state: () => S, analysis: () => A, boardPrompt, plan: () => renderPlan.items, go, useText, findings, strength, setSample: (text, prof) => { SAMPLE = E.audit(E.loadPosts(text), prof.followers); SAMPLE.list = E.loadPosts(text); E.scorePosts(SAMPLE.list); heroMeters(); } };
   $("sources").innerHTML = "Sources, checked " + D.checked + ": " + Object.values(D.sources).map((s, i) => `<a href="${s.url}" target="_blank" rel="noopener">${i + 1}</a>`).join(", ");
-  bindAll(); analyse(); heroMeters(); loadSample(false); go(S.step || "account", false);
+  try { bindAll(); analyse(); heroMeters(); go(S.step || "account", false); }
+  catch (e) { try { localStorage.removeItem("cgs-v1"); } catch (e2) { /* ignore */ } S = Object.assign({}, DEF); bindAll(); analyse(); heroMeters(); go("account", false); }
+  loadSample(false);
 })();

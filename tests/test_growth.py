@@ -97,8 +97,65 @@ class FindsThePlantedPatterns(unittest.TestCase):
 
     def test_markdown_report(self):
         md = growth.audit_md(self.res)
-        self.assertIn("all else equal", md)
+        self.assertIn("after adjusting", md)
         self.assertIn("Read this before acting", md)
+
+
+class HonestStatistics(unittest.TestCase):
+    """Accounts with pure noise must rarely show a 'finding'."""
+
+    def noise_account(self, R, n=30):
+        import datetime
+        posts, start = [], datetime.datetime(2026, 8, 1)
+        for i in range(n):
+            reach = int(1200 * R.lognormvariate(0, 0.5))
+            posts.append({"id": str(i), "caption": "post " + R.choice(["#gta6", "#bgmi", "#setup", "#meme", ""]),
+                          "time": start + datetime.timedelta(days=2 * i, hours=R.choice([9, 13, 18, 21, 22])),
+                          "type": R.choice(["reel", "reel", "carousel", "image"]), "hook": R.choice(["Face to camera", "Gameplay first", "Text on screen"]),
+                          "topic": None, "link": "", "reach": reach, "views": reach, "likes": int(reach * R.uniform(.04, .07)),
+                          "comments": int(reach * R.uniform(.004, .009)), "shares": int(reach * R.uniform(.006, .012)),
+                          "saves": int(reach * R.uniform(.004, .01)), "follows": int(reach * R.uniform(.002, .004)), "duration": 20})
+        return posts
+
+    def test_false_findings_are_rare(self):
+        import random
+        R, n, fp = random.Random(11), 80, 0
+        for _ in range(n):
+            r = growth.audit(self.noise_account(R))
+            fp += any(d["confidence"] != "weak" for d in r["drivers_reach"] + r["drivers_sends"])
+        self.assertLessEqual(fp / n, 0.2, fp)
+
+    def test_youtube_total_row_in_content_column_is_skipped(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d)
+        f = os.path.join(d, "Table data.csv")
+        with open(f, "w", encoding="utf-8") as fh:
+            fh.write("Content,Video title,Video publish time,Views,Subscribers\nTotal,,,99999,500\n")
+            for i in range(5):
+                fh.write('v%d,Short %d,"Nov %d, 2026",%d,3\n' % (i, i, i + 1, 1000 + i))
+        posts = growth.load_posts(f)
+        self.assertEqual(len(posts), 5)
+        self.assertTrue(all(p["views"] < 2000 for p in posts))
+
+    def test_unsafe_links_are_dropped(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d)
+        f = os.path.join(d, "x.csv")
+        with open(f, "w", encoding="utf-8") as fh:
+            fh.write("Reach,Permalink\n100,javascript:alert(1)\n200,https://www.instagram.com/p/ok/\n")
+        posts = growth.load_posts(f)
+        self.assertEqual(posts[0]["link"], "")
+        self.assertTrue(posts[1]["link"].startswith("https://"))
+
+    def test_semicolon_csv_with_decimal_commas(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d)
+        f = os.path.join(d, "eu.csv")
+        with open(f, "w", encoding="utf-8") as fh:
+            fh.write("Reach;Likes;Average view percentage\n1.234;56;45,5\n2.000;80;50,0\n")
+        p = growth.load_posts(f)[0]
+        self.assertEqual(p["reach"], 1234)
+        self.assertEqual(p["avg_view_pct"], 45.5)
 
 
 class GrowthMap(unittest.TestCase):
@@ -110,7 +167,8 @@ class GrowthMap(unittest.TestCase):
         self.assertEqual(m["followers_at_your_pace"], int(round(2000 + 5 * 4 * 6 * 4.345)))
 
     def test_realistic_goal(self):
-        self.assertEqual(growth.growth_map(5000, 6000, 3)["verdict"], "realistic")
+        self.assertEqual(growth.growth_map(5000, 5600, 3)["verdict"], "realistic")
+        self.assertEqual(growth.growth_map(5000, 6000, 3)["verdict"], "ambitious")
 
     def test_bad_input(self):
         with self.assertRaises(growth.GrowthError):
@@ -135,7 +193,7 @@ class BrandCheck(unittest.TestCase):
         posts = [{"likes": 300, "comments": 0} for _ in range(10)]
         r = growth.check({"followers": 50000, "following": 90000, "posts": posts})
         texts = " ".join(s["text"] for s in r["signals"])
-        self.assertIn("below the usual micro-tier", texts)
+        self.assertIn("below half the typical micro-tier", texts)
         self.assertIn("Very few comments", texts)
         self.assertIn("almost identical", texts)
         self.assertIn("follow-for-follow", texts)
@@ -150,7 +208,7 @@ class Calendar(unittest.TestCase):
     def test_ics(self):
         s = growth.ics({"items": [{"date": "2026-11-20", "time": "21:00", "title": "Reel, GTA 6, day 2", "notes": "Hook: face"}]})
         self.assertIn("BEGIN:VEVENT", s)
-        self.assertIn("DTSTART;TZID=Asia/Kolkata:20261120T210000", s)
+        self.assertIn("DTSTART:20261120T153000Z", s)  # 9 pm IST in UTC
         self.assertIn("SUMMARY:Reel\\, GTA 6\\, day 2", s)
         self.assertTrue(s.endswith("END:VCALENDAR\r\n"))
 

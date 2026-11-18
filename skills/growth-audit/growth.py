@@ -51,10 +51,11 @@ class GrowthError(Exception):
     pass
 
 
-def _num(v):
+def _num(v, decimal_comma=False):
     if v is None:
         return None
-    s = str(v).strip().replace(",", "").replace("%", "")
+    s = str(v).strip().replace("%", "")
+    s = s.replace(".", "").replace(",", ".") if decimal_comma else s.replace(",", "")
     if s in ("", "-", "--", "n/a", "N/A"):
         return None
     try:
@@ -109,12 +110,17 @@ def load_posts(path):
         if not isinstance(raw, list):
             raise GrowthError("JSON must be a list of posts or {\"posts\": [...]}")
         headers = sorted({k for r in raw for k in r})
+        semicolon = False
     else:
         with open(path, encoding="utf-8-sig", newline="") as fh:
             sample = fh.read(4096)
             fh.seek(0)
-            dialect = csv.Sniffer().sniff(sample, delimiters=",;\t") if sample else csv.excel
+            try:
+                dialect = csv.Sniffer().sniff(sample.split("\n")[0], delimiters=",;\t") if sample else csv.excel
+            except csv.Error:
+                dialect = csv.excel
             raw = list(csv.DictReader(fh, dialect=dialect))
+            semicolon = getattr(dialect, "delimiter", ",") == ";"
         headers = list(raw[0].keys()) if raw else []
     cm = _colmap(headers)
     if "reach" not in cm and "views" not in cm:
@@ -122,15 +128,15 @@ def load_posts(path):
     posts = []
     for i, r in enumerate(raw):
         g = lambda k: r.get(cm[k]) if k in cm else None
-        if str(g("caption") or "").strip().lower() == "total":
+        if "total" in (str(g("caption") or "").strip().lower(), str(g("id") or "").strip().lower()):
             continue
         p = {"id": str(g("id") or "P%03d" % (i + 1)), "caption": str(g("caption") or ""), "time": _time(g("time")),
              "type": _fmt(g("type")) if "type" in cm else ("reel" if _num(g("duration")) else "unknown"),
-             "link": str(g("link") or ""), "hook": str(g("hook") or "").strip() or None,
+             "link": str(g("link") or "").strip() if re.match(r"https?://", str(g("link") or "").strip(), re.I) else "", "hook": str(g("hook") or "").strip() or None,
              "topic": str(g("topic") or "").strip() or None}
         for k in ("reach", "views", "likes", "comments", "shares", "saves", "follows", "duration", "watch_hours",
                   "avg_view_pct", "ctr"):
-            p[k] = _num(g(k))
+            p[k] = _num(g(k), semicolon)
         if p["reach"] is None:
             p["reach"] = p["views"]
             p["reach_is_views"] = True
@@ -292,9 +298,40 @@ def _features(posts, min_n=3):
     return [(n, c) for n, c in out]
 
 
-def drivers(posts, target="reach", ridge=1.0):
-    """'All else equal' effects: ridge regression of log(target) on post features.
-    Returns multipliers, e.g. 1.6 = about 60% more when everything else is the same."""
+def _inv(A):
+    n = len(A)
+    M = [row[:] + [1.0 if i == j else 0.0 for j in range(n)] for i, row in enumerate(A)]
+    for c in range(n):
+        piv = max(range(c, n), key=lambda r: abs(M[r][c]))
+        M[c], M[piv] = M[piv], M[c]
+        d = M[c][c]
+        if abs(d) < 1e-12:
+            raise GrowthError("features are not separable")
+        M[c] = [x / d for x in M[c]]
+        for r in range(n):
+            if r != c and M[r][c]:
+                f = M[r][c]
+                M[r] = [x - f * y for x, y in zip(M[r], M[c])]
+    return [row[n:] for row in M]
+
+
+def _z_crit(p):
+    """Two-sided normal critical value for p, by bisection on erfc."""
+    lo, hi = 0.0, 10.0
+    for _ in range(80):
+        mid = (lo + hi) / 2
+        if math.erfc(mid / math.sqrt(2)) > p:
+            lo = mid
+        else:
+            hi = mid
+    return hi
+
+
+def drivers(posts, target="reach", ridge=1.0, families=2):
+    """Effects after adjusting for the other labels and the account's overall trend:
+    ridge regression of log(target) on post features plus a time trend.
+    Confidence uses the model's own standard errors and a Bonferroni correction for
+    testing many features at once, so pure noise rarely shows up as a finding."""
     ys = []
     for p in posts:
         v = p["reach"] if target == "reach" else (p["signals"].get(target) if target in p.get("signals", {}) else None)
@@ -307,20 +344,40 @@ def drivers(posts, target="reach", ridge=1.0):
     feats = _features(sub)
     if not feats:
         return []
-    X = [[1.0] + [f[1][r] for f in feats] for r in range(len(sub))]
-    k = len(X[0])
-    A = [[sum(X[r][i] * X[r][j] for r in range(len(X))) + (ridge if i == j and i > 0 else 0.0) for j in range(k)] for i in range(k)]
-    b = [sum(X[r][i] * y[r] for r in range(len(X))) for i in range(k)]
-    beta = _solve(A, b)
-    resid = [y[r] - sum(X[r][j] * beta[j] for j in range(k)) for r in range(len(X))]
-    sigma = math.sqrt(sum(e * e for e in resid) / max(1, len(X) - k))
+    times = [p["time"].timestamp() if p.get("time") else None for p in sub]
+    known = [t for t in times if t is not None]
+    trend = None
+    if len(known) >= 6 and max(known) > min(known):
+        lo_t, hi_t = min(known), max(known)
+        mid_t = (lo_t + hi_t) / 2
+        trend = [((t if t is not None else mid_t) - lo_t) / (hi_t - lo_t) - 0.5 for t in times]
+    X = [[1.0] + ([trend[r]] if trend else []) + [f[1][r] for f in feats] for r in range(len(sub))]
+    k, n = len(X[0]), len(X)
+    off = 2 if trend else 1
+    if n - k < 4:
+        return []
+    XtX = [[sum(X[r][i] * X[r][j] for r in range(n)) for j in range(k)] for i in range(k)]
+    A = [[XtX[i][j] + (ridge if i == j and i >= off else 0.0) for j in range(k)] for i in range(k)]
+    b = [sum(X[r][i] * y[r] for r in range(n)) for i in range(k)]
+    try:
+        Ai = _inv(A)
+    except GrowthError:
+        return []
+    beta = [sum(Ai[i][j] * b[j] for j in range(k)) for i in range(k)]
+    resid = [y[r] - sum(X[r][j] * beta[j] for j in range(k)) for r in range(n)]
+    sigma2 = sum(e * e for e in resid) / max(1, n - k)
+    # Var(beta) = sigma^2 * Ai * XtX * Ai
+    T = [[sum(Ai[i][m] * XtX[m][j] for m in range(k)) for j in range(k)] for i in range(k)]
+    m_tests = len(feats) * families  # the audit reports reach and sends side by side
+    z_med, z_strong = _z_crit(0.05 / m_tests), _z_crit(0.01 / m_tests)
     out = []
-    for j, (name, col) in enumerate(feats, start=1):
-        n_on = int(sum(col))
-        se = sigma * math.sqrt(1.0 / n_on + 1.0 / max(1, len(col) - n_on))  # rough, for a confidence label
-        z = abs(beta[j]) / se if se else 0
-        out.append({"feature": name, "multiplier": round(math.exp(beta[j]), 2), "posts": n_on,
-                    "confidence": "strong" if z >= 2.5 else "medium" if z >= 1.5 else "weak"})
+    for jf, (name, col) in enumerate(feats):
+        j = jf + off
+        var = sigma2 * sum(T[j][m] * Ai[m][j] for m in range(k))
+        se = math.sqrt(max(var, 1e-12))
+        z = abs(beta[j]) / se
+        out.append({"feature": name, "multiplier": round(math.exp(beta[j]), 2), "posts": int(sum(col)),
+                    "z": round(z, 2), "confidence": "strong" if z >= z_strong else "medium" if z >= z_med else "weak"})
     out.sort(key=lambda d: -abs(math.log(d["multiplier"])))
     return out
 
@@ -387,13 +444,15 @@ def audit_md(res):
     L += ["## Your typical post (median, per 1,000 people reached)", ""]
     for k, l, _ in SIGNALS:
         L.append("- %s: %s" % (l, res["median"][k] if res["median"][k] is not None else "not in your export"))
+    if not any(d["confidence"] != "weak" for d in res.get("drivers_reach") or []):
+        L += ["", "## No clear pattern yet", "", "Nothing in your posts passes the evidence bar. Post more, label hooks and topics, and test one change at a time."]
     if res.get("drivers_reach"):
-        L += ["", "## What really moves your reach (all else equal)", "",
-              "Each line compares posts that differ only in that one thing, after allowing for format, time, topic and hook.", ""]
+        L += ["", "## What is linked with more reach (after adjusting for the rest)", "",
+              "After adjusting for format, time, hook, tags and the account's overall trend. These are links in your posts, not proof of cause.", ""]
         for d in res["drivers_reach"][:8]:
             L.append("- %s: %s reach (%d posts, %s evidence)" % (d["feature"], _x(d["multiplier"]), d["posts"], d["confidence"]))
     if res.get("drivers_sends"):
-        L += ["", "## What gets your posts sent to friends (all else equal)", ""]
+        L += ["", "## What is linked with more sends (after adjusting for the rest)", ""]
         for d in res["drivers_sends"][:5]:
             L.append("- %s: %s sends per 1,000 reached (%s evidence)" % (d["feature"], _x(d["multiplier"]), d["confidence"]))
     for title, key in (("Hook type", "by_hook"), ("What works best: format", "by_format"), ("Time of day", "by_slot"), ("Day of week", "by_weekday"),
@@ -433,7 +492,9 @@ def growth_map(followers, goal, months, follows_per_post=None, per_week=None):
     for m in range(1, months + 1):
         f = followers * (1 + monthly) ** m
         out["milestones"].append({"month": m, "followers": int(round(f))})
-    if follows_per_post:
+    if follows_per_post is not None and follows_per_post <= 0:
+        out["follows_per_post_now"] = 0
+    elif follows_per_post:
         posts_needed = need / follows_per_post
         out["follows_per_post_now"] = round(follows_per_post, 1)
         out["posts_needed_at_current_rate"] = int(math.ceil(posts_needed))
@@ -441,24 +502,27 @@ def growth_map(followers, goal, months, follows_per_post=None, per_week=None):
         if per_week:
             out["follows_per_post_needed_at_your_pace"] = round(need / (per_week * months * 4.345), 1)
             out["multiplier_needed"] = round(out["follows_per_post_needed_at_your_pace"] / follows_per_post, 1)
-    if follows_per_post and per_week:
+    if follows_per_post and follows_per_post > 0 and per_week:
         weeks = months * 4.345
         out["followers_at_your_pace"] = int(round(followers + follows_per_post * per_week * weeks))
         out["months_to_goal_at_your_pace"] = round(need / (follows_per_post * per_week * 4.345), 1)
-    out["verdict"] = ("realistic" if monthly <= 0.15 else "ambitious" if monthly <= 0.35 else "very hard without a viral hit")
+    # rule-of-thumb bands, deliberately cautious
+    out["verdict"] = ("realistic" if monthly <= 0.05 else "ambitious" if monthly <= 0.15 else "very hard without a viral hit")
+    out["note"] = "Follows per post are counted before unfollows, so real growth at your pace will be a little lower."
     return out
 
 
 # ---------------------------------------------------------------- influencer check (brands)
-TIERS = [(10_000, "nano", (2.0, 7.0)), (100_000, "micro", (1.0, 5.0)), (500_000, "mid", (0.5, 3.5)),
-         (1_000_000, "macro", (0.3, 2.5)), (float("inf"), "mega", (0.2, 2.0))]
+# Median engagement by tier: Buffer, 27M posts, 2026 (via IQFluence). Ranges below are half to 3x the median.
+TIERS = [(10_000, "nano", 4.25), (100_000, "micro", 3.4), (500_000, "mid", 3.6), (1_000_000, "macro", 2.7),
+         (float("inf"), "mega", 3.9)]
 
 
 def tier_of(f):
-    for cap, name, band in TIERS:
+    for cap, name, med in TIERS:
         if f < cap:
-            return name, band
-    return TIERS[-1][1], TIERS[-1][2]
+            return name, (med / 2, med * 3)
+    return TIERS[-1][1], (TIERS[-1][2] / 2, TIERS[-1][2] * 3)
 
 
 def check(profile):
@@ -475,13 +539,15 @@ def check(profile):
     def add(level, text):
         signals.append({"level": level, "text": text})
     if er < lo:
-        add("watch", "Engagement %.2f%% is below the usual %s-tier range (%.1f-%.1f%%): many followers may not be active." % (er, tier, lo, hi))
-    elif er > hi * 2:
+        add("watch", "Engagement %.2f%% is below half the typical %s-tier median (%.1f%%): many followers may not be active." % (er, tier, lo * 2))
+    elif er > hi:
         add("watch", "Engagement %.2f%% is far above the %s-tier range: check for giveaways or engagement groups." % (er, tier))
     else:
-        add("ok", "Engagement %.2f%% is within or above the usual %s-tier range (%.1f-%.1f%%)." % (er, tier, lo, hi))
+        add("ok", "Engagement %.2f%% is in the normal range for %s accounts (typical median %.1f%%)." % (er, tier, lo * 2))
     cl = statistics.median([c / l for l, c in zip(likes, comments) if l > 0] or [0])
-    if cl < 0.005:
+    if not any(likes):
+        add("watch", "Likes are hidden or zero on every post: ask the creator for their Insights.")
+    elif cl < 0.005:
         add("watch", "Very few comments per like (%.1f per 100 likes): likes may be bought, or the audience is passive." % (100 * cl))
     else:
         add("ok", "%.1f comments per 100 likes: real conversation is happening." % (100 * cl))
@@ -492,7 +558,7 @@ def check(profile):
     views = [float(p["views"]) for p in posts if p.get("views")]
     if views:
         vf = statistics.median(views) / f
-        add("ok" if vf >= 0.2 else "watch", "Reels reach %.0f%% of follower count on average%s." % (100 * vf, "" if vf >= 0.2 else ": low for an active audience"))
+        add("ok" if vf >= 0.2 else "watch", "Typical reel views are %.0f%% of follower count (median)%s." % (100 * vf, "" if vf >= 0.2 else ": low for an active audience"))
     paid = [p for p in posts if p.get("paid")]
     if posts:
         share = len(paid) / len(posts)
@@ -525,6 +591,14 @@ def check(profile):
 
 
 # ---------------------------------------------------------------- calendar file
+def _to_utc(d, tz):
+    try:
+        from zoneinfo import ZoneInfo
+        return d.replace(tzinfo=ZoneInfo(tz)).astimezone(dt.timezone.utc)
+    except Exception:  # no tz database: assume India Standard Time
+        return (d - dt.timedelta(hours=5, minutes=30)).replace(tzinfo=dt.timezone.utc)
+
+
 def ics(plan):
     """plan = {"items": [{"date": "2026-11-20", "time": "21:00", "title": "...", "notes": "..."}], "tz": "Asia/Kolkata"}"""
     tz = plan.get("tz", "Asia/Kolkata")
@@ -535,7 +609,7 @@ def ics(plan):
         e = d + dt.timedelta(minutes=int(it.get("minutes", 30)))
         esc = lambda s: str(s).replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\n", "\\n")
         L += ["BEGIN:VEVENT", "UID:cgs-%d-%s@creator-growth-studio" % (i, d.strftime("%Y%m%d%H%M")), "DTSTAMP:" + now,
-              "DTSTART;TZID=%s:%s" % (tz, d.strftime("%Y%m%dT%H%M%S")), "DTEND;TZID=%s:%s" % (tz, e.strftime("%Y%m%dT%H%M%S")),
+              "DTSTART:" + _to_utc(d, tz).strftime("%Y%m%dT%H%M%SZ"), "DTEND:" + _to_utc(e, tz).strftime("%Y%m%dT%H%M%SZ"),
               "SUMMARY:" + esc(it.get("title", "Post")), "DESCRIPTION:" + esc(it.get("notes", "")), "END:VEVENT"]
     L.append("END:VCALENDAR")
     return "\r\n".join(L) + "\r\n"
