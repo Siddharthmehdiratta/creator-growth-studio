@@ -1031,3 +1031,16 @@ html.snap body:not(.on-dark) .top-dark nav a[aria-current="page"] { color: var(-
   .way .t { grid-column: 2; justify-self: start; margin-top: 4px; }
 }
 .split > * { min-width: 0; }
+/* simple bar used on the report app pages (matches the website) */
+.site-bar .wrap { gap: 20px; }
+.bar-nav { display: flex; gap: 2px; margin-left: 8px; }
+.bar-nav a { color: var(--muted); text-decoration: none; font-size: 14.5px; font-weight: 500; padding: 6px 10px; border-radius: 8px; }
+.bar-nav a:hover { color: var(--ink); background: var(--canvas); }
+.site-bar .right .btn:first-child { display: none; }
+.bar-foot { border-top: 1px solid var(--line); padding: 24px 0 32px; font-size: 13.5px; color: var(--muted); }
+.bar-foot .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; }
+.bar-foot nav { display: flex; gap: 18px; }
+.bar-foot a { color: var(--muted); }
+@media (max-width: 860px) { .bar-nav { display: none; } .site-bar .right .btn:first-child { display: inline-flex; } .site-bar .right .btn.primary.sm { display: inline-flex; } }
+body.startpage { padding-bottom: 0 !important; }
+@media (max-width: 860px) { .site-bar .right .btn.ghost { display: none; } }

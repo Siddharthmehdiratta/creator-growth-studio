@@ -1,7 +1,7 @@
 // Checks the browser engine gives the same numbers as the Python engine on the sample account.
 const fs = require("fs"), path = require("path"), { execFileSync } = require("child_process");
 const root = path.resolve(__dirname, "..", "..");
-const E = require(path.join(root, "docs", "engine.js"));
+const E = require(path.join(root, "site", "public", "engine.js"));
 const csv = fs.readFileSync(path.join(root, "docs", "data", "sample-instagram-export.csv"), "utf8");
 const js = E.audit(E.loadPosts(csv), 2282);
 const py = JSON.parse(execFileSync("python3", ["-c", `

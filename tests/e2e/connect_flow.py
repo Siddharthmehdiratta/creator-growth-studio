@@ -1,10 +1,10 @@
 """End-to-end test of the Instagram flows with a fake connector (no network).
-Run: python3 tests/e2e/connect_flow.py http://localhost:8765/   (site served from docs/)"""
+Run: python3 tests/e2e/connect_flow.py http://localhost:8765/   (the built site, served under /creator-growth-studio/)"""
 import sys, json, csv, asyncio, re, urllib.parse
 from pathlib import Path
 from playwright.async_api import async_playwright
 
-BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8765/"
+BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8765/creator-growth-studio/"
 API = "https://connector.test"
 rows = list(csv.DictReader(open(Path(__file__).parents[2] / "docs/data/sample-instagram-export.csv", encoding="utf-8-sig")))
 def iso(t):  # "08/20/2026 16:00" in IST -> Instagram's UTC timestamp

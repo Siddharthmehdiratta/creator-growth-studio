@@ -37,7 +37,7 @@ Meta's screens change often, so the names above may differ slightly. Until Meta 
    - `IG_APP_SECRET`: your Instagram app secret (type **Secret**)
    - `SITE_URL`: `https://siddharthmehdiratta.github.io/creator-growth-studio/start.html` (type **Text**)
 6. Copy the Worker's address, for example `https://cgs-connect.your-name.workers.dev`. Use it to finish Part 1, step 7.
-7. In this repo, open `docs/config.js` and set `connectUrl` to that address. The Connect Instagram button then works.
+7. In this repo, open `site/public/config.js` and set `connectUrl` to that address. Then run `sh tools/build_site.sh` and push. The Connect Instagram button then works.
 
 ## Part 3: Switch on username lookup (5 minutes, optional)
 

@@ -2,7 +2,7 @@
 Run: python3 tests/e2e/report_flow.py http://localhost:8765/"""
 import sys, asyncio
 from playwright.async_api import async_playwright
-BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8765/"
+BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8765/creator-growth-studio/"
 TABS = ["overview", "posts", "ideas", "plan", "board"]
 fails = []
 def check(c, msg):
@@ -17,28 +17,23 @@ async def main():
         pg.on("pageerror", lambda e: errs.append(str(e))); pg.on("console", lambda m: m.type == "error" and errs.append(m.text))
         await pg.goto(BASE)
         check(await pg.locator("h1").count() == 1, "home has one h1")
-        check(await pg.locator(".hero .pick-card").count() == 3, "home asks which platform to grow")
-        check(await pg.locator(".slide").count() == 5 and await pg.locator(".slide-dots a").count() == 5, "home is 5 full-screen slides with dots")
-        await pg.click("#s-home .next-slide"); await pg.wait_for_timeout(900)
-        check(await pg.evaluate("document.querySelector('.slide-count').textContent") == "2 / 5", "Next button moves to slide 2")
-        PAGES = ["features.html", "how-it-works.html", "guide.html", "growth-guide.html", "faq.html", "help.html", "feedback.html", "report.html", "github.html", "sample-boardroom.html"]
+        check(await pg.locator("a[href$='start.html?p=instagram']").count() == 1 and await pg.locator("a[href$='start.html?p=youtube']").count() == 1, "home lets you pick a platform")
+        check(await pg.locator("img[src$='shots/overview.png']").count() == 1, "home shows a real screenshot of the report")
+        PAGES = ["features/", "how-it-works/", "pricing/", "guide/", "growth-guide/", "faq/", "changelog/", "help/", "contact/", "about/", "open-source/", "privacy/"]
         for page_ in PAGES:
-            await pg.goto(BASE + page_); check(await pg.locator("h1").count() == 1 and await pg.locator("header.top .dd").count() == 3, f"{page_} has a title and the shared menu")
-        await pg.goto(BASE + "help.html"); await pg.hover(".dd:nth-of-type(3) .dd-btn")
-        check(await pg.locator(".dd-menu a").filter(has_text="Report a problem").first.is_visible(), "Help menu opens and lists Report a problem")
-        for page_, n in [("features.html", 7), ("how-it-works.html", 5), ("guide.html", 7)]:
-            await pg.goto(BASE + page_); check(await pg.locator(".deck-slide").count() == n, f"{page_} is a {n}-slide deck")
-            await pg.click(".deck-bar .deck-next"); await pg.wait_for_timeout(700)
-            check(await pg.text_content(".deck-count") == f"2 of {n}", f"{page_}: Next goes to slide 2")
-        await pg.goto(BASE + "guide.html#b7"); await pg.wait_for_timeout(500)
-        check(await pg.is_visible(".deck-bar .deck-done"), "last guide slide offers Start my report")
-        await pg.goto(BASE + "report.html"); await pg.fill("#f-title", "Upload says no rows"); 
+            await pg.goto(BASE + page_); check(await pg.locator("h1").count() == 1 and await pg.locator("header.site-header nav[aria-label=Main]").count() == 1 and await pg.locator("footer").count() == 1, f"{page_} has a title, the menu and the footer")
+        for old, new in [("features.html", "features/"), ("report.html", "contact/#report"), ("github.html", "open-source/")]:
+            await pg.goto(BASE + old); await pg.wait_for_timeout(400); check(pg.url.endswith(new), f"old link {old} goes to {new}")
+        await pg.goto(BASE + "help/"); await pg.click("button:has-text('Help')"); await pg.wait_for_timeout(300)
+        check(await pg.get_by_role("menuitem", name="Report a problem").first.is_visible(), "Help menu opens and lists Report a problem")
+        await pg.keyboard.press("Escape")
+        await pg.goto(BASE + "contact/"); await pg.fill("#Problem-title", "Upload says no rows")
         async with ctx.expect_page() as newp:
-            await pg.click(".gh-form button[type=submit]")
+            await pg.click("#report button[type=submit]")
         gh = await newp.value; u = gh.url; await gh.close()
         from urllib.parse import unquote_plus; u = unquote_plus(unquote_plus(u)); check("issues/new" in u and "Upload says no rows" in u, "Report form opens a filled-in GitHub issue")
-        await pg.goto(BASE + "faq.html"); await pg.fill("#q", "password"); await pg.wait_for_timeout(100)
-        vis = await pg.evaluate("[...document.querySelectorAll('.faq-group details')].filter(d => !d.hidden).length")
+        await pg.goto(BASE + "faq/"); await pg.fill("#q", "password"); await pg.wait_for_timeout(300)
+        vis = await pg.locator(".faq-group details").count()
         check(0 < vis < 8, f"FAQ search narrows the questions ({vis} shown)")
         await pg.goto(BASE + "start.html")
         check(await pg.is_visible("#w1") and await pg.locator("[data-plat]").count() == 3, "start page asks the platform first")
@@ -93,11 +88,11 @@ async def main():
         # phone: nothing wider than the screen on any tab
         ph = await b.new_page(viewport={"width": 360, "height": 780}, is_mobile=True, has_touch=True); perr = []
         ph.on("pageerror", lambda e: perr.append(str(e)))
-        for page_ in ["", "features.html", "how-it-works.html", "guide.html", "growth-guide.html", "faq.html", "help.html", "feedback.html", "report.html", "github.html", "start.html"]:
+        for page_ in ["", "features/", "how-it-works/", "pricing/", "guide/", "growth-guide/", "faq/", "changelog/", "help/", "contact/", "about/", "open-source/", "privacy/", "start.html"]:
             await ph.goto(BASE + page_); wide = await ph.evaluate("document.documentElement.scrollWidth"); check(wide <= 360, f"{page_ or 'home'} fits a 360px phone ({wide})")
-        check(await ph.is_visible(".tabbar") and await ph.locator(".tabbar span").count() == 5, "phone shows a labelled tab bar")
-        await ph.click(".tabbar [data-sheet-open]"); check(await ph.is_visible("#sheet") and await ph.locator("#sheet .sheet-group a").count() >= 14, "phone Menu opens every destination")
-        await ph.click("[data-sheet-close]"); check(await ph.is_hidden("#sheet"), "phone menu closes")
+        await ph.goto(BASE); await ph.click("button[aria-label='Open the menu']"); await ph.wait_for_timeout(400)
+        check(await ph.locator("nav[aria-label=Mobile] a").count() >= 17, "phone Menu lists every page")
+        await ph.keyboard.press("Escape"); await ph.goto(BASE + "start.html")
         await ph.click("#w1 [data-sample]"); await ph.wait_for_selector("#app:not([hidden])")
         for t in TABS:
             await ph.evaluate(f"document.getElementById('tab-{t}').click()"); await ph.wait_for_timeout(100)
