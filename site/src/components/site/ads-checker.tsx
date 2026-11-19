@@ -81,7 +81,7 @@ Give me: 1) the single most likely reason for this result, 2) three new versions
       <div className="lg:sticky lg:top-24 lg:self-start">
         <div className="rounded-3xl border bg-background p-6 sm:p-8" aria-live="polite">
           <p className="text-sm text-muted-foreground">Is the ad working?</p>
-          <p className="mt-1 text-4xl font-bold tracking-tight sm:text-5xl" style={{ color: TONE[r.verdict] }}>{LABEL[r.verdict]}{r.early && (r.verdict === "working" || r.verdict === "losing" || r.verdict === "close") ? ", so far" : ""}</p>
+          <p className="font-display mt-1 text-4xl font-bold tracking-tight sm:text-5xl" style={{ color: TONE[r.verdict] }}>{LABEL[r.verdict]}{r.early && (r.verdict === "working" || r.verdict === "losing" || r.verdict === "close") ? ", so far" : ""}</p>
           <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-y py-5 text-sm">
             <div><dt className="text-muted-foreground">Cost per {word === "1,000 people reached" ? "result" : word}</dt><dd className="mt-0.5 text-2xl font-semibold tabular-nums">{a.goal === "reach" ? "–" : money(r.cpr)}</dd></div>
             <div><dt className="text-muted-foreground">Cost per 1,000 reached</dt><dd className="mt-0.5 text-2xl font-semibold tabular-nums">{money(r.cpm)}</dd></div>

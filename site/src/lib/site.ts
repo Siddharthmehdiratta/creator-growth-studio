@@ -17,6 +17,7 @@ export type Item = { title: string; text: string; href: string; icon: string };
 export const MENU: { name: string; items: Item[] }[] = [
   { name: "Product", items: [
     { title: "Get my report", text: "Log in, type a username or upload a file", href: "/connect/", icon: "BarChart3" },
+    { title: "Growth Plan", text: "What to post, when and why", href: "/growth-plan/", icon: "Target" },
     { title: "Post Checker", text: "Score a post before you share it", href: "/post-checker/", icon: "ScanSearch" },
     { title: "Ads Checker", text: "See if an ad pays for itself", href: "/ads/", icon: "Megaphone" },
     { title: "Planner", text: "Plan posts, get calendar reminders", href: "/planner/", icon: "CalendarDays" },

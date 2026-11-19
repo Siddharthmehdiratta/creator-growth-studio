@@ -1,3 +1,4 @@
+import { Showcase } from "@/components/site/showcase";
 import DIMS from "@/lib/shot-dims.json";
 import { ArrowRightIcon, BadgeCheckIcon, CalendarDaysIcon, CheckIcon, LightbulbIcon, LockIcon, MessageSquareTextIcon, SparklesIcon, StarIcon, UsersIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -68,14 +69,30 @@ export default function Home() {
 
         {/* ---------------- free tools ---------------- */}
         <section className="mx-auto max-w-7xl px-5 py-20 sm:py-28 lg:px-8">
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Five free tools.</h2>
-          <div className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-5">
-            {[["/connect/", "Your report", "Stars for every post and why each worked.", "BarChart3"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"], ["/ads/", "Ads Checker", "See if an ad pays for itself.", "Megaphone"]].map(([h, t, d]) => (
+          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Six free tools.</h2>
+          <div className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+            {[["/growth-plan/", "Growth Plan", "What to post, when and why, from your goal.", "Target"], ["/connect/", "Your report", "Stars for every post and why each worked.", "BarChart3"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"], ["/ads/", "Ads Checker", "See if an ad pays for itself.", "Megaphone"]].map(([h, t, d]) => (
               <a key={t} href={href(h)} className="tool-row group">
                 <span className="flex items-center justify-between text-xl font-semibold tracking-tight">{t}<ArrowRightIcon className="size-5 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-foreground" /></span>
                 <span className="mt-2 block text-muted-foreground">{d}</span>
               </a>
             ))}
+          </div>
+        </section>
+
+        {/* ---------------- growth plan ---------------- */}
+        <section className="bg-[#15131F] text-white">
+          <div className="mx-auto max-w-7xl px-5 py-24 lg:px-8">
+            <h2 className="max-w-3xl text-3xl font-semibold tracking-[-0.03em] sm:text-6xl">What do you want from Instagram?</h2>
+            <p className="mt-5 max-w-xl text-lg text-white/70">Pick one. Answer 8 short questions. Get what to post, when, and why.</p>
+            <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {[["followers", "More followers", "Reach people who do not follow you yet."], ["views", "More views", "Keep people watching to the end."], ["engagement", "More comments", "Get your followers talking."], ["sales", "Sales", "Turn viewers into buyers."], ["deals", "Brand deals", "Numbers a brand will pay for."]].map(([g, t, d]) => (
+                <a key={g} href={href(`/growth-plan/?goal=${g}`)} className="goal-card group">
+                  <span><span className="font-display block text-2xl font-semibold tracking-tight">{t}</span><span className="goal-sub mt-2 block text-sm text-white/60">{d}</span></span>
+                  <ArrowRightIcon aria-hidden className="size-5 transition-transform duration-200 group-hover:translate-x-1" />
+                </a>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -110,79 +127,38 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ---------------- features bento ---------------- */}
+        {/* ---------------- inside the product ---------------- */}
         <section className="mx-auto max-w-7xl px-5 py-24 lg:px-8">
-          <div className="max-w-2xl">
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">The advice of a growth team, in one free report.</h2>
-          </div>
-          <div className="mt-14 grid gap-4 lg:grid-cols-6">
-            <article className="overflow-hidden rounded-3xl border bg-background lg:col-span-4">
-              <div className="p-7 pb-0 sm:p-9 sm:pb-0">
-                <StarIcon className="size-5 text-primary" />
-                <h3 className="mt-4 text-xl font-semibold tracking-tight">Every post, rated</h3>
-                <p className="mt-2 max-w-md text-muted-foreground">One to five stars from watch time, sends, follows and saves, compared with your own usual post.</p>
-              </div>
-              <div className="mt-8 ml-7 overflow-hidden rounded-tl-xl border-t border-l shadow-sm sm:ml-9"><Shot src="/shots/posts.png" alt="The posts list, each with stars and a score." className="object-cover object-left-top" /></div>
-            </article>
-            <article className="overflow-hidden rounded-3xl border bg-linear-to-b from-[#F6F3FF] to-background lg:col-span-2">
-              <div className="p-7 sm:p-9">
-                <LightbulbIcon className="size-5 text-primary" />
-                <h3 className="mt-4 text-xl font-semibold tracking-tight">Know why it worked</h3>
-                <p className="mt-2 text-muted-foreground">Each number next to your usual, with a plain reason and what to do next time.</p>
-              </div>
-              <div className="mx-7 overflow-hidden rounded-t-xl border border-b-0 shadow-sm sm:mx-9"><Shot src="/shots/post-phone.png" alt="One post opened: reach, watch time and sends compared with usual." /></div>
-            </article>
-            <article className="overflow-hidden rounded-3xl border bg-background lg:col-span-2">
-              <div className="p-7 sm:p-9">
-                <SparklesIcon className="size-5 text-primary" />
-                <h3 className="mt-4 text-xl font-semibold tracking-tight">What to post next</h3>
-                <p className="mt-2 text-muted-foreground">Ideas built from your own best posts, with the format, day and time that work for you.</p>
-              </div>
-              <div className="mx-7 overflow-hidden rounded-t-xl border border-b-0 shadow-sm sm:mx-9"><Shot src="/shots/ideas-phone.png" alt="Post ideas built from the account's best posts." /></div>
-            </article>
-            <article className="overflow-hidden rounded-3xl border bg-background lg:col-span-4">
-              <div className="grid gap-8 p-7 sm:p-9 md:grid-cols-2">
-                <div>
-                  <CalendarDaysIcon className="size-5 text-primary" />
-                  <h3 className="mt-4 text-xl font-semibold tracking-tight">A 30-day plan</h3>
-                  <p className="mt-2 text-muted-foreground">Pick a goal. See if it's realistic at your pace, then get a calendar of your best days that drops into Google Calendar.</p>
-                  <ul className="mt-6 grid gap-3 text-sm">
-                    {[[MessageSquareTextIcon, "Comments sorted into questions, requests and spam"], [UsersIcon, "An AI boardroom of six advisers in Claude"], [BadgeCheckIcon, "An audience health check brands trust"]].map(([I, t]) => {
-                      const C = I as typeof StarIcon;
-                      return <li key={t as string} className="flex items-center gap-2.5"><C className="size-4 text-primary" />{t as string}</li>;
-                    })}
-                  </ul>
-                </div>
-                <div className="overflow-hidden rounded-xl border shadow-sm"><Shot src="/shots/plan.png" alt="The 30-day plan with a growth goal." /></div>
-              </div>
-            </article>
+          <h2 className="max-w-3xl text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">The advice of a growth team, in one free report.</h2>
+          <div className="mt-12">
+            <Showcase label="Parts of the report" items={[
+              { title: "Every post, rated", text: "One to five stars from watch time, sends, follows and saves, compared with your own usual post.", shot: "/shots/posts.png", alt: "The posts list, each with stars and a score." },
+              { title: "Know why it worked", text: "Each number next to your usual, with a plain reason and what to do next time.", shot: "/shots/post.png", alt: "One post opened: reach, watch time and sends compared with usual." },
+              { title: "What to post next", text: "Ideas built from your own best posts, with the format, day and time that work for you.", shot: "/shots/ideas.png", alt: "Post ideas built from the account's best posts." },
+              { title: "A 30-day plan", text: "Pick a goal. See if it's realistic at your pace, then get a calendar of your best days that drops into Google Calendar.", shot: "/shots/plan.png", alt: "The 30-day plan with a growth goal." },
+            ]} />
           </div>
           <div className="mt-10"><Button variant="outline" className="rounded-xl" asChild><a href={href("/features/")}>See every feature<ArrowRightIcon /></a></Button></div>
         </section>
 
         {/* ---------------- how it works ---------------- */}
         <section className="border-y bg-[#FAFAFC]">
-          <div className="mx-auto grid max-w-7xl items-center gap-14 px-5 py-24 lg:grid-cols-2 lg:px-8">
+          <div className="mx-auto max-w-7xl px-5 py-24 lg:px-8">
             <div>
               <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Three steps. Under a minute.</h2>
-              <ol className="mt-10 grid gap-8">
+              <ol className="mt-12 grid gap-x-10 gap-y-8 md:grid-cols-3">
                 {[["Pick your platform", "Instagram, YouTube or Twitch. The next screen shows only what fits."],
                   ["Bring your numbers", "Type a username, upload the file your platform gives you, or type in your streams."],
                   ["Read your report", "Stars for every post, the reasons, and a plan for the next 30 days."]].map(([t, d], i) => (
-                  <li key={t} className="flex gap-5">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-full border bg-background text-sm font-semibold text-primary shadow-xs">{i + 1}</span>
-                    <div><h3 className="text-lg font-semibold tracking-tight">{t}</h3><p className="mt-1 text-muted-foreground">{d}</p></div>
+                  <li key={t} className="border-t border-foreground/15 pt-6">
+                    <span aria-hidden className="font-display block text-7xl leading-none font-bold tracking-[-0.05em] text-foreground/15 tabular-nums">{i + 1}</span>
+                    <h3 className="mt-5 text-xl font-semibold tracking-tight">{t}</h3><p className="mt-2 text-muted-foreground">{d}</p>
                   </li>
                 ))}
               </ol>
               <div className="mt-10 flex flex-wrap gap-3">
                 <Button className="h-11 rounded-xl px-5" asChild><a href={href(SITE.app)}>Get my free report</a></Button>
                 <Button variant="ghost" className="h-11 rounded-xl px-5" asChild><a href={href("/guide/")}>Read the beginner's guide</a></Button>
-              </div>
-            </div>
-            <div className="relative mx-auto w-full max-w-sm">
-              <div className="overflow-hidden rounded-[2.4rem] border-8 border-[#15131F] bg-[#15131F] shadow-2xl">
-                <Shot src="/shots/overview-phone.png" alt="The report on a phone." className="rounded-[1.8rem]" />
               </div>
             </div>
           </div>
