@@ -21,8 +21,8 @@ const FAQ = [
   ["Where does my data go?", "Nowhere. The report is worked out inside your own browser, and uploaded files never leave your device."],
 ];
 
-function Shot({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
-  return <img src={href(src)} alt={alt} loading="lazy" className={`block w-full ${className}`} />;
+function Shot({ src, alt, className = "", eager = false }: { src: string; alt: string; className?: string; eager?: boolean }) {
+  return <img src={href(src)} alt={alt} loading={eager ? "eager" : "lazy"} decoding="async" className={`block w-full ${className}`} />;
 }
 
 export default function Home() {
@@ -73,10 +73,10 @@ export default function Home() {
             <div className="relative">
               <div aria-hidden className="absolute -inset-x-10 -top-10 -bottom-4 -z-10 rounded-[3rem] bg-[radial-gradient(50%_60%_at_50%_40%,#C9B8FF_0%,transparent_70%)] opacity-60 blur-2xl" />
               <div className="mx-auto w-full max-w-[19rem] overflow-hidden rounded-[2.4rem] border-8 border-[#15131F] bg-[#15131F] shadow-2xl shadow-primary/20 sm:hidden">
-                <Shot src="/shots/overview-phone.png" alt="The report on a phone, for a fictional sample account." className="rounded-[1.8rem]" />
+                <Shot eager src="/shots/overview-phone.png" alt="The report on a phone, for a fictional sample account." className="rounded-[1.8rem]" />
               </div>
               <BrowserMockup url="creator-growth-studio · sample report" className="relative hidden overflow-hidden rounded-2xl shadow-2xl shadow-primary/10 sm:block">
-                <Shot src="/shots/overview.png" alt="The report's overview for a fictional sample account: average rating 3.5 stars, typical reach 1,380, and the patterns that stand out." />
+                <Shot eager src="/shots/overview.png" alt="The report's overview for a fictional sample account: average rating 3.5 stars, typical reach 1,380, and the patterns that stand out." />
                 <BorderBeam size={260} duration={9} colorFrom="#6C47FF" colorTo="#C4B5FD" />
               </BrowserMockup>
               <p className="mt-4 text-center text-xs text-muted-foreground">Real report, fictional sample account.</p>
