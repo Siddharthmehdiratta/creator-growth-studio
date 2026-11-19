@@ -61,7 +61,7 @@ export default function Home() {
               <picture>
                 <source media="(max-width: 640px)" type="image/webp" srcSet={href("/shots/overview-phone.webp")} width={780} height={1688} />
                 <source type="image/webp" srcSet={href("/shots/overview.webp")} width={2560} height={1600} />
-                <img src={href("/shots/overview.png")} width={2560} height={1600} alt="The report's overview for a fictional sample account: average rating 3.5 stars, typical reach 1,380, and the patterns that stand out." loading="eager" fetchPriority="high" decoding="async" className="block h-auto w-full" />
+                <img src={href("/shots/overview.png")} width={2560} height={1600} alt="The report's overview for a fictional sample account: average rating 7 out of 10, typical reach 1,380, and the patterns that stand out." loading="eager" fetchPriority="high" decoding="async" className="block h-auto w-full" />
               </picture>
             </a>
           </div>
@@ -71,7 +71,7 @@ export default function Home() {
         <section className="mx-auto max-w-7xl px-5 py-20 sm:py-28 lg:px-8">
           <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Six free tools.</h2>
           <div className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
-            {[["/growth-plan/", "Growth Plan", "What to post, when and why, from your goal.", "Target"], ["/connect/", "Your report", "Stars for every post and why each worked.", "BarChart3"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"], ["/ads/", "Ads Checker", "See if an ad pays for itself.", "Megaphone"]].map(([h, t, d]) => (
+            {[["/growth-plan/", "Growth Plan", "What to post, when and why, from your goal.", "Target"], ["/connect/", "Your report", "Every post rated out of 10, and why.", "BarChart3"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"], ["/ads/", "Ads Checker", "See if an ad pays for itself.", "Megaphone"]].map(([h, t, d]) => (
               <a key={t} href={href(h)} className="tool-row group">
                 <span className="flex items-center justify-between text-xl font-semibold tracking-tight">{t}<ArrowRightIcon className="size-5 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-foreground" /></span>
                 <span className="mt-2 block text-muted-foreground">{d}</span>
@@ -132,7 +132,7 @@ export default function Home() {
           <h2 className="max-w-3xl text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">The advice of a growth team, in one free report.</h2>
           <div className="mt-12">
             <Showcase label="Parts of the report" items={[
-              { title: "Every post, rated", text: "One to five stars from watch time, sends, follows and saves, compared with your own usual post.", shot: "/shots/posts.png", alt: "The posts list, each with stars and a score." },
+              { title: "Every post, rated", text: "A rating out of 10 from watch time, sends, follows and saves, compared with your own usual post.", shot: "/shots/posts.png", alt: "The posts list, each with a rating out of 10." },
               { title: "Know why it worked", text: "Each number next to your usual, with a plain reason and what to do next time.", shot: "/shots/post.png", alt: "One post opened: reach, watch time and sends compared with usual." },
               { title: "What to post next", text: "Ideas built from your own best posts, with the format, day and time that work for you.", shot: "/shots/ideas.png", alt: "Post ideas built from the account's best posts." },
               { title: "A 30-day plan", text: "Pick a goal. See if it's realistic at your pace, then get a calendar of your best days that drops into Google Calendar.", shot: "/shots/plan.png", alt: "The 30-day plan with a growth goal." },
@@ -149,7 +149,7 @@ export default function Home() {
               <ol className="mt-12 grid gap-x-10 gap-y-8 md:grid-cols-3">
                 {[["Pick your platform", "Instagram, YouTube or Twitch. The next screen shows only what fits."],
                   ["Bring your numbers", "Type a username, upload the file your platform gives you, or type in your streams."],
-                  ["Read your report", "Stars for every post, the reasons, and a plan for the next 30 days."]].map(([t, d], i) => (
+                  ["Read your report", "Every post rated out of 10, the reasons, and a plan for the next 30 days."]].map(([t, d], i) => (
                   <li key={t} className="border-t border-foreground/15 pt-6">
                     <span aria-hidden className="font-display block text-7xl leading-none font-bold tracking-[-0.05em] text-foreground/15 tabular-nums">{i + 1}</span>
                     <h3 className="mt-5 text-xl font-semibold tracking-tight">{t}</h3><p className="mt-2 text-muted-foreground">{d}</p>
@@ -171,7 +171,7 @@ export default function Home() {
             <p className="mt-4 text-muted-foreground">Every rule the report uses has a public source you can check.</p>
           </div>
           <div className="mt-12 grid gap-px overflow-hidden rounded-3xl border bg-border md:grid-cols-3">
-            {[["3 signals", "Watch time, sends per reach and likes per reach are what Instagram's head names as most important. Your stars weigh them most.", "Buffer", "https://buffer.com/resources/instagram-algorithms/"],
+            {[["3 signals", "Watch time, sends per reach and likes per reach are what Instagram's head names as most important. Your ratings weigh them most.", "Buffer", "https://buffer.com/resources/instagram-algorithms/"],
               ["3 to 5 posts", "A week more than doubled follower growth against 1 to 2, in Buffer's study of 2 million Instagram posts.", "Buffer", "https://buffer.com/resources/how-often-to-post-on-instagram/"],
               ["5 hashtags", "Instagram caps hashtags at 5 per post since December 2025. Your plan never suggests more.", "Business Today", "https://www.businesstoday.in/technology/news/story/no-more-hashtag-stuffing-instagram-limits-hashtag-usage-to-just-5-per-reel-and-post-507444-2025-12-19"]].map(([n, d, s, u]) => (
               <div key={n} className="bg-background p-8">

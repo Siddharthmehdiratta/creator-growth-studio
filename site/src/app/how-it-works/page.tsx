@@ -3,7 +3,7 @@ import { CheckIcon, LockIcon, ShieldCheckIcon, DatabaseIcon } from "lucide-react
 import { CtaBand, PageShell, Section, SectionHead } from "@/components/site/shell";
 import { InstagramMark, TwitchMark, YouTubeMark } from "@/components/site/brand-icons";
 
-export const metadata: Metadata = { title: "How it works", description: "How your numbers become a report: every way to bring data, how the stars are worked out, how patterns are tested, and where your data goes." };
+export const metadata: Metadata = { title: "How it works", description: "How your numbers become a report: every way to bring data, how the ratings are worked out, how patterns are tested, and where your data goes." };
 
 const WAYS = [
   [InstagramMark, "Instagram", "Type a username or profile link", "Followers, likes, comments and Reel views on the last 50 posts", "Seconds"],
@@ -17,10 +17,10 @@ const WEIGHTS = [["Average watch time", "30%"], ["Sends per 1,000 reached", "30%
 
 export default function Page() {
   return (
-    <PageShell group="Product" kicker="How it works" title="From your numbers to a plan, in under a minute" lead="Pick your platform, bring your numbers, read your report. Here's exactly what happens at each step, and how the stars are worked out.">
+    <PageShell group="Product" kicker="How it works" title="From your numbers to a plan, in under a minute" lead="Pick your platform, bring your numbers, read your report. Here's exactly what happens at each step, and how the ratings are worked out.">
       <Section>
         <ol className="grid gap-4 md:grid-cols-3">
-          {[["Pick your platform", "Instagram, YouTube or Twitch. The next step changes to fit it."], ["Bring your numbers", "Type a username, connect, upload an export or type in your streams."], ["Read your report", "Stars for every post, why each worked, what to post next and a 30-day plan."]].map(([t, d], i) => (
+          {[["Pick your platform", "Instagram, YouTube or Twitch. The next step changes to fit it."], ["Bring your numbers", "Upload your Instagram download, or type in your streams. Username lookup is coming soon."], ["Read your report", "Stars for every post, why each worked, what to post next and a 30-day plan."]].map(([t, d], i) => (
             <li key={t} className="rounded-3xl border p-7">
               <span className="text-sm font-semibold text-primary">Step {i + 1}</span>
               <h2 className="mt-3 text-xl font-semibold tracking-tight">{t}</h2>
@@ -44,7 +44,7 @@ export default function Page() {
       <Section>
         <div className="grid grid-cols-1 gap-12 [&>*]:min-w-0 lg:grid-cols-2">
           <div>
-            <SectionHead eyebrow="The method" title="How the stars are worked out" text="Each post gets a score where 100 means a normal post for you. The score blends how many people a post reached with how strongly they reacted." />
+            <SectionHead eyebrow="The method" title="How the ratings are worked out" text="Each post gets a score where 100 means a normal post for you. The score blends how many people a post reached with how strongly they reacted." />
             <ol className="mt-8 grid gap-5">
               {[["Per person reached.", "Sends, follows, likes, saves and comments are divided by reach, so a big post doesn't win just for being big."], ["Compared with you.", "Each signal is compared with your own typical post, not with other accounts."], ["Weighted by what matters.", "Watch time and sends count most, because Instagram's head names them as top signals."], ["Turned into stars.", "3.5 stars is your normal. 5 stars is about twice as good as usual."]].map(([b, t], i) => (
                 <li key={b} className="flex gap-4"><span className="grid size-8 shrink-0 place-items-center rounded-full border text-sm font-semibold text-primary">{i + 1}</span><p><b className="font-medium">{b}</b> <span className="text-muted-foreground">{t}</span></p></li>

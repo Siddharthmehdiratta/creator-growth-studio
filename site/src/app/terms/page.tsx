@@ -10,7 +10,7 @@ export default function Page() {
       <article className="mx-auto max-w-3xl px-5 py-16 text-[1.04rem] leading-[1.75] text-[#2D2A3A]">
         {[["Free and open source", "Creator Growth Studio is free to use, copy and change under the MIT licence. There is nothing to buy and no account to create."],
           ["No guarantees", "The tools are provided as they are, without a warranty of any kind. If something is wrong, tell us and we will try to fix it, but we cannot promise it will suit every purpose."],
-          ["Estimates, not promises", "Star ratings, post scores and ideas are estimates worked out from your own numbers and from what the platforms have published. They are a guide, not a promise of reach, followers or income."],
+          ["Estimates, not promises", "Ratings, post scores and ideas are estimates worked out from your own numbers and from what the platforms have published. They are a guide, not a promise of reach, followers or income."],
           ["Not professional advice", "Nothing here is legal, tax, financial or other professional advice. Check important decisions with a qualified person."],
           ["Your content stays yours", "What you type or upload belongs to you. See the privacy page for what happens to it."],
           ["Use it fairly", "Use the tools on accounts you own or manage, and follow each platform's own rules."],

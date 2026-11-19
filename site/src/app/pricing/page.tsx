@@ -7,7 +7,7 @@ import { SITE, href } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Pricing", description: "Creator Growth Studio is free and open source under the MIT licence." };
 
-const ALL = ["Star ratings for every post", "Why each post worked", "What to post next", "A 30-day plan for Google Calendar", "Comments sorted", "AI boardroom in Claude", "Audience health check", "Instagram, YouTube and Twitch", "Unlimited reports", "Your data never leaves your browser"];
+const ALL = ["A rating out of 10 for every post", "Why each post worked", "What to post next", "A 30-day plan for Google Calendar", "Comments sorted", "AI boardroom in Claude", "Audience health check", "Instagram, YouTube and Twitch", "Unlimited reports", "Your data never leaves your browser"];
 
 export default function Page() {
   return (

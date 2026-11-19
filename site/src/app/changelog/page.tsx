@@ -7,6 +7,7 @@ const LOG = [
   ["19 Nov 2026", "A new website", ["A proper home page with real screenshots of the report", "Separate pages for features, pricing, help, contact, about and privacy", "Report a problem and give feedback straight from the contact page"]],
   ["18 Nov 2026", "YouTube and Twitch", ["Pick your platform first: Instagram, YouTube or Twitch", "YouTube Studio exports, with Shorts and long videos rated separately", "Twitch streams typed in by hand, rated on viewer-hours, follows and chat"]],
   ["18 Nov 2026", "Type a username, or connect Instagram", ["Read any public Creator or Business account by username", "Connect your own account for reach, watch time, skips, sends and comments"]],
+  ["19 Nov 2026", "Ratings out of 10 that learn", ["Every post rated out of 10 against your own usual post", "The Post Checker learns from your report: format, length, day, time and hashtags", "A caption score out of 10", "Growth Plan: 8 questions, a weekly pattern, and why", "Ads Checker: is your ad paying for itself?"]],
   ["18 Nov 2026", "First release", ["Star ratings for every post, why each worked, what to post next and a 30-day plan", "An AI boardroom of six advisers in Claude", "An audience health check for brands"]],
 ] as const;
 

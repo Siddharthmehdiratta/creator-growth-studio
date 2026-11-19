@@ -30,7 +30,7 @@ export const MENU: { name: string; items: Item[] }[] = [
     { title: "Instagram algorithm", text: "What Feed, Reels, Explore and Stories reward", href: "/algorithm/", icon: "Cpu" },
     { title: "Beginner's guide", text: "Your first report in 7 steps", href: "/guide/", icon: "BookOpen" },
     { title: "Growth guide 2026", text: "What works on Instagram, YouTube and Twitch", href: "/growth-guide/", icon: "TrendingUp" },
-    { title: "How it works", text: "How the stars and patterns are worked out", href: "/how-it-works/", icon: "Workflow" },
+    { title: "How it works", text: "How the ratings and patterns are worked out", href: "/how-it-works/", icon: "Workflow" },
     { title: "FAQ", text: "Quick answers, searchable", href: "/faq/", icon: "Search" },
   ]},
   { name: "Help", items: [

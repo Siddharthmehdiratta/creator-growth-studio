@@ -27,9 +27,9 @@
 
   /* ---------- small UI helpers ---------- */
   function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 2600); }
-  function stars(n, lg) {
+  function stars(n, lg, bare) {
     let h = ""; for (let i = 1; i <= 5; i++) { const fill = n >= i ? "#F5A524" : n >= i - 0.5 ? "url(#g-half)" : "#E3E1EE"; h += `<svg viewBox="0 0 20 20"><use href="#i-star" fill="${fill}"/></svg>`; }
-    return `<span class="stars${lg ? " lg" : ""}" role="img" aria-label="${n * 2} out of 10">${h}<b class="out10">${n * 2}/10</b></span>`;
+    return `<span class="stars${lg ? " lg" : ""}" role="img" aria-label="${n * 2} out of 10">${h}${bare ? "" : `<b class="out10">${n * 2}/10</b>`}</span>`;
   }
   function ratio(r) { if (r == null || !isFinite(r)) return ""; const cls = r >= 1.15 ? "up" : r <= 0.85 ? "down" : "flat"; return `<span class="ratio ${cls}">${r >= 10 ? Math.round(r) : r.toFixed(1)}x</span>`; }
   const TYPE_IC = { reel: "M8 5v14l11-7z", video: "M8 5v14l11-7z", short: "M8 5v14l11-7z", stream: "M4 3h16v11l-4 4h-4l-3 3v-3H4zM11 7v4M15 7v4", carousel: "M7 4h11a2 2 0 0 1 2 2v11M4 8h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" };
@@ -107,7 +107,7 @@
       busy("Opening your Instagram download...");
       const d = await window.CGS_DYI.read(file); busy();
       if (!d.posts && !d.rows.length) return fail("No posts were found in that file. When you request your download, tick Posts and Reels, and choose JSON.");
-      if (d.withNumbers < 3) return fail(`Your file has ${d.posts} posts, but Instagram didn't include their numbers (reach, views, likes). For stars you need numbers: press Connect Instagram, or upload the Meta Business Suite CSV.`);
+      if (d.withNumbers < 3) return fail(`Your file has ${d.posts} posts, but Instagram didn't include their numbers (reach, views, likes). For ratings you need numbers: press Connect Instagram, or upload the Meta Business Suite CSV.`);
       const meta = { source: "file", fileName: file.name + " (Instagram download)" };
       if (loadRows(d.rows, meta)) { sess.set("cgs-data", JSON.stringify({ kind: "rows", rows: d.rows, meta })); toast(`Read ${d.rows.length} posts from your Instagram download.`); }
     } catch (e) { busy(); fail(e.message || "Couldn't read that file. Download it again from Instagram, in JSON format."); }
@@ -334,10 +334,10 @@
           <div><h2>${esc(META.handle ? (/\s/.test(META.handle) ? META.handle : "@" + META.handle.replace(/^@/, "")) : "Your account")}</h2><p>${POSTS.length} posts${d.length ? `, ${fmtDate(d[0].time)} to ${fmtDate(d[d.length - 1].time)}` : ""}. 100 means normal for you, so the report fits any account size.</p>
           <span class="ah-tags">${lv ? `<span class="ah-tag lvl">${lv.level}</span>` : ""}<span class="ah-tag">${{ sample: "Fictional sample", public: "Public numbers", instagram: "Live from Instagram", file: "From your file" }[META.source] || "Your data"}</span>${S.niche ? `<span class="ah-tag">${esc(niche().name)}</span>` : ""}</span></div></div>
         <div class="ah-kpis">
-          <div><span>Average rating</span><b>${avg.toFixed(1)}</b>${stars(avg)}</div>
+          <div><span>Average rating</span><b>${avg * 2}/10</b>${stars(avg, false, true)}</div>
           <div><span>${PUBLIC() ? "Typical likes" : TWITCH() ? "Typical viewer-hours" : META.detected && META.detected.platform === "youtube" ? "Typical views" : "Typical reach"}</span><b>${PUBLIC() ? fmtN(E.median(POSTS.map(p => p.likes))) : fmtN(A.median_reach)}</b><small>${best ? `${fName(best.value, true)} do best` : "per post"}</small></div>
           <div><span>${unit().charAt(0).toUpperCase() + unit().slice(1)}</span>${S.followers ? `<b>${fmtN(S.followers)}</b><small>${lv ? lv.level + " level" : ""}</small>` : `<b>–</b><button class="linkbtn" data-act="adjust">Add count</button>`}</div>
-          <div><span>Posts analysed</span><b>${POSTS.length}</b><small>${top.length ? `${A.reports.filter(r => r.stars >= 4).length} rated 4 stars or more` : ""}</small></div>
+          <div><span>Posts analysed</span><b>${POSTS.length}</b><small>${top.length ? `${A.reports.filter(r => r.stars >= 4).length} rated 8/10 or more` : ""}</small></div>
         </div>
       </div>
       <div class="grid g2">
@@ -395,7 +395,7 @@
     $("p-posts").innerHTML = `
       <div class="panel-head"><div><h2>${TWITCH() ? "Every stream, rated" : META.detected && META.detected.platform === "youtube" ? "Every video, rated" : "Every post, rated"}</h2><p>Open a post to see each number against your usual, why it worked or didn't, and what to do next time.</p></div></div>
       <div class="toolbar">
-        <label class="sr" for="pf">Show</label><select class="inline-select" id="pf">${[["all", "All posts"], ["top", "4 stars and up"], ["low", "2.5 stars and under"]].concat(types.length > 1 ? types.map(t => [t, fName(t, true) + " only"]) : []).map(([v, t]) => `<option value="${v}"${S.filter === v ? " selected" : ""}>${t}</option>`).join("")}</select>
+        <label class="sr" for="pf">Show</label><select class="inline-select" id="pf">${[["all", "All posts"], ["top", "8/10 and up"], ["low", "5/10 and under"]].concat(types.length > 1 ? types.map(t => [t, fName(t, true) + " only"]) : []).map(([v, t]) => `<option value="${v}"${S.filter === v ? " selected" : ""}>${t}</option>`).join("")}</select>
         <label class="sr" for="ps">Sort</label><select class="inline-select" id="ps">${[["new", "Newest first"], ["best", "Highest rated"], ["worst", "Lowest rated"], ["reach", "Most reach"]].map(([v, t]) => `<option value="${v}"${S.sort === v ? " selected" : ""}>${t}</option>`).join("")}</select>
         <span class="count">${list.length} of ${POSTS.length} posts</span>
       </div>
@@ -633,7 +633,7 @@
     [["reach", A.drivers_reach], ["sends", A.drivers_sends], ["watch time", A.drivers_watch]].forEach(([w, ds]) => { const s = strong(ds); if (s.length) L.push(`- What changes ${w}, other factors held equal: ${s.slice(0, 5).map(dr).join("; ")}.`); });
     L.push(`- Best posts: ${A.top.slice(0, 3).map(p => `"${p.caption}" (${p.stars} stars; ${p.good.join(", ") || "solid all round"})`).join(" | ")}.`);
     L.push(`- Weakest posts: ${A.bottom.slice(0, 3).map(p => `"${p.caption}" (${p.stars} stars; ${p.bad.join(", ") || "weak all round"})`).join(" | ")}.`);
-    L.push("- Scores: 100 = their typical post. 3.5 stars = typical, 5 stars = about twice as good.");
+    L.push("- Scores: 100 = their typical post. 7/10 = typical, 10/10 = about twice as good.");
     L.push("", "THEIR AUDIENCE", "- If they attached an Insights Audience screenshot, use it. Otherwise estimate the audience from the niche, country and language, and label it \"estimate\".",
       "- Income is never shown by Instagram or YouTube. Estimate spending power from city type and age, and say it's an estimate. Reference: urban Indians spend about ₹6,996 per person a month, rural about ₹4,122 (MoSPI HCES 2023-24).");
     L.push("", "PLATFORM RULES TO RESPECT (checked 18 Nov 2026)", "- " + D.sources.signals.text, "- " + D.sources.hashtags.text, "- " + D.sources.trial.text, "- " + D.sources.original.text, "- " + D.sources.indexing.text, "- " + D.sources.asci.text);

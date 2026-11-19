@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   openGraph: { type: "website", siteName: "Creator Growth Studio", url: "https://siddharthmehdiratta.github.io/creator-growth-studio/", images: [{ url: "https://siddharthmehdiratta.github.io/creator-growth-studio/og.png", width: 1200, height: 630, alt: "Creator Growth Studio: Know what to post next." }] },
   twitter: { card: "summary_large_image", images: ["https://siddharthmehdiratta.github.io/creator-growth-studio/og.png"] },
   title: { default: "Creator Growth Studio: see which posts grow your account, and why", template: "%s · Creator Growth Studio" },
-  description: "Free. Pick Instagram, YouTube or Twitch and get a star rating for every post, why it worked, what to post next and a 30-day plan.",
+  description: "Free. Pick Instagram, YouTube or Twitch and get every post rated out of 10, why it worked, what to post next and a 30-day plan.",
   icons: { icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2315131F'/%3E%3Cpath d='M9 21v-3M14 21v-7M19 21v-10M24 21V8' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" },
 };
 

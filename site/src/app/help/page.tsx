@@ -11,7 +11,7 @@ const CARDS = [
   ["/guide/", "BookOpen", "Beginner's guide", "Your first report in 7 steps"], ["/faq/", "Search", "FAQ", "21 quick answers, searchable"],
   [SITE.ask, "MessageCircleQuestion", "Ask a question", "Post it in our public Q&A"], ["/contact/#report", "Bug", "Report a problem", "Something broke or looks wrong"],
   ["/contact/#feedback", "MessageSquareHeart", "Give feedback", "Tell us what to keep or change"], ["/open-source/", "Github", "Open source", "Code, licence and how to help"],
-  ["/growth-guide/", "TrendingUp", "Growth guide 2026", "What the platforms reward"], ["/how-it-works/", "Workflow", "How it works", "How the stars and patterns work"],
+  ["/growth-guide/", "TrendingUp", "Growth guide 2026", "What the platforms reward"], ["/how-it-works/", "Workflow", "How it works", "How the ratings and patterns work"],
 ];
 const POPULAR = [FAQS[0][1][1], FAQS[1][1][1], FAQS[2][1][0], FAQS[4][1][0]];
 

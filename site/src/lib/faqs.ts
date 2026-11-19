@@ -11,9 +11,9 @@ export const FAQS: [string, [string, string][]][] = [
     ["What does Connect Instagram add?", "Reach, views, average watch time, skip rate, sends, saves, follows, profile visits and your comments. Instagram only shares these with the account owner, after they log in through Instagram's own page."],
     ["Is the username box working yet?", "Username lookup and Connect Instagram switch on once the site's Meta app is set up and approved. Until then, uploading your export gives the same detail and takes about 2 minutes."],
   ]],
-  ["Stars and scores", [
-    ["How are the stars worked out?", "Each post gets a score where 100 is your typical post. It blends reach with quality signals per person reached: watch time and sends count most, then follows, then likes, saves, comments and hold rate. 3.5 stars is typical; 5 stars is about twice as good as usual."],
-    ["Why did a post with lots of views get few stars?", "Stars look at how strongly people reacted, not just how many saw it. A post can reach many people but get few sends, follows or a short watch time. The post's detail shows which signal held it back."],
+  ["Ratings and scores", [
+    ["How are the ratings worked out?", "Each post gets a score where 100 is your typical post. It blends reach with quality signals per person reached: watch time and sends count most, then follows, then likes, saves, comments and hold rate. 3.5 stars is typical; 5 stars is about twice as good as usual."],
+    ["Why did a post with lots of views get a low rating?", "Ratings look at how strongly people reacted, not just how many saw it. A post can reach many people but get few sends, follows or a short watch time. The post's detail shows which signal held it back."],
     ["How sure are the patterns?", "Only patterns that pass a strict statistical test are shown, compared like with like. Each one says whether the evidence is strong or good. Thin groups are never shown as rules."],
   ]],
   ["YouTube and Twitch", [

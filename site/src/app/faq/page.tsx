@@ -4,11 +4,11 @@ import { PageShell } from "@/components/site/shell";
 import { FaqSearch } from "@/components/site/faq-search";
 import { SITE, href } from "@/lib/site";
 
-export const metadata: Metadata = { title: "FAQ", description: "Answers about getting started, Instagram connection, star ratings, YouTube, Twitch, privacy and brand checks." };
+export const metadata: Metadata = { title: "FAQ", description: "Answers about getting started, Instagram connection, ratings, YouTube, Twitch, privacy and brand checks." };
 
 export default function Page() {
   return (
-    <PageShell group="Learn" kicker="FAQ" title="Frequently asked questions" lead="Quick answers about getting started, connecting Instagram, the stars, privacy, and YouTube and Twitch. Type a word to search.">
+    <PageShell group="Learn" kicker="FAQ" title="Frequently asked questions" lead="Quick answers about getting started, connecting Instagram, the ratings, privacy, and YouTube and Twitch. Type a word to search.">
       <div className="mx-auto max-w-3xl px-5 py-16">
         <FaqSearch />
         <div className="mt-16 rounded-3xl border bg-[#FAFAFC] p-8">

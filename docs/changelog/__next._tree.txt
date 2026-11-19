@@ -1,4 +1,4 @@
-:HL["/creator-growth-studio/_next/static/chunks/13isp5mes-quc.css","style"]
+:HL["/creator-growth-studio/_next/static/chunks/147gzw6lkodz5.css","style"]
 :HL["https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap","style"]
 :HL["https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":4112,"slots":{"children":{"name":"changelog","param":null,"prefetchHints":4160,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"es2bF9P-z_K_SrYgAloVU"}
+0:{"tree":{"name":"","param":null,"prefetchHints":4112,"slots":{"children":{"name":"changelog","param":null,"prefetchHints":4160,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"hgyA3X0OrF_77gA4bOGFG"}

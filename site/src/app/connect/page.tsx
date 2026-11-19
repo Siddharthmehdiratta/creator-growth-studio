@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { CheckIcon, FileArchiveIcon, KeyRoundIcon, AtSignIcon, ShieldCheckIcon } from "lucide-react";
+import { CheckIcon, FileArchiveIcon, KeyRoundIcon, ShieldCheckIcon, SparklesIcon } from "lucide-react";
 import { PageShell, Section, SectionHead } from "@/components/site/shell";
 import { Modal } from "@/components/site/modal";
-import { HandleForm } from "@/components/site/handle-form";
 import { InstagramMark, TwitchMark, YouTubeMark } from "@/components/site/brand-icons";
 import { href } from "@/lib/site";
 
@@ -12,32 +11,17 @@ const Tick = ({ children }: { children: React.ReactNode }) => <li className="fle
 
 export default function Page() {
   return (
-    <PageShell group="Product" kicker="Connect" title="Bring your Instagram, your way" lead="Three ways in. Pick the one that suits you. You never type your Instagram password on this site.">
+    <PageShell group="Product" kicker="Connect" title="Bring your Instagram, your way" lead="Upload the file Instagram gives you, or try the sample first. You never type your Instagram password on this site.">
       <Section>
         <div className="grid gap-5 lg:grid-cols-3">
-          <div className="relative flex flex-col rounded-3xl border-2 border-primary/40 bg-[#FAF8FF] p-7">
-            <span className="absolute -top-3 left-6 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">Most detail</span>
-            <KeyRoundIcon className="size-6 text-primary" />
-            <h2 className="mt-4 text-xl font-semibold tracking-tight">Log in with Instagram</h2>
-            <p className="mt-2 text-sm text-muted-foreground">You log in on Instagram's own page, then come straight back with your report.</p>
-            <ul className="mt-5 grid gap-2"><Tick>Reach, views, watch time and skips</Tick><Tick>Sends, saves, follows and comments</Tick><Tick>Your password stays with Instagram</Tick></ul>
-            <a href={href("/start.html?p=instagram&connect=1")} className="mt-auto inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary pt-0 font-medium text-primary-foreground [margin-top:1.75rem]"><InstagramMark className="size-5" />Log in with Instagram</a>
-            <p className="mt-2 text-xs text-muted-foreground">Needs a Creator or Business account. Switching on once Meta approves our app.</p>
-          </div>
-          <div className="flex flex-col rounded-3xl border p-7">
-            <AtSignIcon className="size-6 text-primary" />
-            <h2 className="mt-4 text-xl font-semibold tracking-tight">Type a username</h2>
-            <p className="mt-2 text-sm text-muted-foreground">Yours or anyone's public Creator or Business account. Great for checking a creator before a brand deal.</p>
-            <ul className="mt-5 grid gap-2"><Tick>Followers, likes and comments</Tick><Tick>Reel views on the last 50 posts</Tick><Tick>Nothing to log into</Tick></ul>
-            <HandleForm />
-          </div>
-          <div className="flex flex-col rounded-3xl border p-7">
+          <div className="relative flex flex-col rounded-3xl border-2 border-foreground p-7">
+            <span className="absolute -top-3 left-6 rounded-full bg-foreground px-3 py-1 text-xs font-medium text-background">Works today</span>
             <FileArchiveIcon className="size-6 text-primary" />
             <h2 className="mt-4 text-xl font-semibold tracking-tight">Upload a file</h2>
             <p className="mt-2 text-sm text-muted-foreground">Instagram's own "Download your information" ZIP, or a Meta Business Suite CSV. Read in your browser, never uploaded.</p>
             <ul className="mt-5 grid gap-2"><Tick>Works today, no approval needed</Tick><Tick>Up to 90 days of numbers (Meta CSV)</Tick><Tick>Stays on your device</Tick></ul>
             <div className="mt-auto grid gap-2 [margin-top:1.75rem]">
-              <a href={href("/start.html?p=instagram")} className="inline-flex h-12 items-center justify-center rounded-xl border font-medium hover:bg-muted">Upload my file</a>
+              <a href={href("/start.html?p=instagram")} data-slot="button" className="inline-flex h-12 items-center justify-center rounded-xl bg-primary font-medium text-primary-foreground">Upload my file</a>
               <Modal wide title="How to get your Instagram file" trigger={<button type="button" className="text-sm font-medium text-primary">How do I get the file?</button>}>
                 <p className="font-medium text-foreground">Option 1: Meta Business Suite (best, has reach and saves)</p>
                 <ol className="mt-2 grid list-decimal gap-1.5 pl-5"><li>On a computer, open Meta Business Suite, then Insights, then Content.</li><li>Pick the last 90 days.</li><li>Press Export data, then CSV.</li></ol>
@@ -46,6 +30,20 @@ export default function Page() {
                 <p className="mt-5 text-sm">Instagram changes these menus from time to time. If a label is different, search for "Download your information" in Settings.</p>
               </Modal>
             </div>
+          </div>
+          <div className="flex flex-col rounded-3xl border p-7">
+            <SparklesIcon className="size-6 text-primary" />
+            <h2 className="mt-4 text-xl font-semibold tracking-tight">Try the sample first</h2>
+            <p className="mt-2 text-sm text-muted-foreground">See a full report for a made-up gaming creator. No file needed. Then the Post Checker learns from it, so you can try that too.</p>
+            <ul className="mt-5 grid gap-2"><Tick>Ready in one click</Tick><Tick>Every post rated out of 10</Tick><Tick>Nothing to download</Tick></ul>
+            <a href={href("/start.html?sample=1")} data-slot="button" className="inline-flex h-12 items-center justify-center rounded-xl border font-medium hover:bg-muted [margin-top:1.75rem] mt-auto">Open the sample report</a>
+          </div>
+          <div className="flex flex-col rounded-3xl border border-dashed bg-[#FAFAFC] p-7">
+            <span className="w-fit rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground">Coming soon</span>
+            <h2 className="mt-4 text-xl font-semibold tracking-tight">Log in with Instagram, or type a username</h2>
+            <p className="mt-2 text-sm text-muted-foreground">The quickest ways in. They switch on once Meta approves this app. You will log in on Instagram's own page, so your password stays with Instagram.</p>
+            <ul className="mt-5 grid gap-2"><Tick>Reach, views, watch time and skips</Tick><Tick>Any public Creator or Business account</Tick><Tick>Nothing to download</Tick></ul>
+            <p className="mt-auto pt-7 text-sm text-muted-foreground">Until then, the upload gives you the same report.</p>
           </div>
         </div>
       </Section>

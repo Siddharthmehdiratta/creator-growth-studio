@@ -4,10 +4,10 @@ import { BrowserMockup } from "@/components/velora/browser-mockup";
 import { CtaBand, PageShell, Section, Shot } from "@/components/site/shell";
 import { href } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Features", description: "Star ratings for every post, why each worked, what to post next, a 30-day plan, comments sorted, an AI boardroom and an audience health check." };
+export const metadata: Metadata = { title: "Features", description: "A rating out of 10 for every post, why each worked, what to post next, a 30-day plan, comments sorted, an AI boardroom and an audience health check." };
 
 const ROWS = [
-  { id: "stars", eyebrow: "Star ratings", title: "Every post, rated against your own usual", text: "One to five stars from the signals Instagram says matter most: watch time, sends and likes per person reached, plus follows, saves and comments.", ticks: ["3.5 stars is a normal post for you", "5 stars is about twice as good as usual", "Sort by best, worst, newest or reach, and filter by format"], shot: "/shots/posts.png", alt: "The posts list, each post with stars and a score." },
+  { id: "stars", eyebrow: "Ratings out of 10", title: "Every post, rated against your own usual", text: "A rating out of 10 from the signals Instagram says matter most: watch time, sends and likes per person reached, plus follows, saves and comments.", ticks: ["3.5 stars is a normal post for you", "5 stars is about twice as good as usual", "Sort by best, worst, newest or reach, and filter by format"], shot: "/shots/posts.png", alt: "The posts list, each post with stars and a score." },
   { id: "why", eyebrow: "Why it worked", title: "Know exactly what made a post work", text: "Open any post to see reach, views, watch time, skips, sends, saves, follows and comments next to your usual, then a plain reason and what to do next time.", ticks: ["Patterns compare like with like, so luck isn't sold as a rule", "Every finding says how strong the evidence is"], shot: "/shots/post.png", alt: "One post opened, each number compared with the account's usual." },
   { id: "next", eyebrow: "What to post next", title: "Ideas built from your own best posts", text: "Part 2s of your winners, posts built to be sent, and angles from your niche, each with the format, day and time that work for your audience.", ticks: ["Trial reels to test new ideas safely", "A do-more and do-less list from your own numbers"], shot: "/shots/ideas.png", alt: "Post ideas with format, day, time and angle." },
   { id: "plan", eyebrow: "30-day plan", title: "A goal you can reach, and a calendar to get there", text: "Pick a follower goal. The report says if it's realistic at your pace, then builds a posting calendar on your best days that drops into Google Calendar.", ticks: ["Realistic, ambitious or very hard, from your real follows per post", "Each day has a hook, an angle and up to 5 hashtags"], shot: "/shots/plan.png", alt: "The 30-day plan and growth goal." },
@@ -46,7 +46,7 @@ export default function Page() {
             return <div key={t as string} className="rounded-3xl border p-7"><C className="size-5 text-primary" /><h3 className="mt-4 text-lg font-semibold tracking-tight">{t as string}</h3><p className="mt-2 text-sm text-muted-foreground">{d as string}</p></div>;
           })}
         </div>
-        <p className="mt-8 text-sm text-muted-foreground">Want the method behind the stars? <a className="font-medium text-primary" href={href("/how-it-works/")}>Read how it works</a>.</p>
+        <p className="mt-8 text-sm text-muted-foreground">Want the method behind the ratings? <a className="font-medium text-primary" href={href("/how-it-works/")}>Read how it works</a>.</p>
       </Section>
       <CtaBand />
     </PageShell>
