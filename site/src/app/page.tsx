@@ -67,11 +67,37 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ---------------- what it does, in 17 seconds ---------------- */}
+        <section className="mx-auto max-w-7xl px-5 py-20 sm:py-24 lg:px-8">
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.3fr] lg:gap-16">
+            <div>
+              <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">A bad post and a good one, side by side.</h2>
+              <p className="mt-5 text-lg text-muted-foreground">
+                Paste a caption before you post it. You get a rating out of 10 and the reasons behind it, in plain words.
+                Fix the reasons and the rating moves.
+              </p>
+              <a href={href("/post-checker/")} className="mt-7 inline-flex h-12 items-center rounded-xl bg-foreground px-5 font-medium text-background transition-transform duration-150 active:scale-[0.97]">
+                Score a post
+              </a>
+            </div>
+            <figure className="overflow-hidden rounded-2xl border bg-[#FAF9F7]">
+              <video
+                src={href("/video/post-score-demo.mp4")}
+                poster={href("/video/post-score-demo.jpg")}
+                width={1280} height={720}
+                autoPlay muted loop playsInline preload="none"
+                aria-label="A weak caption scores 4 out of 10 with three reasons. The caption is rewritten and the same post scores 9 out of 10."
+                className="block h-auto w-full"
+              />
+            </figure>
+          </div>
+        </section>
+
         {/* ---------------- free tools ---------------- */}
-        <section className="mx-auto max-w-7xl px-5 py-20 sm:py-28 lg:px-8">
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Six free tools.</h2>
+        <section className="mx-auto max-w-7xl border-t px-5 py-20 sm:py-28 lg:px-8">
+          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Seven free tools.</h2>
           <div className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
-            {[["/growth-plan/", "Growth Plan", "What to post, when and why, from your goal.", "Target"], ["/connect/", "Your report", "Every post rated out of 10, and why.", "BarChart3"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"], ["/ads/", "Ads Checker", "See if an ad pays for itself.", "Megaphone"]].map(([h, t, d]) => (
+            {[["/growth-plan/", "Growth Plan", "What to post, when and why, from your goal.", "Target"], ["/connect/", "Your report", "Every post rated out of 10, and why.", "BarChart3"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/experiments/", "Experiments", "Change one thing. See if it worked.", "FlaskConical"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"], ["/ads/", "Ads Checker", "See if an ad pays for itself.", "Megaphone"]].map(([h, t, d]) => (
               <a key={t} href={href(h)} className="tool-row group">
                 <span className="flex items-center justify-between text-xl font-semibold tracking-tight">{t}<ArrowRightIcon className="size-5 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-foreground" /></span>
                 <span className="mt-2 block text-muted-foreground">{d}</span>

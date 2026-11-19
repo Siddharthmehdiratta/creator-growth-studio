@@ -1,7 +1,9 @@
 import re, subprocess, json, sys
 from pathlib import Path
 from PIL import Image
-for root in ["/home/claude/cgs/site", "/home/claude/repo/site"]:
+import os, sys
+roots = sys.argv[1:] or [os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "site")]
+for root in roots:
     src = Path(root, "src")
     keys = set(json.loads(subprocess.run(["node", "-e", "console.log(JSON.stringify(Object.keys(require('lucide-react'))))"], cwd=root, capture_output=True, text=True).stdout))
     toks = set()

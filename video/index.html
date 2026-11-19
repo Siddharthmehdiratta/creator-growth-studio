@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      /* The site's own palette: ink on paper, one accent used once. No gradient, no glow, no purple. */
+      :root {
+        --ink: #15131f;
+        --paper: #faf9f7;
+        --line: #e3e0da;
+        --muted: #6b6760;
+        --bad: #b4342a;
+        --good: #1d6b3f;
+        --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); }
+      #root { width: 100%; height: 100%; font-family: var(--font); color: var(--ink); position: relative; }
+
+      /* Everything lives inside the 90% action-safe box; text inside 80% title-safe. */
+      .stage { position: absolute; inset: 70px 110px; display: flex; gap: 90px; align-items: center; justify-content: center; }
+
+      .phone { width: 640px; flex: none; border: 2px solid var(--line); border-radius: 36px; background: #fff; padding: 40px; }
+      .ph-top { display: flex; align-items: center; gap: 14px; }
+      .dot { width: 44px; height: 44px; border-radius: 50%; background: var(--line); }
+      .ph-name { font-size: 30px; font-weight: 600; }
+      .ph-img { margin-top: 26px; height: 380px; border-radius: 20px; background: var(--line); }
+      .ph-cap { margin-top: 26px; font-size: 33px; line-height: 1.45; color: var(--ink); min-height: 160px; }
+
+      .panel { flex: none; width: 880px; }
+      .score-row { display: flex; align-items: baseline; gap: 20px; }
+      .score { font-size: 230px; font-weight: 600; letter-spacing: -0.04em; line-height: 0.9; font-variant-numeric: tabular-nums; }
+      .outof { font-size: 56px; color: var(--muted); font-weight: 500; }
+      .verdict { margin-top: 12px; font-size: 46px; font-weight: 500; }
+      .reasons { margin-top: 44px; display: grid; gap: 22px; }
+      .reason { display: flex; gap: 20px; align-items: flex-start; font-size: 37px; line-height: 1.35; }
+      .mark { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 30px; font-weight: 700; margin-top: 2px; }
+      .mark.minus { background: var(--bad); }
+      .mark.plus { background: var(--good); }
+      .chip { margin-top: 40px; display: inline-flex; align-items: center; gap: 16px; border: 2px solid var(--line); border-radius: 999px; padding: 16px 28px; font-size: 30px; }
+      .chip b { font-variant-numeric: tabular-nums; }
+
+      .end { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; background: var(--ink); color: var(--paper); }
+      .end h2 { font-size: 92px; font-weight: 600; letter-spacing: -0.03em; }
+      .end p { margin-top: 24px; font-size: 38px; color: #c9c5bd; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="17.4" data-width="1920" data-height="1080" data-track-kind="graphics">
+
+      <div id="stage" class="stage clip" data-start="0" data-duration="14.6" data-track-index="0">
+        <div class="phone">
+          <div class="ph-top"><div class="dot"></div><div class="ph-name">your post</div></div>
+          <div class="ph-img"></div>
+          <p id="cap-a" class="ph-cap">New drop is live. Link in bio. Check it out!!</p>
+          <p id="cap-b" class="ph-cap" style="display:none">Which one would you actually wear to work? Send this to the friend who owns forty of them.</p>
+        </div>
+
+        <div class="panel">
+          <div class="score-row"><span id="score" class="score">0</span><span class="outof">out of 10</span></div>
+          <p id="verdict" class="verdict">Fix before posting</p>
+          <div class="reasons">
+            <div id="r1" class="reason"><span class="mark minus">−</span><span>The first line says nothing. Nobody stops for it.</span></div>
+            <div id="r2" class="reason"><span class="mark minus">−</span><span>No reason to send it to anyone.</span></div>
+            <div id="r3" class="reason"><span class="mark minus">−</span><span>Nothing to answer, so nobody comments.</span></div>
+          </div>
+          <div id="chip" class="chip" style="opacity:0">Caption on its own: <b>9 out of 10</b></div>
+        </div>
+      </div>
+
+      <div id="end" class="end clip" data-start="14.6" data-duration="2.8" data-track-index="1">
+        <h2>Creator Growth Studio</h2>
+        <p>Free. Open source. No login to try it.</p>
+      </div>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const q = (s) => document.querySelector(s);
+      const counter = { v: 0 };
+      const score = q("#score");
+      const setScore = () => { score.textContent = String(Math.round(counter.v)); };
+
+      // 0.0 The post is already on screen at frame 0: that frame is the thumbnail on a social player,
+      // so it has to show the subject rather than an empty background. Only the caption settles in.
+      tl.fromTo(".ph-img", { scale: 0.97 }, { scale: 1, duration: 0.5, ease: "power3.out" }, 0.1);
+
+      // 1.0 It is scored. The number counts, it does not jump.
+      tl.fromTo(".score-row, #verdict", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.0);
+      tl.to(counter, { v: 4, duration: 1.0, ease: "power2.out", onUpdate: setScore }, 1.0);
+
+      // 2.6 Three reasons, one at a time, so each is read.
+      ["#r1", "#r2", "#r3"].forEach((id, i) => {
+        tl.fromTo(id, { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 2.6 + i * 0.9);
+      });
+
+      // 6.4 The caption is rewritten. Swap at a single point, then fade the new one in.
+      tl.to("#cap-a", { opacity: 0, duration: 0.3, ease: "power2.in" }, 6.4);
+      tl.set("#cap-a", { display: "none" }, 6.7);
+      tl.set("#cap-b", { display: "block", opacity: 0 }, 6.7);
+      tl.to("#cap-b", { opacity: 1, duration: 0.4, ease: "power3.out" }, 6.7);
+
+      // 7.4 The reasons turn, the score climbs.
+      const fixed = [
+        "The first line is a question. People stop to answer it.",
+        "It asks for a send, and sends travel further than likes.",
+        "There is something to reply to, so comments come.",
+      ];
+      ["#r1", "#r2", "#r3"].forEach((id, i) => {
+        const at = 7.4 + i * 0.7;
+        tl.to(id, { opacity: 0, duration: 0.25, ease: "power2.in" }, at);
+        tl.call(() => {
+          const el = q(id);
+          el.querySelector(".mark").className = "mark plus";
+          el.querySelector(".mark").textContent = "+";
+          el.querySelector("span:last-child").textContent = fixed[i];
+        }, null, at + 0.25);
+        tl.to(id, { opacity: 1, duration: 0.3, ease: "power3.out" }, at + 0.28);
+      });
+      tl.to(counter, { v: 9, duration: 1.6, ease: "power2.out", onUpdate: setScore }, 7.6);
+      tl.call(() => { q("#verdict").textContent = "Ready to post"; }, null, 8.9);
+
+      // 10.2 The caption gets a score of its own, so the screen keeps moving while the result is read.
+      tl.fromTo("#chip", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.2);
+      tl.fromTo("#chip b", { scale: 0.94 }, { scale: 1, duration: 0.35, ease: "power3.out" }, 10.5);
+
+      // 11.9 The phone steps back, the result takes the frame.
+      tl.to(".phone", { scale: 0.96, opacity: 0.75, duration: 0.7, ease: "power2.inOut" }, 11.9);
+      tl.to(".panel", { x: -40, duration: 0.7, ease: "power2.inOut" }, 11.9);
+
+      // 14.0 Out.
+      tl.to("#stage", { opacity: 0, duration: 0.5, ease: "power2.in" }, 14.0);
+
+      // 14.6 End card, held long enough to read both lines.
+      tl.fromTo("#end h2", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 14.7);
+      tl.fromTo("#end p", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 15.0);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

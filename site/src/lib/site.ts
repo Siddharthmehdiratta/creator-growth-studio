@@ -20,6 +20,7 @@ export const MENU: { name: string; items: Item[] }[] = [
     { title: "Growth Plan", text: "What to post, when and why", href: "/growth-plan/", icon: "Target" },
     { title: "Post Checker", text: "Score a post before you share it", href: "/post-checker/", icon: "ScanSearch" },
     { title: "Ads Checker", text: "See if an ad pays for itself", href: "/ads/", icon: "Megaphone" },
+    { title: "Experiments", text: "Change one thing, see if it worked", href: "/experiments/", icon: "FlaskConical" },
     { title: "Planner", text: "Plan posts, get calendar reminders", href: "/planner/", icon: "CalendarDays" },
     { title: "Claude helpers", text: "Captions, hooks and scripts in one click", href: "/claude/", icon: "Sparkles" },
     { title: "Sample report", text: "A designed PDF of a real report", href: "/sample/", icon: "FileText" },
