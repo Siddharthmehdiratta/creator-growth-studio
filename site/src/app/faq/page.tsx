@@ -11,7 +11,7 @@ export default function Page() {
     <PageShell group="Learn" kicker="FAQ" title="Frequently asked questions" lead="Quick answers about getting started, connecting Instagram, the ratings, privacy, and YouTube and Twitch. Type a word to search.">
       <div className="mx-auto max-w-3xl px-5 py-16">
         <FaqSearch />
-        <div className="mt-16 rounded-3xl border bg-[#FAFAFC] p-8">
+        <div className="mt-16 rounded-3xl border bg-surface p-8">
           <h2 className="text-xl font-semibold tracking-tight">Still have a question?</h2>
           <p className="mt-2 text-muted-foreground">Ask in our public Q&amp;A on GitHub. Answers stay there for the next person.</p>
           <div className="mt-6 flex flex-wrap gap-3"><Button className="rounded-xl" asChild><a href={SITE.ask}>Ask a question</a></Button><Button variant="outline" className="rounded-xl" asChild><a href={href("/contact/")}>Other ways to reach us</a></Button></div>

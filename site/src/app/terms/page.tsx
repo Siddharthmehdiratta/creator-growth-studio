@@ -17,7 +17,7 @@ export default function Page() {
           ["Names and trademarks", "Instagram, YouTube and Twitch are trademarks of their owners. Claude is made by Anthropic. This project is independent and is not affiliated with, endorsed by or sponsored by any of them."]].map(([t, d]) => (
           <section key={t} className="border-b py-7 first:pt-0 last:border-b-0"><h2 className="text-xl font-semibold tracking-tight">{t}</h2><p className="mt-2 text-muted-foreground">{d}</p></section>
         ))}
-        <p className="mt-6 flex flex-wrap gap-x-6 gap-y-2"><a href={`https://github.com/${SITE.repo}/blob/main/LICENSE`} className="font-medium text-primary">Read the MIT licence</a><a href={href("/privacy/")} className="font-medium text-primary">Privacy</a><a href={href("/contact/")} className="font-medium text-primary">Contact us</a></p>
+        <p className="mt-6 flex flex-wrap gap-x-6 gap-y-2"><a href={`https://github.com/${SITE.repo}/blob/main/LICENSE`} className="font-medium text-link">Read the MIT licence</a><a href={href("/privacy/")} className="font-medium text-link">Privacy</a><a href={href("/contact/")} className="font-medium text-link">Contact us</a></p>
       </article>
     </PageShell>
   );

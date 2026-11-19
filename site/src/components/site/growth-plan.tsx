@@ -72,7 +72,7 @@ Give me: 1) 12 post ideas for the next 4 weeks that fit this plan, each with its
 
   return (
     <div className="grid grid-cols-1 gap-8 [&>*]:min-w-0 lg:grid-cols-[1fr_1.15fr]">
-      <form className="grid content-start gap-8 rounded-3xl border bg-[#FAFAFC] p-6 sm:p-8 print:hidden" onSubmit={(e) => e.preventDefault()}>
+      <form className="grid content-start gap-8 rounded-3xl border bg-surface p-6 sm:p-8 print:hidden" onSubmit={(e) => e.preventDefault()}>
         {choice("goal")}
         <label className="grid gap-3"><span className="text-base font-semibold tracking-tight">What is your account about?</span>
           <input className={input} value={a.niche} onChange={(e) => set("niche", e.target.value)} placeholder="Budget travel in India" autoComplete="off" /></label>
@@ -100,7 +100,7 @@ Give me: 1) 12 post ideas for the next 4 weeks that fit this plan, each with its
           <h2 className="text-xl font-semibold tracking-tight">Your week</h2>
           <ol className="mt-4 grid grid-cols-7 gap-1.5 text-center">
             {DAY_NAMES.map((d) => { const w = p.week.find((x) => x.day === d); return (
-              <li key={d} className={`grid min-h-24 content-between rounded-2xl border p-2 ${w ? "border-foreground bg-foreground text-background" : "bg-[#FAFAFC] text-muted-foreground"}`}>
+              <li key={d} className={`grid min-h-24 content-between rounded-2xl border p-2 ${w ? "border-foreground bg-foreground text-background" : "bg-surface text-muted-foreground"}`}>
                 <span className="text-xs">{d}</span>{w ? <><span className="text-sm font-semibold sm:text-base">{w.format}</span><span className="text-xs tabular-nums opacity-70">{p.time}</span></> : <span className="text-xs">{p.stories ? "Story" : "Rest"}</span>}
               </li>); })}
           </ol>
@@ -112,7 +112,7 @@ Give me: 1) 12 post ideas for the next 4 weeks that fit this plan, each with its
             ["What to post", <>{p.mix.map((m) => <span key={m.format} className="mb-2 block"><b className="text-foreground">{m.count} × {m.format}.</b> {m.why}<Source src={m.src} /></span>)}{p.stories && <span className="block"><b className="text-foreground">Stories.</b> {p.storiesWhy.text}<Source src={p.storiesWhy.src} /></span>}</>],
             ["The number to move", <><b className="text-foreground">{p.signal.name}.</b> {p.signal.why}<Source src={p.signal.src} /><span className="mt-2 block">{p.signal.how}</span></>],
             ["How to open", <><b className="text-foreground">{p.hook.title}.</b> {p.hook.text}</>],
-            ["How to end", <><b className="text-foreground">{p.cta.title}.</b> {p.cta.text} <span className="mt-2 block rounded-xl bg-[#FAFAFC] p-3 text-foreground">"{p.cta.example}"</span></>],
+            ["How to end", <><b className="text-foreground">{p.cta.title}.</b> {p.cta.text} <span className="mt-2 block rounded-xl bg-surface p-3 text-foreground">"{p.cta.example}"</span></>],
             [p.fix.title, <ol key="f" className="grid list-decimal gap-1.5 pl-5">{p.fix.steps.map((s) => <li key={s}>{s}</li>)}{p.fix.src && <li className="list-none"><Source src={p.fix.src} /></li>}</ol>],
             ["What to track", <ul key="w" className="grid list-disc gap-1.5 pl-5">{p.watch.map((s) => <li key={s}>{s}</li>)}</ul>],
             ["Your 4-week test", <ol key="t" className="grid list-decimal gap-1.5 pl-5">{p.test.map((s) => <li key={s}>{s}</li>)}</ol>],

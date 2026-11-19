@@ -16,6 +16,13 @@ const PLATFORMS = [
   { name: "Twitch", sub: "Live streams", p: "twitch", Mark: TwitchMark, tone: "from-[#9146FF] to-[#6441A5]" },
 ];
 
+/* The three things people come for. One line each on what you get and what you need. */
+const WAYS = [
+  ["/connect/", "Free report", "Every post you have made, rated out of 10, with the reason and what to post next.", "You need your username or your Instagram file"],
+  ["/profile-review/", "Profile review", "Your name, bio, pinned posts and habits, scored out of 10, with the one thing to fix first.", "You need 5 minutes. No login"],
+  ["/post-checker/", "Post review", "Your next post scored before you share it, with each reason and the fix.", "You need your caption"],
+];
+
 const FAQ = [
   ["Is it really free?", "Yes. It's open source under the MIT licence. There's nothing to buy, no trial and no account to create."],
   ["Do I need to give my password?", "No. Typing a username reads public numbers. Connect Instagram uses Instagram's own login page, so the tool never sees your password."],
@@ -33,7 +40,7 @@ export default function Home() {
       <SiteHeader />
       <main id="main" className="overflow-x-clip">
         {/* ---------------- hero ---------------- */}
-        <section className="overflow-hidden border-b">
+        <section className="border-b">
           <div className="mx-auto max-w-7xl px-5 pt-14 sm:pt-20 lg:px-8 lg:pt-24">
             <h1 className="hero-title rise">Know what to post next.</h1>
             <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:items-end lg:justify-between">
@@ -46,24 +53,31 @@ export default function Home() {
                     <a href={href("/connect/")}>Get my free report<ArrowRightIcon /></a>
                   </Button>
                   <Button size="lg" variant="outline" className="h-12 rounded-xl px-6 text-base" asChild>
-                    <a href={href("/post-checker/")}>Check a post</a>
+                    <a href={href("/profile-review/")}>Review my profile</a>
                   </Button>
                 </div>
                 <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                  {["No password", "No sign-up", "Open source"].map((t) => <li key={t} className="flex items-center gap-1.5"><CheckIcon className="size-4 text-primary" />{t}</li>)}
+                  {["No password", "No sign-up", "Open source"].map((t) => <li key={t} className="flex items-center gap-1.5"><CheckIcon className="size-4 text-link" />{t}</li>)}
                 </ul>
               </div>
             </div>
           </div>
-          <div className="mx-auto mt-14 max-w-7xl px-5 lg:mt-20 lg:px-8">
-            <a href={href("/sample/")} className="hero-frame rise" style={{ "--i": 3 } as React.CSSProperties}>
-              <span className="hero-frame-bar" aria-hidden><i /><i /><i /><b>Sample report</b></span>
-              <picture>
-                <source media="(max-width: 640px)" type="image/webp" srcSet={href("/shots/overview-phone.webp")} width={780} height={1688} />
-                <source type="image/webp" srcSet={href("/shots/overview.webp")} width={2560} height={1600} />
-                <img src={href("/shots/overview.png")} width={2560} height={1600} alt="The report's overview for a fictional sample account: average rating 7 out of 10, typical reach 1,380, and the patterns that stand out." loading="eager" fetchPriority="high" decoding="async" className="block h-auto w-full" />
-              </picture>
-            </a>
+          <div className="mx-auto mt-14 max-w-7xl px-5 pb-16 lg:mt-20 lg:px-8 lg:pb-24">
+            <h2 className="sr-only">Three ways to start</h2>
+            <div className="rise grid gap-4 md:grid-cols-3" style={{ "--i": 3 } as React.CSSProperties}>
+              {WAYS.map(([h, t, d, need], i) => (
+                <a key={t} href={href(h)} className={`way group ${i === 0 ? "way-lead" : ""}`}>
+                  <span>
+                    <span className="font-display block text-3xl font-semibold tracking-[-0.03em]">{t}</span>
+                    <span className={`mt-3 block text-pretty ${i === 0 ? "text-white/75" : "text-muted-foreground"}`}>{d}</span>
+                  </span>
+                  <span className="flex items-end justify-between gap-4">
+                    <span className={`text-sm ${i === 0 ? "text-white/60" : "text-muted-foreground"}`}>{need}</span>
+                    <ArrowRightIcon aria-hidden className="size-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" />
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -95,9 +109,9 @@ export default function Home() {
 
         {/* ---------------- free tools ---------------- */}
         <section className="mx-auto max-w-7xl border-t px-5 py-20 sm:py-28 lg:px-8">
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Seven free tools.</h2>
+          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Eight free tools.</h2>
           <div className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
-            {[["/growth-plan/", "Growth Plan", "What to post, when and why, from your goal.", "Target"], ["/connect/", "Your report", "Every post rated out of 10, and why.", "BarChart3"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/experiments/", "Experiments", "Change one thing. See if it worked.", "FlaskConical"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"], ["/ads/", "Ads Checker", "See if an ad pays for itself.", "Megaphone"]].map(([h, t, d]) => (
+            {[["/growth-plan/", "Growth Plan", "What to post, when and why, from your goal.", "Target"], ["/connect/", "Your report", "Every post rated out of 10, and why.", "BarChart3"], ["/profile-review/", "Profile review", "Your whole profile scored, and what to fix first.", "UserCheck"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/experiments/", "Experiments", "Change one thing. See if it worked.", "FlaskConical"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"], ["/ads/", "Ads Checker", "See if an ad pays for itself.", "Megaphone"]].map(([h, t, d]) => (
               <a key={t} href={href(h)} className="tool-row group">
                 <span className="flex items-center justify-between text-xl font-semibold tracking-tight">{t}<ArrowRightIcon className="size-5 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-foreground" /></span>
                 <span className="mt-2 block text-muted-foreground">{d}</span>
@@ -132,21 +146,21 @@ export default function Home() {
         </section>
 
         {/* ---------------- platform choice ---------------- */}
-        <section className="border-y bg-[#FAFAFC]">
+        <section className="border-y bg-surface">
           <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
             <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
               <div>
                 <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Pick where you post</h2>
                 <p className="mt-3 max-w-xl text-muted-foreground">The report changes to fit each platform. Start with one and add the others later.</p>
               </div>
-              <a href={href("/how-it-works/")} className="inline-flex items-center gap-1.5 text-sm font-medium text-primary">How each one works<ArrowRightIcon className="size-4" /></a>
+              <a href={href("/how-it-works/")} className="inline-flex items-center gap-1.5 text-sm font-medium text-link">How each one works<ArrowRightIcon className="size-4" /></a>
             </div>
             <div className="mt-10 grid gap-4 md:grid-cols-3">
               {PLATFORMS.map(({ name, sub, p, Mark, tone }) => (
                 <a key={p} href={href(`/start.html?p=${p}`)} className="group relative flex items-center gap-4 rounded-2xl border bg-background p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
                   <span className={`grid size-12 place-items-center rounded-xl bg-linear-to-br ${tone} text-white shadow-sm`}><Mark className="size-6" /></span>
                   <span className="grid"><span className="text-lg font-medium">{name}</span><span className="text-sm text-muted-foreground">{sub}</span></span>
-                  <ArrowRightIcon className="ml-auto size-5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+                  <ArrowRightIcon className="ml-auto size-5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-link" />
                 </a>
               ))}
             </div>
@@ -168,7 +182,7 @@ export default function Home() {
         </section>
 
         {/* ---------------- how it works ---------------- */}
-        <section className="border-y bg-[#FAFAFC]">
+        <section className="border-y bg-surface">
           <div className="mx-auto max-w-7xl px-5 py-24 lg:px-8">
             <div>
               <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Three steps. Under a minute.</h2>
@@ -203,7 +217,7 @@ export default function Home() {
               <div key={n} className="bg-background p-8">
                 <p className="text-4xl font-semibold tracking-[-0.04em]">{n}</p>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{d}</p>
-                <a href={u} target="_blank" rel="noopener" className="mt-5 inline-block text-xs font-medium text-primary">Source: {s}</a>
+                <a href={u} target="_blank" rel="noopener" className="mt-5 inline-block text-xs font-medium text-link">Source: {s}</a>
               </div>
             ))}
           </div>
@@ -212,7 +226,7 @@ export default function Home() {
               const C = I as typeof StarIcon;
               return (
                 <div key={t as string} className="flex gap-3 rounded-2xl border p-5">
-                  <C className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <C className="mt-0.5 size-5 shrink-0 text-link" />
                   <div><p className="font-medium">{t as string}</p><p className="mt-1 text-sm text-muted-foreground">{d as string}</p></div>
                 </div>
               );
@@ -221,7 +235,7 @@ export default function Home() {
         </section>
 
         {/* ---------------- FAQ ---------------- */}
-        <section className="border-t bg-[#FAFAFC]">
+        <section className="border-t bg-surface">
           <div className="mx-auto grid max-w-7xl gap-12 px-5 py-24 lg:grid-cols-[1fr_1.4fr] lg:px-8">
             <div>
               <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Questions, answered</h2>

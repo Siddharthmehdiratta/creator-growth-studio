@@ -18,7 +18,7 @@ export default function Page() {
           ["Questions", "Ask anything about privacy on our contact page."]].map(([t, d]) => (
           <section key={t} className="border-b py-7 first:pt-0 last:border-b-0"><h2 className="text-xl font-semibold tracking-tight">{t}</h2><p className="mt-2 text-muted-foreground">{d}</p></section>
         ))}
-        <a href={href("/contact/")} className="mt-4 inline-block font-medium text-primary">Contact us</a>
+        <a href={href("/contact/")} className="mt-4 inline-block font-medium text-link">Contact us</a>
       </article>
     </PageShell>
   );

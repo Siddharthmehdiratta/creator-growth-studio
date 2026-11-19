@@ -42,7 +42,7 @@ export function SurfaceExplorer() {
           <p className="text-sm text-muted-foreground">Who sees it</p>
           <p className="mt-1 text-lg font-medium">{s.who}</p>
           <p className="mt-7 text-sm text-muted-foreground">What Instagram looks at, roughly most important first</p>
-          <ol className="mt-3 grid gap-2.5">{s.signals.map((x, i) => <li key={x} className="flex gap-3"><span className="grid size-6 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary">{i + 1}</span><span>{x}</span></li>)}</ol>
+          <ol className="mt-3 grid gap-2.5">{s.signals.map((x, i) => <li key={x} className="flex gap-3"><span className="grid size-6 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-link">{i + 1}</span><span>{x}</span></li>)}</ol>
           <p className="mt-7 text-sm text-muted-foreground">What it tries to predict you'll do</p>
           <div className="mt-3 flex flex-wrap gap-2">{s.predicts.map((x) => <span key={x} className="rounded-full border px-3 py-1 text-sm">{x}</span>)}</div>
         </div>

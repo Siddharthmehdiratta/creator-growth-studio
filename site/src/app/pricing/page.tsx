@@ -23,7 +23,7 @@ export default function Page() {
           </div>
           <div className="p-9">
             <p className="font-medium">What's included</p>
-            <ul className="mt-5 grid gap-3 text-sm">{ALL.map((t) => <li key={t} className="flex gap-2.5"><CheckIcon className="mt-0.5 size-4 shrink-0 text-primary" />{t}</li>)}</ul>
+            <ul className="mt-5 grid gap-3 text-sm">{ALL.map((t) => <li key={t} className="flex gap-2.5"><CheckIcon className="mt-0.5 size-4 shrink-0 text-link" />{t}</li>)}</ul>
           </div>
         </div>
       </Section>

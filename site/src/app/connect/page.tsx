@@ -7,7 +7,7 @@ import { href } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Connect", description: "Three ways to bring your Instagram: log in with Instagram, type a username, or upload Instagram's own data download." };
 
-const Tick = ({ children }: { children: React.ReactNode }) => <li className="flex gap-2.5 text-sm"><CheckIcon className="mt-0.5 size-4 shrink-0 text-primary" />{children}</li>;
+const Tick = ({ children }: { children: React.ReactNode }) => <li className="flex gap-2.5 text-sm"><CheckIcon className="mt-0.5 size-4 shrink-0 text-link" />{children}</li>;
 
 export default function Page() {
   return (
@@ -16,13 +16,13 @@ export default function Page() {
         <div className="grid gap-5 lg:grid-cols-3">
           <div className="relative flex flex-col rounded-3xl border-2 border-foreground p-7">
             <span className="absolute -top-3 left-6 rounded-full bg-foreground px-3 py-1 text-xs font-medium text-background">Works today</span>
-            <FileArchiveIcon className="size-6 text-primary" />
+            <FileArchiveIcon className="size-6 text-link" />
             <h2 className="mt-4 text-xl font-semibold tracking-tight">Upload a file</h2>
             <p className="mt-2 text-sm text-muted-foreground">Instagram's own "Download your information" ZIP, or a Meta Business Suite CSV. Read in your browser, never uploaded.</p>
             <ul className="mt-5 grid gap-2"><Tick>Works today, no approval needed</Tick><Tick>Up to 90 days of numbers (Meta CSV)</Tick><Tick>Stays on your device</Tick></ul>
             <div className="mt-auto grid gap-2 [margin-top:1.75rem]">
               <a href={href("/start.html?p=instagram")} data-slot="button" className="inline-flex h-12 items-center justify-center rounded-xl bg-primary font-medium text-primary-foreground">Upload my file</a>
-              <Modal wide title="How to get your Instagram file" trigger={<button type="button" className="text-sm font-medium text-primary">How do I get the file?</button>}>
+              <Modal wide title="How to get your Instagram file" trigger={<button type="button" className="text-sm font-medium text-link">How do I get the file?</button>}>
                 <p className="font-medium text-foreground">Option 1: Meta Business Suite (best, has reach and saves)</p>
                 <ol className="mt-2 grid list-decimal gap-1.5 pl-5"><li>On a computer, open Meta Business Suite, then Insights, then Content.</li><li>Pick the last 90 days.</li><li>Press Export data, then CSV.</li></ol>
                 <p className="mt-5 font-medium text-foreground">Option 2: Instagram's own download (ZIP)</p>
@@ -32,13 +32,13 @@ export default function Page() {
             </div>
           </div>
           <div className="flex flex-col rounded-3xl border p-7">
-            <SparklesIcon className="size-6 text-primary" />
+            <SparklesIcon className="size-6 text-link" />
             <h2 className="mt-4 text-xl font-semibold tracking-tight">Try the sample first</h2>
             <p className="mt-2 text-sm text-muted-foreground">See a full report for a made-up gaming creator. No file needed. Then the Post Checker learns from it, so you can try that too.</p>
             <ul className="mt-5 grid gap-2"><Tick>Ready in one click</Tick><Tick>Every post rated out of 10</Tick><Tick>Nothing to download</Tick></ul>
             <a href={href("/start.html?sample=1")} data-slot="button" className="inline-flex h-12 items-center justify-center rounded-xl border font-medium hover:bg-muted [margin-top:1.75rem] mt-auto">Open the sample report</a>
           </div>
-          <div className="flex flex-col rounded-3xl border border-dashed bg-[#FAFAFC] p-7">
+          <div className="flex flex-col rounded-3xl border border-dashed bg-surface p-7">
             <span className="w-fit rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground">Coming soon</span>
             <h2 className="mt-4 text-xl font-semibold tracking-tight">Log in with Instagram, or type a username</h2>
             <p className="mt-2 text-sm text-muted-foreground">The quickest ways in. They switch on once Meta approves this app. You will log in on Instagram's own page, so your password stays with Instagram.</p>
@@ -59,7 +59,7 @@ export default function Page() {
           <div className="grid content-start gap-3">
             {[[ShieldCheckIcon, "Official API only", "No scraping, no bots."], [KeyRoundIcon, "Read-only", "We can read numbers. We can't post, delete or message."], [FileArchiveIcon, "Files stay on your device", "Uploads are read by your browser and never sent anywhere."]].map(([I, t, d]) => {
               const C = I as typeof CheckIcon;
-              return <div key={t as string} className="flex gap-3 rounded-2xl border bg-background p-5"><C className="mt-0.5 size-5 shrink-0 text-primary" /><div><p className="font-medium">{t as string}</p><p className="text-sm text-muted-foreground">{d as string}</p></div></div>;
+              return <div key={t as string} className="flex gap-3 rounded-2xl border bg-background p-5"><C className="mt-0.5 size-5 shrink-0 text-link" /><div><p className="font-medium">{t as string}</p><p className="text-sm text-muted-foreground">{d as string}</p></div></div>;
             })}
           </div>
         </div>

@@ -47,7 +47,7 @@ export function Planner() {
 
         <div className="mt-8">
           {sorted.length === 0 ? (
-            <div className="rounded-2xl border border-dashed p-8 text-center text-muted-foreground"><CalendarDaysIcon className="mx-auto size-6" /><p className="mt-3">Your plan is empty. Add a post above, or send one from the <a className="font-medium text-primary" href={href("/post-checker/")}>Post Checker</a>.</p></div>
+            <div className="rounded-2xl border border-dashed p-8 text-center text-muted-foreground"><CalendarDaysIcon className="mx-auto size-6" /><p className="mt-3">Your plan is empty. Add a post above, or send one from the <a className="font-medium text-link" href={href("/post-checker/")}>Post Checker</a>.</p></div>
           ) : (
             <ul className="divide-y rounded-2xl border">
               {sorted.map((i) => (
@@ -64,7 +64,7 @@ export function Planner() {
         </div>
       </div>
       <aside className="grid content-start gap-4">
-        <div className="rounded-3xl border bg-[#FAFAFC] p-6">
+        <div className="rounded-3xl border bg-surface p-6">
           <p className="text-4xl font-semibold tabular-nums tracking-tight">{week}</p><p className="text-sm text-muted-foreground">posts still to go</p>
           <p className="mt-4 text-sm text-muted-foreground">Buffer's study of 2 million posts found 3 to 5 posts a week more than doubled follower growth compared with 1 to 2.</p>
           <button type="button" onClick={download} disabled={!items.length} className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#15131F] text-sm font-medium text-white disabled:opacity-40"><DownloadIcon className="size-4" />Add reminders to my calendar</button>

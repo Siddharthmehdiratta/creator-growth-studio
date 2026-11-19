@@ -3,7 +3,7 @@ import { GithubMark, LogoMark } from "./brand-icons";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t bg-[#FAFAFC]">
+    <footer className="border-t bg-surface">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 lg:grid-cols-[1.4fr_repeat(4,1fr)] lg:px-8">
         <div className="max-w-xs">
           <a href={href("/")} className="flex items-center gap-2.5 font-semibold tracking-tight"><LogoMark className="size-7" />Creator Growth Studio</a>

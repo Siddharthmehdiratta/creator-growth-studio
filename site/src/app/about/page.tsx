@@ -28,8 +28,8 @@ export default function Page() {
         <div className="grid grid-cols-1 gap-10 [&>*]:min-w-0 lg:grid-cols-2">
           <SectionHead eyebrow="The maker" title="Siddharth Mehdiratta" />
           <div className="grid gap-5 text-lg leading-relaxed text-muted-foreground">
-            <p>A photographer trained at Arts University Bournemouth, based in Pune. Creator Growth Studio is one of two free projects; the other is <a className="font-medium text-primary" href="https://siddharthmehdiratta.github.io/founder-skill-plus/">Founder Plus</a>, which lets founders test a business idea on AI customers.</p>
-            <p>Have an idea or found a problem? <a className="font-medium text-primary" href={href("/contact/")}>Get in touch</a>.</p>
+            <p>A photographer trained at Arts University Bournemouth, based in Pune. Creator Growth Studio is one of two free projects; the other is <a className="font-medium text-link" href="https://siddharthmehdiratta.github.io/founder-skill-plus/">Founder Plus</a>, which lets founders test a business idea on AI customers.</p>
+            <p>Have an idea or found a problem? <a className="font-medium text-link" href={href("/contact/")}>Get in touch</a>.</p>
           </div>
         </div>
       </Section>

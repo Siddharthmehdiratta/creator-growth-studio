@@ -51,6 +51,8 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --color-link: var(--link);
+  --color-surface: var(--surface);
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-from: var(--brand-from);
@@ -74,7 +76,9 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
+  --background: #FCFBF9;
+  --surface: #F5F3EE;
+  --link: #5235E8;
   --foreground: #15131F;
   --card: oklch(1 0 0);
   --card-foreground: #15131F;
@@ -87,16 +91,16 @@
   --brand-from: #6C47FF;
   --brand-via: #8B5CF6;
   --brand-to: #A78BFA;
-  --secondary: #F5F4F8;
+  --secondary: #F3F1EC;
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: #F5F4F8;
-  --muted-foreground: #5F5B70;
-  --accent: #F3F2F6;
+  --muted: #F3F1EC;
+  --muted-foreground: #5C5866;
+  --accent: #F1EEE8;
   --accent-foreground: #15131F;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #E9E7F0;
-  --input: #E2DFEA;
-  --ring: #8E8B9B;
+  --border: #E6E2DA;
+  --input: #DDD8CE;
+  --ring: #5235E8;
   --success: oklch(0.527 0.137 163);
   --success-foreground: oklch(0.985 0 0);
   --warning: oklch(0.769 0.165 70);
@@ -119,6 +123,8 @@
 
 .dark {
   --background: oklch(0.145 0 0);
+  --surface: oklch(0.205 0 0);
+  --link: #A99BFF;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -362,7 +368,7 @@ h1, h2, h3, .font-display { font-family: 'Cabinet Grotesk', 'General Sans', ui-s
 /* ---- Design pass: motion tokens (Emil Kowalski's values), one load moment, themed browser surfaces ---- */
 :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
 ::selection { background: var(--primary); color: #fff; }
-:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
 h1, h2, h3 { text-wrap: balance; scroll-margin-top: 6rem; }
 .hero-title { font-size: clamp(3rem, 11.5vw, 7.5rem); line-height: 0.92; letter-spacing: -0.04em; font-weight: 800; }
 /* The hero enters once on load. Content is visible by default; the animation only describes where it comes from. */
@@ -383,7 +389,7 @@ h1, h2, h3 { text-wrap: balance; scroll-margin-top: 6rem; }
 @media (hover: hover) and (pointer: fine) { .tool-row:hover { border-top-color: var(--foreground); } }
 
 /* Site chrome is ink. Purple lives only inside the report screenshots. On ink sections, accents flip to light. */
-[class*="bg-[#15131F]"] .text-primary { color: #D6D3E0; } /* ink sections */
+[class*="bg-[#15131F]"] .text-link { color: #D6D3E0; } /* ink sections */
 [class*="bg-[#15131F]"] [data-slot="button"].bg-primary { background: #fff; color: #15131F; }
 
 /* Showcase: one frame, fixed shape, so switching tabs never moves the page. */
@@ -395,3 +401,15 @@ h1, h2, h3 { text-wrap: balance; scroll-margin-top: 6rem; }
 @media (hover: hover) and (pointer: fine) { .goal-card:hover { background: #fff; color: #15131F; } .goal-card:hover .goal-sub { color: #5F5B70; } }
 .goal-card:active { transform: scale(0.98); }
 @media print { header, footer, nav[aria-label="Breadcrumb"] { display: none !important; } }
+
+/* Yes / No / Not sure answers. 44px tall so a thumb can hit them. */
+.pill { display: inline-flex; align-items: center; height: 2.75rem; padding: 0 0.9rem; border: 1px solid var(--input); border-radius: 0.75rem; background: #fff; font-size: 0.875rem; white-space: nowrap; cursor: pointer; transition: background-color 150ms var(--ease-out), border-color 150ms var(--ease-out), transform 120ms var(--ease-out); }
+.pill:active { transform: scale(0.97); }
+.pill:has(:focus-visible) { outline: 2px solid var(--link); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .pill:hover { border-color: var(--foreground); } }
+.pill-on { border-color: var(--foreground); background: var(--foreground); color: var(--background); }
+/* The three ways in, under the headline. */
+.way { display: grid; align-content: space-between; gap: 2.5rem; min-height: 15rem; padding: 1.5rem; border: 1px solid var(--border); border-radius: 1.25rem; background: #fff; transition: border-color 200ms var(--ease-out), transform 160ms var(--ease-out); }
+.way:active { transform: scale(0.99); }
+@media (hover: hover) and (pointer: fine) { .way:hover { border-color: var(--foreground); } }
+.way-lead { background: var(--foreground); color: var(--background); border-color: var(--foreground); }

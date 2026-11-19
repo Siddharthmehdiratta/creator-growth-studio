@@ -31,7 +31,7 @@ export function PageShell({ kicker, title, lead, group = "", crumb, children, ac
 
 export function Section({ children, tint = false, className = "" }: { children: React.ReactNode; tint?: boolean; className?: string }) {
   return (
-    <section className={tint ? "border-y bg-[#FAFAFC]" : ""}>
+    <section className={tint ? "border-y bg-surface" : ""}>
       <div className={`mx-auto max-w-7xl px-5 py-16 sm:py-20 lg:px-8 ${className}`}>{children}</div>
     </section>
   );
@@ -47,7 +47,7 @@ export function SectionHead({ eyebrow, title, text }: { eyebrow?: string; title:
 }
 
 export function Src({ url, name }: { url: string; name: string }) {
-  return <a href={url} target="_blank" rel="noopener" className="ml-1 inline-flex rounded-full bg-primary/8 px-2 py-0.5 align-middle text-xs font-medium text-primary hover:bg-primary/15">{name}</a>;
+  return <a href={url} target="_blank" rel="noopener" className="ml-1 inline-flex rounded-full bg-primary/8 px-2 py-0.5 align-middle text-xs font-medium text-link hover:bg-primary/15">{name}</a>;
 }
 
 export function Shot({ src, alt, className = "", eager = false }: { src: string; alt: string; className?: string; eager?: boolean }) {

@@ -27,7 +27,7 @@ export default function Page() {
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {CARDS.map(([h, ic, t, d]) => (
             <a key={t} href={href(h)} className="rounded-3xl border p-6 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-              <span className="grid size-10 place-items-center rounded-xl border text-primary"><Icon name={ic} className="size-5" /></span>
+              <span className="grid size-10 place-items-center rounded-xl border text-link"><Icon name={ic} className="size-5" /></span>
               <h2 className="mt-5 font-semibold tracking-tight">{t}</h2><p className="mt-1 text-sm text-muted-foreground">{d}</p>
             </a>
           ))}
@@ -36,9 +36,9 @@ export default function Page() {
           <div>
             <h2 className="text-2xl font-semibold tracking-tight">Popular questions</h2>
             <Accordion type="single" collapsible className="mt-4">{POPULAR.map(([q, a]) => <AccordionItem key={q} value={q}><AccordionTrigger className="py-5 text-base">{q}</AccordionTrigger><AccordionContent className="text-muted-foreground">{a}</AccordionContent></AccordionItem>)}</Accordion>
-            <a href={href("/faq/")} className="mt-6 inline-block text-sm font-medium text-primary">See all questions</a>
+            <a href={href("/faq/")} className="mt-6 inline-block text-sm font-medium text-link">See all questions</a>
           </div>
-          <div className="h-fit rounded-3xl bg-[#FAFAFC] p-8 ring-1 ring-border">
+          <div className="h-fit rounded-3xl bg-surface p-8 ring-1 ring-border">
             <h3 className="font-semibold tracking-tight">How replies work</h3>
             <ol className="mt-5 grid gap-4 text-sm">{[["You post", "a question, problem or idea on GitHub."], ["We reply there,", "in public, usually within a few days."], ["You get an email", "from GitHub when someone answers."]].map(([b, t], i) => <li key={b} className="flex gap-3"><span className="grid size-6 shrink-0 place-items-center rounded-full bg-primary text-xs text-primary-foreground">{i + 1}</span><span><b className="font-medium">{b}</b> <span className="text-muted-foreground">{t}</span></span></li>)}</ol>
             <p className="mt-6 text-xs text-muted-foreground">A free GitHub account is needed to post.</p>

@@ -73,7 +73,7 @@ export default function Page() {
         <div className="mx-auto max-w-7xl px-5 py-16 sm:py-20 lg:px-8">
           <SectionHead eyebrow="Try it" title="Check your next post against these signals" text="Change anything and the score updates. Every point links to its source." />
           <div className="mt-10"><PostChecker /></div>
-          <a href={href("/post-checker/")} className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-primary">Open the Post Checker on its own page<ArrowRightIcon className="size-4" /></a>
+          <a href={href("/post-checker/")} className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-link">Open the Post Checker on its own page<ArrowRightIcon className="size-4" /></a>
         </div>
       </section>
       <CtaBand />

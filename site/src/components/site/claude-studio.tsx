@@ -21,7 +21,7 @@ export function ClaudeStudio() {
   const field = "h-11 w-full rounded-xl border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/10";
   return (
     <div>
-      <div className="grid gap-4 rounded-3xl border bg-[#FAFAFC] p-6 sm:grid-cols-3 sm:p-8">
+      <div className="grid gap-4 rounded-3xl border bg-surface p-6 sm:grid-cols-3 sm:p-8">
         <label className="grid gap-1.5 text-sm font-medium">Your niche<input className={field} value={v.niche} onChange={(e) => setV({ ...v, niche: e.target.value })} /></label>
         <label className="grid gap-1.5 text-sm font-medium">Your username (optional)<input className={field} value={v.handle} onChange={(e) => setV({ ...v, handle: e.target.value.replace(/^@/, "") })} placeholder="lowping.rohan" /></label>
         <label className="grid gap-1.5 text-sm font-medium sm:col-span-3">Your post idea, draft, bio or comments<textarea rows={3} className="w-full rounded-xl border bg-background p-3 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary/10" value={v.draft} onChange={(e) => setV({ ...v, draft: e.target.value })} /></label>

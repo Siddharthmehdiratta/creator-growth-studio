@@ -19,8 +19,9 @@ async def main():
         await pg.goto(BASE)
         check(await pg.locator("h1").count() == 1, "home has one h1")
         check(await pg.locator("a[href$='start.html?p=instagram']").count() == 1 and await pg.locator("a[href$='start.html?p=youtube']").count() == 1, "home lets you pick a platform")
-        check(await pg.locator("img[src$='shots/overview.png']").count() == 1, "home shows a real screenshot of the report")
-        PAGES = ["features/", "how-it-works/", "pricing/", "guide/", "growth-guide/", "faq/", "changelog/", "help/", "contact/", "about/", "open-source/", "privacy/", "terms/", "ads/", "growth-plan/", "algorithm/", "post-checker/", "planner/", "connect/", "claude/", "sample/"]
+        check(await pg.locator("a.way").count() == 3 and await pg.locator("a.way[href$='profile-review/']").count() == 1, "home offers the free report, the profile review and the post review")
+        check("lowping" not in (await pg.content()).lower(), "home never shows the sample account's name")
+        PAGES = ["features/", "how-it-works/", "pricing/", "guide/", "growth-guide/", "faq/", "changelog/", "help/", "contact/", "about/", "open-source/", "privacy/", "terms/", "ads/", "growth-plan/", "algorithm/", "post-checker/", "planner/", "connect/", "claude/", "sample/", "experiments/", "profile-review/"]
         for page_ in PAGES:
             await pg.goto(BASE + page_); check(await pg.locator("h1").count() == 1 and await pg.locator("header.site-header nav[aria-label=Main]").count() == 1 and await pg.locator("footer").count() == 1, f"{page_} has a title, the menu and the footer")
         for old, new in [("features.html", "features/"), ("report.html", "contact/#report"), ("github.html", "open-source/")]:
@@ -33,6 +34,13 @@ async def main():
             await pg.click("#report button[type=submit]")
         gh = await newp.value; u = gh.url; await gh.close()
         from urllib.parse import unquote_plus; u = unquote_plus(unquote_plus(u)); check("issues/new" in u and "Upload says no rows" in u, "Report form opens a filled-in GitHub issue")
+        await pg.goto(BASE + "profile-review/"); await pg.wait_for_timeout(500)
+        check("?" in await pg.text_content("aside"), "profile review shows no score before you answer")
+        for cid in ["pro", "name", "bio", "cta", "link", "pinned"]: await pg.locator(f"input[name={cid}][value=yes]").check(force=True)
+        await pg.locator("input[name=hook][value=no]").check(force=True); await pg.wait_for_timeout(300)
+        side = await pg.text_content("aside"); check("/10" in side and "Fix this first" in side and "Cut the intro" in side, "profile review scores after 6 answers and names the first fix")
+        await pg.fill("textarea", "x" * 160); await pg.wait_for_timeout(200); check("160 characters" in await pg.text_content("main"), "a bio over 150 characters is flagged")
+        await pg.reload(); await pg.wait_for_timeout(600); check("Fix this first" in await pg.text_content("aside"), "profile review remembers answers after a refresh")
         await pg.goto(BASE + "faq/"); await pg.fill("#q", "password"); await pg.wait_for_timeout(300)
         vis = await pg.locator(".faq-group details").count()
         check(0 < vis < 8, f"FAQ search narrows the questions ({vis} shown)")

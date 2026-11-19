@@ -28,10 +28,10 @@ export default function Page() {
         <Section key={r.id} tint={i % 2 === 1}>
           <div id={r.id} className="grid scroll-mt-32 items-center gap-12 lg:grid-cols-[1fr_1.3fr]">
             <div className={i % 2 ? "lg:order-2" : ""}>
-              <p className="text-sm font-medium text-primary">{r.eyebrow}</p>
+              <p className="text-sm font-medium text-link">{r.eyebrow}</p>
               <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-balance">{r.title}</h2>
               <p className="mt-4 text-muted-foreground">{r.text}</p>
-              <ul className="mt-6 grid gap-3 text-sm">{r.ticks.map((t) => <li key={t} className="flex gap-2.5"><CheckIcon className="mt-0.5 size-4 shrink-0 text-primary" />{t}</li>)}</ul>
+              <ul className="mt-6 grid gap-3 text-sm">{r.ticks.map((t) => <li key={t} className="flex gap-2.5"><CheckIcon className="mt-0.5 size-4 shrink-0 text-link" />{t}</li>)}</ul>
             </div>
             <BrowserMockup url="sample report" className="overflow-hidden rounded-2xl shadow-xl shadow-primary/5"><Shot src={r.shot} alt={r.alt} /></BrowserMockup>
           </div>
@@ -43,10 +43,10 @@ export default function Page() {
             [ShieldCheckIcon, "Audience health check", "What a brand sees before paying: engagement against accounts of the same size, and patterns that suggest bought likes."],
             [LayersIcon, "Three platforms", "Instagram, YouTube (videos and Shorts rated separately) and Twitch (streams typed in by hand)."]].map(([I, t, d]) => {
             const C = I as typeof CheckIcon;
-            return <div key={t as string} className="rounded-3xl border p-7"><C className="size-5 text-primary" /><h3 className="mt-4 text-lg font-semibold tracking-tight">{t as string}</h3><p className="mt-2 text-sm text-muted-foreground">{d as string}</p></div>;
+            return <div key={t as string} className="rounded-3xl border p-7"><C className="size-5 text-link" /><h3 className="mt-4 text-lg font-semibold tracking-tight">{t as string}</h3><p className="mt-2 text-sm text-muted-foreground">{d as string}</p></div>;
           })}
         </div>
-        <p className="mt-8 text-sm text-muted-foreground">Want the method behind the ratings? <a className="font-medium text-primary" href={href("/how-it-works/")}>Read how it works</a>.</p>
+        <p className="mt-8 text-sm text-muted-foreground">Want the method behind the ratings? <a className="font-medium text-link" href={href("/how-it-works/")}>Read how it works</a>.</p>
       </Section>
       <CtaBand />
     </PageShell>

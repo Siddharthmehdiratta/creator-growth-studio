@@ -17,7 +17,7 @@ export default function Page() {
             [BugIcon, "Report a problem", "Something broke or looks wrong? Tell us exactly what happened.", "#report", "Use the form"],
             [MessageSquareHeartIcon, "Give feedback", "What should we keep, and what should change? Be blunt.", "#feedback", "Use the form"]].map(([I, t, d, h, c]) => {
             const C = I as typeof BugIcon;
-            return <a key={t as string} href={h as string} className="group rounded-3xl border p-7 transition-colors hover:border-primary/30 hover:bg-[#FAF8FF]"><C className="size-5 text-primary" /><h2 className="mt-4 text-lg font-semibold tracking-tight">{t as string}</h2><p className="mt-2 text-sm text-muted-foreground">{d as string}</p><p className="mt-5 text-sm font-medium text-primary">{c as string}</p></a>;
+            return <a key={t as string} href={h as string} className="group rounded-3xl border p-7 transition-colors hover:border-primary/30 hover:bg-[#FAF8FF]"><C className="size-5 text-link" /><h2 className="mt-4 text-lg font-semibold tracking-tight">{t as string}</h2><p className="mt-2 text-sm text-muted-foreground">{d as string}</p><p className="mt-5 text-sm font-medium text-link">{c as string}</p></a>;
           })}
         </div>
         <div className="mt-16 grid grid-cols-1 gap-10 [&>*]:min-w-0 lg:grid-cols-2">
@@ -44,7 +44,7 @@ export default function Page() {
             ]} />
           </section>
         </div>
-        <p className="mt-12 flex items-center gap-2 text-sm text-muted-foreground"><GithubMark className="size-4" />Prefer to browse? See <a className="font-medium text-primary" href={`${SITE.repo}/discussions`}>all questions</a> and <a className="font-medium text-primary" href={`${SITE.repo}/issues`}>all reported problems</a>.</p>
+        <p className="mt-12 flex items-center gap-2 text-sm text-muted-foreground"><GithubMark className="size-4" />Prefer to browse? See <a className="font-medium text-link" href={`${SITE.repo}/discussions`}>all questions</a> and <a className="font-medium text-link" href={`${SITE.repo}/issues`}>all reported problems</a>.</p>
       </div>
     </PageShell>
   );

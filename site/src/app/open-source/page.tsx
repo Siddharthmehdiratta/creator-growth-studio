@@ -18,14 +18,14 @@ export default function Page() {
             <SectionHead title="What's inside" />
             <ul className="mt-8 grid gap-3">
               {[["site/", "This website, built with Next.js and Tailwind from the free Velora UI template."], ["docs/", "The published website, plus the report tool itself in plain HTML and JavaScript."], ["connect/", "The small Instagram connector, a free Cloudflare Worker that stores nothing."], ["skills/", "Claude Code skills: the Python engine, the AI boardroom and the platform rules."], ["tests/", "Automatic checks for the maths, the connector and every page."]].map(([f, d]) => (
-                <li key={f} className="rounded-2xl border bg-background p-4"><p className="font-mono text-sm text-primary">{f}</p><p className="mt-1 text-sm text-muted-foreground">{d}</p></li>
+                <li key={f} className="rounded-2xl border bg-background p-4"><p className="font-mono text-sm text-link">{f}</p><p className="mt-1 text-sm text-muted-foreground">{d}</p></li>
               ))}
             </ul>
           </div>
           <div>
             <SectionHead title="Run your own copy" />
             <ol className="mt-8 grid gap-4">
-              {[["Fork it.", "Press Fork on GitHub. It's free."], ["Turn on Pages.", "Settings, then Pages, then branch main and folder /docs."], ["Open your site.", "Uploads work straight away. For username lookup, follow CONNECT-INSTAGRAM.md."]].map(([b, t], i) => <li key={b} className="flex gap-3"><span className="grid size-7 shrink-0 place-items-center rounded-full border bg-background text-sm font-semibold text-primary">{i + 1}</span><p><b className="font-medium">{b}</b> <span className="text-muted-foreground">{t}</span></p></li>)}
+              {[["Fork it.", "Press Fork on GitHub. It's free."], ["Turn on Pages.", "Settings, then Pages, then branch main and folder /docs."], ["Open your site.", "Uploads work straight away. For username lookup, follow CONNECT-INSTAGRAM.md."]].map(([b, t], i) => <li key={b} className="flex gap-3"><span className="grid size-7 shrink-0 place-items-center rounded-full border bg-background text-sm font-semibold text-link">{i + 1}</span><p><b className="font-medium">{b}</b> <span className="text-muted-foreground">{t}</span></p></li>)}
             </ol>
             <pre className="mt-8 overflow-x-auto rounded-2xl bg-[#15131F] p-5 text-sm leading-relaxed text-[#E7E2FF]"><code>{`git clone ${SITE.repo}.git
 cd creator-growth-studio/docs

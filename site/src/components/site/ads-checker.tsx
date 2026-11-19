@@ -33,7 +33,7 @@ The checker's reading: ${LABEL[r.verdict]}.
 Give me: 1) the single most likely reason for this result, 2) three new versions of the first line or first 3 seconds to test, 3) one audience change to test. Keep it under 180 words.`;
   return (
     <div className="grid grid-cols-1 gap-6 [&>*]:min-w-0 lg:grid-cols-[1.15fr_1fr]">
-      <form className="grid content-start gap-6 rounded-3xl border bg-[#FAFAFC] p-6 sm:p-8" onSubmit={(e) => e.preventDefault()}>
+      <form className="grid content-start gap-6 rounded-3xl border bg-surface p-6 sm:p-8" onSubmit={(e) => e.preventDefault()}>
         <fieldset className="grid gap-2">
           <legend className="text-sm font-medium">What was the ad for?</legend>
           <div role="radiogroup" aria-label="Goal of the ad" className="mt-2 flex flex-wrap gap-1.5">

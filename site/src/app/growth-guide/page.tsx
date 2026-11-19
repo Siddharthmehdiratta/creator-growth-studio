@@ -24,7 +24,7 @@ function Do({ items }: { items: React.ReactNode[] }) {
 }
 const H2 = ({ id, icon, children }: { id: string; icon: React.ReactNode; children: React.ReactNode }) => <h2 id={id} className="mt-16 flex scroll-mt-24 items-center gap-3 text-3xl font-semibold tracking-[-0.03em] first:mt-0">{icon}{children}</h2>;
 const H3 = ({ id, children }: { id: string; children: React.ReactNode }) => <h3 id={id} className="mt-10 scroll-mt-24 text-xl font-semibold tracking-tight">{children}</h3>;
-const Badge = ({ children }: { children: React.ReactNode }) => <span className="grid size-10 place-items-center rounded-xl border text-primary">{children}</span>;
+const Badge = ({ children }: { children: React.ReactNode }) => <span className="grid size-10 place-items-center rounded-xl border text-link">{children}</span>;
 
 const TOC = [["instagram", "Instagram"], ["ig-signals", "What the algorithm rewards", 1], ["ig-rhythm", "How often to post", 1], ["ig-hooks", "Hooks and length", 1], ["ig-reach", "Reaching new people", 1], ["ig-profile", "Profile and search", 1], ["youtube", "YouTube"], ["twitch", "Twitch"], ["money", "Brand deals and money"], ["plan", "Your first 30 days"]] as const;
 
@@ -72,9 +72,9 @@ export default function Page() {
 
           <H2 id="plan" icon={<Badge><span className="text-sm font-semibold">30</span></Badge>}>Your first 30 days</H2>
           <ol className="mt-6 grid gap-4">
-            {[["Week 1", "Get your report. Write down your 2 best formats and your best posting time."], ["Week 2", "Post 3 to 5 times. Make a part 2 of your best post. Test one new hook as a trial reel."], ["Week 3", "Reply to every comment in the first hour. Turn the top question into a post."], ["Week 4", "Run your report again. Keep what moved up, drop what moved down, change one thing at a time."]].map(([w, t]) => <li key={w} className="flex gap-4 rounded-2xl border p-5"><b className="w-16 shrink-0 font-medium text-primary">{w}</b><span>{t}</span></li>)}
+            {[["Week 1", "Get your report. Write down your 2 best formats and your best posting time."], ["Week 2", "Post 3 to 5 times. Make a part 2 of your best post. Test one new hook as a trial reel."], ["Week 3", "Reply to every comment in the first hour. Turn the top question into a post."], ["Week 4", "Run your report again. Keep what moved up, drop what moved down, change one thing at a time."]].map(([w, t]) => <li key={w} className="flex gap-4 rounded-2xl border p-5"><b className="w-16 shrink-0 font-medium text-link">{w}</b><span>{t}</span></li>)}
           </ol>
-          <p className="mt-8 flex gap-3 rounded-2xl bg-[#F6F4FB] p-5 text-sm"><InfoIcon className="mt-0.5 size-4 shrink-0 text-primary" />No tool can guarantee followers. Anyone who promises that is selling bots, which Instagram removes. Growth comes from posting what your audience sends to friends, often enough to learn what that is.</p>
+          <p className="mt-8 flex gap-3 rounded-2xl bg-[#F6F4FB] p-5 text-sm"><InfoIcon className="mt-0.5 size-4 shrink-0 text-link" />No tool can guarantee followers. Anyone who promises that is selling bots, which Instagram removes. Growth comes from posting what your audience sends to friends, often enough to learn what that is.</p>
         </article>
       </div>
       <CtaBand />

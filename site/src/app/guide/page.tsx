@@ -23,7 +23,7 @@ export default function Page() {
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-[15rem_1fr] lg:px-8">
         <aside className="hidden lg:block">
           <nav aria-label="Steps" className="sticky top-24 grid gap-1 text-sm">
-            {STEPS.map((s, i) => <a key={s.t} href={`#step-${i + 1}`} className="flex gap-3 rounded-lg px-3 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"><span className="tabular-nums text-primary">{i + 1}</span>{s.t}</a>)}
+            {STEPS.map((s, i) => <a key={s.t} href={`#step-${i + 1}`} className="flex gap-3 rounded-lg px-3 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"><span className="tabular-nums text-link">{i + 1}</span>{s.t}</a>)}
           </nav>
         </aside>
         <ol className="grid gap-6">
@@ -31,14 +31,14 @@ export default function Page() {
             <li key={s.t} id={`step-${i + 1}`} className="scroll-mt-24 rounded-3xl border p-7 sm:p-9">
               <div className={s.shot ? "grid items-start gap-8 md:grid-cols-[1fr_14rem]" : ""}>
                 <div>
-                  <p className="text-sm font-medium text-primary">Step {i + 1} of {STEPS.length}</p>
+                  <p className="text-sm font-medium text-link">Step {i + 1} of {STEPS.length}</p>
                   <h2 className="mt-2 text-2xl font-semibold tracking-tight">{s.t}</h2>
                   <p className="mt-3 text-muted-foreground">{s.lead}</p>
                   <div className="mt-6 rounded-2xl bg-[#F6F4FB] p-5">
                     <p className="text-sm font-medium">Do this</p>
                     <ol className="mt-3 grid list-decimal gap-2.5 pl-5 text-[0.95rem]">{s.do.map((d) => <li key={d}>{d}</li>)}</ol>
                   </div>
-                  {s.tip && <p className="mt-4 flex gap-2.5 text-sm text-muted-foreground"><InfoIcon className="mt-0.5 size-4 shrink-0 text-primary" />{s.tip}</p>}
+                  {s.tip && <p className="mt-4 flex gap-2.5 text-sm text-muted-foreground"><InfoIcon className="mt-0.5 size-4 shrink-0 text-link" />{s.tip}</p>}
                 </div>
                 {s.shot && <div className="overflow-hidden rounded-[1.6rem] border-[6px] border-[#15131F] bg-[#15131F] shadow-lg"><img src={href(s.shot)} alt="" loading="lazy" className="block w-full rounded-[1.2rem]" /></div>}
               </div>

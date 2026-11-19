@@ -17,7 +17,7 @@ export function IssueForm({ kind, fields, button }: { kind: string; fields: F[];
     }}>
       {fields.map((f) => (
         <div key={f.name} className="grid gap-1.5">
-          <label htmlFor={`${kind}-${f.name}`} className="text-sm font-medium">{f.label}{f.req && <span className="text-primary"> *</span>}</label>
+          <label htmlFor={`${kind}-${f.name}`} className="text-sm font-medium">{f.label}{f.req && <span className="text-link"> *</span>}</label>
           {f.hint && <p className="text-xs text-muted-foreground">{f.hint}</p>}
           {f.kind === "area" ? <textarea id={`${kind}-${f.name}`} name={f.name} rows={4} required={f.req} className={field} />
             : f.kind === "select" ? <select id={`${kind}-${f.name}`} name={f.name} className={field}><option value="">Choose one</option>{f.opts!.map((o) => <option key={o}>{o}</option>)}</select>

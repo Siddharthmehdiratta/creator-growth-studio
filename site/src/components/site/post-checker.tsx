@@ -51,7 +51,7 @@ export function PostChecker({ compact = false }: { compact?: boolean }) {
   return (
     <div className="grid grid-cols-1 gap-6 [&>*]:min-w-0 lg:grid-cols-[1.1fr_1fr]">
       {/* ---- inputs ---- */}
-      <div className="grid content-start gap-6 rounded-3xl border bg-[#FAFAFC] p-6 sm:p-8">
+      <div className="grid content-start gap-6 rounded-3xl border bg-surface p-6 sm:p-8">
         <Field label="What are you posting?"><Pills name="Format" value={p.format} set={up("format")} opts={[["reel", "Reel"], ["carousel", "Carousel"], ["photo", "Photo"]]} /></Field>
         <Field label="Caption, with hashtags">
           <textarea value={p.caption} onChange={(e) => up("caption")(e.target.value)} rows={4} className="w-full rounded-xl border bg-background p-3 text-[0.95rem] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10" aria-label="Caption" />
@@ -102,7 +102,7 @@ export function PostChecker({ compact = false }: { compact?: boolean }) {
               <p className="text-2xl font-semibold tabular-nums">{r.caption10.toFixed(1)}<span className="text-sm text-muted-foreground">/10</span></p>
             </div>
           </div>
-          <p className="mt-4 rounded-2xl bg-[#FAFAFC] p-3 text-sm text-muted-foreground">
+          <p className="mt-4 rounded-2xl bg-surface p-3 text-sm text-muted-foreground">
             {r.learnedFrom
               ? <>Tuned to {r.learnedFrom.handle ? <b className="text-foreground">@{r.learnedFrom.handle.replace(/^@/, "")}</b> : "your account"}: learned from your {r.learnedFrom.posts} posts on {new Date(r.learnedFrom.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}.</>
               : <>Rated on what Instagram has published. <a href={href("/connect/")} className="font-medium text-foreground underline underline-offset-2">Run your free report</a> and this score learns what works for your own audience.</>}
@@ -110,7 +110,7 @@ export function PostChecker({ compact = false }: { compact?: boolean }) {
               <p>Every post starts at 4 out of 10. Each rule adds or takes away points, and each rule links to where Instagram (or a big study) said it.</p>
               <p className="mt-3">After you run your report, the checker also compares this post with your own past posts: the format, length, day, time and hashtags that did better or worse than your usual post. Only these patterns are saved, in your browser.</p>
               <p className="mt-3">Instagram doesn't publish its real weights, so this is a <b className="text-foreground">guide</b>, not Instagram's actual algorithm.</p>
-              <a className="mt-4 inline-block font-medium text-primary" href={href("/algorithm/")}>Read how the algorithm works</a>
+              <a className="mt-4 inline-block font-medium text-link" href={href("/algorithm/")}>Read how the algorithm works</a>
             </Modal>
           </p>
 
@@ -130,7 +130,7 @@ export function PostChecker({ compact = false }: { compact?: boolean }) {
                 {x.ok ? <CheckCircle2Icon className="mt-0.5 size-5 shrink-0 text-[#0E9E84]" /> : <CircleAlertIcon className="mt-0.5 size-5 shrink-0 text-[#D9384A]" />}
                 <div className="text-sm">
                   <p className="font-medium">{x.title} <span className="ml-1 text-xs font-normal text-muted-foreground tabular-nums">{x.points > 0 ? `+${(x.points / 10).toFixed(1)}` : (x.points / 10).toFixed(1)}</span></p>
-                  <p className="mt-0.5 text-muted-foreground">{x.why}{x.src && <> <a href={SOURCES[x.src].url} target="_blank" rel="noopener" className="text-xs text-primary">Source</a></>}</p>
+                  <p className="mt-0.5 text-muted-foreground">{x.why}{x.src && <> <a href={SOURCES[x.src].url} target="_blank" rel="noopener" className="text-xs text-link">Source</a></>}</p>
                   {!x.ok && x.fix && <p className="mt-1 font-medium text-foreground">Fix: {x.fix}</p>}
                 </div>
               </li>

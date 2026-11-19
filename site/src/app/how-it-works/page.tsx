@@ -22,7 +22,7 @@ export default function Page() {
         <ol className="grid gap-4 md:grid-cols-3">
           {[["Pick your platform", "Instagram, YouTube or Twitch. The next step changes to fit it."], ["Bring your numbers", "Upload your Instagram download, or type in your streams. Username lookup is coming soon."], ["Read your report", "Stars for every post, why each worked, what to post next and a 30-day plan."]].map(([t, d], i) => (
             <li key={t} className="rounded-3xl border p-7">
-              <span className="text-sm font-semibold text-primary">Step {i + 1}</span>
+              <span className="text-sm font-semibold text-link">Step {i + 1}</span>
               <h2 className="mt-3 text-xl font-semibold tracking-tight">{t}</h2>
               <p className="mt-2 text-muted-foreground">{d}</p>
             </li>
@@ -34,9 +34,9 @@ export default function Page() {
         <div className="mt-10 overflow-hidden rounded-3xl border bg-background">
           {WAYS.map(([M, plat, how, what, time]) => (
             <div key={how} className="grid gap-3 border-b p-5 last:border-b-0 sm:grid-cols-[2.5rem_1fr_7rem] sm:items-center sm:gap-5 sm:p-6">
-              <span className="grid size-10 place-items-center rounded-xl border text-primary"><M className="size-5" /></span>
+              <span className="grid size-10 place-items-center rounded-xl border text-link"><M className="size-5" /></span>
               <div><p className="font-medium">{how} <span className="ml-1 text-xs text-muted-foreground">{plat}</span></p><p className="mt-1 text-sm text-muted-foreground">{what}</p></div>
-              <span className="w-fit rounded-full bg-primary/8 px-3 py-1 text-xs font-medium text-primary sm:justify-self-end">{time}</span>
+              <span className="w-fit rounded-full bg-primary/8 px-3 py-1 text-xs font-medium text-link sm:justify-self-end">{time}</span>
             </div>
           ))}
         </div>
@@ -47,7 +47,7 @@ export default function Page() {
             <SectionHead eyebrow="The method" title="How the ratings are worked out" text="Each post gets a score where 100 means a normal post for you. The score blends how many people a post reached with how strongly they reacted." />
             <ol className="mt-8 grid gap-5">
               {[["Per person reached.", "Sends, follows, likes, saves and comments are divided by reach, so a big post doesn't win just for being big."], ["Compared with you.", "Each signal is compared with your own typical post, not with other accounts."], ["Weighted by what matters.", "Watch time and sends count most, because Instagram's head names them as top signals."], ["Turned into stars.", "3.5 stars is your normal. 5 stars is about twice as good as usual."]].map(([b, t], i) => (
-                <li key={b} className="flex gap-4"><span className="grid size-8 shrink-0 place-items-center rounded-full border text-sm font-semibold text-primary">{i + 1}</span><p><b className="font-medium">{b}</b> <span className="text-muted-foreground">{t}</span></p></li>
+                <li key={b} className="flex gap-4"><span className="grid size-8 shrink-0 place-items-center rounded-full border text-sm font-semibold text-link">{i + 1}</span><p><b className="font-medium">{b}</b> <span className="text-muted-foreground">{t}</span></p></li>
               ))}
             </ol>
           </div>
@@ -64,7 +64,7 @@ export default function Page() {
         <div className="grid grid-cols-1 gap-12 [&>*]:min-w-0 lg:grid-cols-2">
           <SectionHead eyebrow="Honest statistics" title="How patterns are found" text="Simple averages fool people. If your night posts were all GTA 6 posts, night looks great even when the topic did the work. So the report compares like with like." />
           <ul className="grid gap-4 text-sm">
-            {["Format, time, day, hook, topic, length and hashtags are tested together", "A time trend is included, so a growing account doesn't make recent habits look magic", "Only findings that pass a strict test are shown, labelled strong or good evidence", "On pure random data, fewer than 1 in 10 runs shows a false pattern", "Groups with fewer than 3 posts are marked thin and never shown as rules"].map((t) => <li key={t} className="flex gap-3 rounded-2xl border bg-background p-4"><CheckIcon className="mt-0.5 size-4 shrink-0 text-primary" />{t}</li>)}
+            {["Format, time, day, hook, topic, length and hashtags are tested together", "A time trend is included, so a growing account doesn't make recent habits look magic", "Only findings that pass a strict test are shown, labelled strong or good evidence", "On pure random data, fewer than 1 in 10 runs shows a false pattern", "Groups with fewer than 3 posts are marked thin and never shown as rules"].map((t) => <li key={t} className="flex gap-3 rounded-2xl border bg-background p-4"><CheckIcon className="mt-0.5 size-4 shrink-0 text-link" />{t}</li>)}
           </ul>
         </div>
       </Section>
@@ -73,7 +73,7 @@ export default function Page() {
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {[[LockIcon, "Worked out in your browser", "The report is calculated on your own device. Uploaded files never leave it."], [ShieldCheckIcon, "Official API only", "Instagram numbers come through Meta's official API. No scraping, no bots, no passwords."], [DatabaseIcon, "Nothing stored", "The connector keeps nothing. Your login token stays in your browser tab until you close it."]].map(([I, t, d]) => {
             const C = I as typeof LockIcon;
-            return <div key={t as string} className="rounded-3xl border p-7"><C className="size-5 text-primary" /><h3 className="mt-4 text-lg font-semibold tracking-tight">{t as string}</h3><p className="mt-2 text-sm text-muted-foreground">{d as string}</p></div>;
+            return <div key={t as string} className="rounded-3xl border p-7"><C className="size-5 text-link" /><h3 className="mt-4 text-lg font-semibold tracking-tight">{t as string}</h3><p className="mt-2 text-sm text-muted-foreground">{d as string}</p></div>;
           })}
         </div>
       </Section>

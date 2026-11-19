@@ -34,7 +34,7 @@ export function SiteHeader({ active = "" }: { active?: string }) {
                     {g.items.map((it) => (
                       <DropdownMenuItem key={it.title} asChild className="items-start gap-3 rounded-xl p-2.5">
                         <a href={href(it.href)}>
-                          <span className="grid size-9 shrink-0 place-items-center rounded-lg border bg-background text-primary shadow-xs">
+                          <span className="grid size-9 shrink-0 place-items-center rounded-lg border bg-background text-link shadow-xs">
                             <Icon name={it.icon} className="size-4" />
                           </span>
                           <span className="grid gap-0.5">
@@ -84,7 +84,7 @@ export function SiteHeader({ active = "" }: { active?: string }) {
                         <li key={it.title}>
                           <SheetClose asChild>
                             <a href={href(it.href)} className="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-muted">
-                              <span className="grid size-9 shrink-0 place-items-center rounded-lg border text-primary"><Icon name={it.icon} className="size-4" /></span>
+                              <span className="grid size-9 shrink-0 place-items-center rounded-lg border text-link"><Icon name={it.icon} className="size-4" /></span>
                               <span className="grid"><span className="font-medium">{it.title}</span><span className="text-xs text-muted-foreground">{it.text}</span></span>
                             </a>
                           </SheetClose>
