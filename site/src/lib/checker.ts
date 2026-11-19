@@ -107,7 +107,7 @@ export function checkPost(p: Post): Result {
 
 export function claudePrompt(p: Post, r: Result) {
   const fixes = r.findings.filter((x) => !x.ok).map((x) => `- ${x.title}: ${x.fix ?? x.why}`).join("\n");
-  return `You are an Instagram growth coach. Improve my planned ${p.format} post.
+  return `You are an Instagram growth coach. Improve my planned ${p.format} post. It scores ${(r.score / 10).toFixed(1)} out of 10 now; help me reach 9 or more.
 
 Goal: ${p.goal === "new" ? "reach new people" : "engage my followers"}.${p.format === "reel" ? ` Length: ${p.length} seconds.` : ""}
 Caption draft:

@@ -29,7 +29,7 @@
   function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 2600); }
   function stars(n, lg) {
     let h = ""; for (let i = 1; i <= 5; i++) { const fill = n >= i ? "#F5A524" : n >= i - 0.5 ? "url(#g-half)" : "#E3E1EE"; h += `<svg viewBox="0 0 20 20"><use href="#i-star" fill="${fill}"/></svg>`; }
-    return `<span class="stars${lg ? " lg" : ""}" role="img" aria-label="${n} out of 5 stars">${h}</span>`;
+    return `<span class="stars${lg ? " lg" : ""}" role="img" aria-label="${n * 2} out of 10">${h}<b class="out10">${n * 2}/10</b></span>`;
   }
   function ratio(r) { if (r == null || !isFinite(r)) return ""; const cls = r >= 1.15 ? "up" : r <= 0.85 ? "down" : "flat"; return `<span class="ratio ${cls}">${r >= 10 ? Math.round(r) : r.toFixed(1)}x</span>`; }
   const TYPE_IC = { reel: "M8 5v14l11-7z", video: "M8 5v14l11-7z", short: "M8 5v14l11-7z", stream: "M4 3h16v11l-4 4h-4l-3 3v-3H4zM11 7v4M15 7v4", carousel: "M7 4h11a2 2 0 0 1 2 2v11M4 8h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" };
@@ -247,6 +247,11 @@
   /* ---------- analysis ---------- */
   function analyse() {
     A = E.audit(POSTS, S.followers || null);
+    try { // remember the patterns (not the posts) so the Post Checker can rate new posts for this audience
+      const g = (list) => (list || []).map(x => ({ value: x.value, posts: x.posts, median_score: x.median_score, thin: x.thin }));
+      localStorage.setItem("cgs-learned", JSON.stringify({ handle: META.handle || META.name || "", posts: POSTS.length, date: new Date().toISOString().slice(0, 10),
+        groups: { type: g(A.by_format), length: g(A.by_length), weekday: g(A.by_weekday), slot: g(A.by_slot), tag: g(A.by_tag).map(x => ({ ...x, value: String(x.value).toLowerCase() })) } }));
+    } catch (e) {}
     if (PUBLIC()) A.honest_notes = ["Public numbers only: Instagram shows everyone the likes, comments and Reel views, but keeps reach, watch time, sends and saves private to the owner. Stars here compare likes and comments per follower. If this is your account, press Connect Instagram for the full report."]
       .concat(A.honest_notes.filter(n => !/watch time|Reach column/i.test(n)));
   }

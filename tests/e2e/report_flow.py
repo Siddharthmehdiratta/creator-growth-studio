@@ -49,7 +49,7 @@ async def main():
         await pg.select_option("#pf", "top"); top = await pg.locator(".prow").count()
         check(0 < top < 40, f"filter 4 stars and up shows {top}")
         await pg.select_option("#pf", "all"); await pg.select_option("#ps", "best")
-        first = await pg.locator(".prow .stars").first.get_attribute("aria-label"); check(first.startswith("5"), "best first sorts 5 stars to top")
+        first = await pg.locator(".prow .stars").first.get_attribute("aria-label"); check(first.startswith("10 out of 10"), "best first sorts 10/10 to top")
         await pg.locator(".prow").first.click(); det = await pg.text_content(".pdetail")
         check("Your usual" in det and ("Why it worked" in det or "About normal" in det), "post detail shows numbers vs usual and reasons")
         await pg.fill("#cm-text", "part 2 please\nhow much did this cost?\nfollow me for promo\nthis is fire\nworst video"); await pg.click("#cm-run")

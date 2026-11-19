@@ -1044,3 +1044,6 @@ html.snap body:not(.on-dark) .top-dark nav a[aria-current="page"] { color: var(-
 @media (max-width: 860px) { .bar-nav { display: none; } .site-bar .right .btn:first-child { display: inline-flex; } .site-bar .right .btn.primary.sm { display: inline-flex; } }
 body.startpage { padding-bottom: 0 !important; }
 @media (max-width: 860px) { .site-bar .right .btn.ghost { display: none; } }
+
+.stars .out10{margin-left:6px;font-size:12px;font-weight:700;color:inherit;font-variant-numeric:tabular-nums;vertical-align:middle}
+.stars.lg .out10{font-size:15px}
