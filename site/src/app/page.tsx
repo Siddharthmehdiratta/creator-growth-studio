@@ -1,3 +1,4 @@
+import DIMS from "@/lib/shot-dims.json";
 import { ArrowRightIcon, BadgeCheckIcon, CalendarDaysIcon, CheckIcon, LightbulbIcon, LockIcon, MessageSquareTextIcon, SparklesIcon, StarIcon, UsersIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -22,7 +23,7 @@ const FAQ = [
 ];
 
 function Shot({ src, alt, className = "", eager = false }: { src: string; alt: string; className?: string; eager?: boolean }) {
-  return <picture><source type="image/webp" srcSet={href(src.replace(/\.png$/, ".webp"))} /><img src={href(src)} alt={alt} loading={eager ? "eager" : "lazy"} decoding="async" className={`block w-full ${className}`} /></picture>;
+  return <picture><source type="image/webp" srcSet={href(src.replace(/\.png$/, ".webp"))} /><img src={href(src)} alt={alt} width={(DIMS as Record<string, number[]>)[src]?.[0]} height={(DIMS as Record<string, number[]>)[src]?.[1]} loading={eager ? "eager" : "lazy"} decoding="async" className={`block h-auto w-full ${className}`} /></picture>;
 }
 
 export default function Home() {
@@ -57,9 +58,9 @@ export default function Home() {
             <a href={href("/sample/")} className="hero-frame rise" style={{ "--i": 3 } as React.CSSProperties}>
               <span className="hero-frame-bar" aria-hidden><i /><i /><i /><b>Sample report</b></span>
               <picture>
-                <source media="(max-width: 640px)" type="image/webp" srcSet={href("/shots/overview-phone.webp")} />
-                <source type="image/webp" srcSet={href("/shots/overview.webp")} />
-                <img src={href("/shots/overview.png")} alt="The report's overview for a fictional sample account: average rating 3.5 stars, typical reach 1,380, and the patterns that stand out." loading="eager" decoding="async" className="block w-full" />
+                <source media="(max-width: 640px)" type="image/webp" srcSet={href("/shots/overview-phone.webp")} width={780} height={1688} />
+                <source type="image/webp" srcSet={href("/shots/overview.webp")} width={2560} height={1600} />
+                <img src={href("/shots/overview.png")} width={2560} height={1600} alt="The report's overview for a fictional sample account: average rating 3.5 stars, typical reach 1,380, and the patterns that stand out." loading="eager" fetchPriority="high" decoding="async" className="block h-auto w-full" />
               </picture>
             </a>
           </div>
@@ -67,9 +68,9 @@ export default function Home() {
 
         {/* ---------------- free tools ---------------- */}
         <section className="mx-auto max-w-7xl px-5 py-20 sm:py-28 lg:px-8">
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Four free tools.</h2>
-          <div className="mt-10 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-4">
-            {[["/connect/", "Your report", "Stars for every post and why each worked.", "BarChart3"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"]].map(([h, t, d]) => (
+          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Five free tools.</h2>
+          <div className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-5">
+            {[["/connect/", "Your report", "Stars for every post and why each worked.", "BarChart3"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"], ["/ads/", "Ads Checker", "See if an ad pays for itself.", "Megaphone"]].map(([h, t, d]) => (
               <a key={t} href={href(h)} className="tool-row group">
                 <span className="flex items-center justify-between text-xl font-semibold tracking-tight">{t}<ArrowRightIcon className="size-5 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-foreground" /></span>
                 <span className="mt-2 block text-muted-foreground">{d}</span>

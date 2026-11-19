@@ -20,7 +20,7 @@ function Pills<T extends string>({ value, set, opts, name }: { value: T; set: (v
 function Toggle({ on, set, label, hint }: { on: boolean; set: (v: boolean) => void; label: string; hint?: string }) {
   return (
     <label className="flex cursor-pointer items-start gap-3 rounded-xl border bg-background p-3 hover:border-primary/40">
-      <input type="checkbox" checked={on} onChange={(e) => set(e.target.checked)} className="mt-0.5 size-4 accent-[#6C47FF]" />
+      <input type="checkbox" checked={on} onChange={(e) => set(e.target.checked)} className="mt-0.5 size-4 accent-[#15131F]" />
       <span><span className="text-sm font-medium">{label}</span>{hint && <span className="block text-xs text-muted-foreground">{hint}</span>}</span>
     </label>
   );
@@ -34,7 +34,7 @@ export function PostChecker({ compact = false }: { compact?: boolean }) {
   useEffect(() => { try { localStorage.setItem("cgs-checker", JSON.stringify(p)); } catch {} }, [p]);
   const r = useMemo(() => checkPost(p), [p]);
   const up = <K extends keyof Post>(k: K) => (v: Post[K]) => setP((x) => ({ ...x, [k]: v }));
-  const tone = r.score >= 85 ? "#0E9E84" : r.score >= 70 ? "#6C47FF" : r.score >= 50 ? "#D98A00" : "#D9384A";
+  const tone = r.score >= 85 ? "#0E9E84" : r.score >= 70 ? "#15131F" : r.score >= 50 ? "#D98A00" : "#D9384A";
 
   const addToPlan = () => {
     try {
@@ -52,7 +52,7 @@ export function PostChecker({ compact = false }: { compact?: boolean }) {
         <Field label="Who should see it?"><Pills name="Goal" value={p.goal} set={up("goal")} opts={[["new", "New people"], ["followers", "My followers"]]} /></Field>
         {p.format === "reel" && (
           <Field label={`Length: ${p.length} seconds`}>
-            <input type="range" min={5} max={200} step={1} value={p.length} onChange={(e) => up("length")(Number(e.target.value))} className="w-full accent-[#6C47FF]" aria-label="Reel length in seconds" />
+            <input type="range" min={5} max={200} step={1} value={p.length} onChange={(e) => up("length")(Number(e.target.value))} className="w-full accent-[#15131F]" aria-label="Reel length in seconds" />
           </Field>
         )}
         <Field label="How does the first second open?"><Pills name="Hook" value={p.hook} set={up("hook")} opts={[["face", "My face talking"], ["result", "The result first"], ["question", "A question"], ["text", "Text on screen"], ["none", "No hook"]]} /></Field>

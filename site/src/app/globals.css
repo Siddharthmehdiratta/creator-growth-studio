@@ -80,9 +80,9 @@
   --card-foreground: #15131F;
   --popover: oklch(1 0 0);
   --popover-foreground: #15131F;
-  --primary: #6C47FF;
+  --primary: #15131F;
   --primary-foreground: oklch(0.985 0 0);
-  --brand: #6C47FF;
+  --brand: #15131F;
   --brand-foreground: oklch(0.985 0 0);
   --brand-from: #6C47FF;
   --brand-via: #8B5CF6;
@@ -91,17 +91,17 @@
   --secondary-foreground: oklch(0.205 0 0);
   --muted: #F5F4F8;
   --muted-foreground: #5F5B70;
-  --accent: #F3F0FF;
-  --accent-foreground: #3B2A99;
+  --accent: #F3F2F6;
+  --accent-foreground: #15131F;
   --destructive: oklch(0.577 0.245 27.325);
   --border: #E9E7F0;
   --input: #E2DFEA;
-  --ring: #B9A8FF;
+  --ring: #8E8B9B;
   --success: oklch(0.527 0.137 163);
   --success-foreground: oklch(0.985 0 0);
   --warning: oklch(0.769 0.165 70);
   --warning-foreground: oklch(0.205 0 0);
-  --chart-1: #6C47FF;
+  --chart-1: #15131F;
   --chart-2: oklch(0.685 0.169 237);
   --chart-3: oklch(0.606 0.25 292);
   --chart-4: oklch(0.704 0.14 182);
@@ -357,7 +357,7 @@ body { font-feature-settings: "ss01", "cv11"; text-rendering: optimizeLegibility
 /* Pages open instantly, like a normal website (no slide or fade between pages). */
 
 /* Fontshare display face for headings */
-h1, h2, h3, .font-display { font-family: 'Cabinet Grotesk', 'General Sans', var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
+h1, h2, h3, .font-display { font-family: 'Cabinet Grotesk', 'General Sans', ui-sans-serif, system-ui, sans-serif; }
 
 /* ---- Design pass: motion tokens (Emil Kowalski's values), one load moment, themed browser surfaces ---- */
 :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
@@ -381,3 +381,7 @@ h1, h2, h3 { text-wrap: balance; scroll-margin-top: 6rem; }
 .hero-frame-bar b { margin-left: 0.5rem; font-size: 0.8rem; font-weight: 500; color: var(--muted-foreground); }
 .tool-row { display: block; padding: 1.5rem 0; border-top: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent); transition: border-color 200ms ease; }
 @media (hover: hover) and (pointer: fine) { .tool-row:hover { border-top-color: var(--foreground); } }
+
+/* Site chrome is ink. Purple lives only inside the report screenshots. On ink sections, accents flip to light. */
+[class*="bg-[#15131F]"] .text-primary { color: #D6D3E0; } /* ink sections */
+[class*="bg-[#15131F]"] [data-slot="button"].bg-primary { background: #fff; color: #15131F; }
