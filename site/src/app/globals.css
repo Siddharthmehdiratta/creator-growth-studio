@@ -78,7 +78,7 @@
 :root {
   --background: #FCFBF9;
   --surface: #F5F3EE;
-  --link: #5235E8;
+  --link: #15131F;
   --foreground: #15131F;
   --card: oklch(1 0 0);
   --card-foreground: #15131F;
@@ -100,7 +100,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: #E6E2DA;
   --input: #DDD8CE;
-  --ring: #5235E8;
+  --ring: #15131F;
   --success: oklch(0.527 0.137 163);
   --success-foreground: oklch(0.985 0 0);
   --warning: oklch(0.769 0.165 70);
@@ -124,7 +124,7 @@
 .dark {
   --background: oklch(0.145 0 0);
   --surface: oklch(0.205 0 0);
-  --link: #A99BFF;
+  --link: #E8E6F0;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -389,6 +389,10 @@ h1, h2, h3 { text-wrap: balance; scroll-margin-top: 6rem; }
 @media (hover: hover) and (pointer: fine) { .tool-row:hover { border-top-color: var(--foreground); } }
 
 /* Site chrome is ink. Purple lives only inside the report screenshots. On ink sections, accents flip to light. */
+/* Links are ink too, so an underline carries them instead of colour. */
+a.text-link { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); transition: text-decoration-color 150ms var(--ease-out); }
+@media (hover: hover) and (pointer: fine) { a.text-link:hover { text-decoration-color: currentColor; } }
+a.text-link[class*="bg-primary"] { text-decoration: none; }
 [class*="bg-[#15131F]"] .text-link { color: #D6D3E0; } /* ink sections */
 [class*="bg-[#15131F]"] [data-slot="button"].bg-primary { background: #fff; color: #15131F; }
 
