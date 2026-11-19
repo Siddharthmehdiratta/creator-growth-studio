@@ -19,7 +19,7 @@ export default function Page() {
             <p className="mt-4 flex items-baseline gap-2"><span className="text-6xl font-semibold tracking-[-0.04em]">₹0</span><span className="text-white/60">forever</span></p>
             <p className="mt-4 text-sm text-white/70">Also $0, €0 and £0. Made free on purpose, so every creator can grow.</p>
             <Button size="lg" className="mt-8 h-12 w-full rounded-xl bg-white text-[#15131F] hover:bg-white/90" asChild><a href={href(SITE.app)}>Get my free report</a></Button>
-            <a href={href(SITE.sample)} className="mt-3 block text-center text-sm text-white/70 hover:text-white">See a sample first</a>
+            <a href={href("/sample/")} className="mt-3 block text-center text-sm text-white/70 hover:text-white">See a sample first</a>
           </div>
           <div className="p-9">
             <p className="font-medium">What's included</p>

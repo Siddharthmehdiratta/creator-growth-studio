@@ -19,7 +19,7 @@ const STEPS: { t: string; lead: string; do: string[]; tip?: string; shot?: strin
 export default function Page() {
   return (
     <PageShell group="Learn" kicker="Beginner's guide" title="Your first report in 7 steps" lead="New to all this? Go one step at a time. Each step takes 1 to 3 minutes."
-      actions={<><Button className="h-11 rounded-xl px-5" asChild><a href={href(SITE.app)}>Start now</a></Button><Button variant="outline" className="h-11 rounded-xl px-5" asChild><a href={href(SITE.sample)}>Open the sample report</a></Button></>}>
+      actions={<><Button className="h-11 rounded-xl px-5" asChild><a href={href(SITE.app)}>Start now</a></Button><Button variant="outline" className="h-11 rounded-xl px-5" asChild><a href={href("/sample/")}>See the sample report</a></Button></>}>
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-[15rem_1fr] lg:px-8">
         <aside className="hidden lg:block">
           <nav aria-label="Steps" className="sticky top-24 grid gap-1 text-sm">

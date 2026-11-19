@@ -14,12 +14,13 @@ async def main():
         b = await p.chromium.launch(executable_path="/usr/bin/google-chrome")
         ctx = await b.new_context(viewport={"width": 1366, "height": 900}, accept_downloads=True, permissions=["clipboard-read", "clipboard-write"])
         pg = await ctx.new_page(); errs = []
-        pg.on("pageerror", lambda e: errs.append(str(e))); pg.on("console", lambda m: m.type == "error" and errs.append(m.text))
+        # Outside sites (fonts, GitHub stats) may be blocked in a sandbox: ignore only those network refusals.
+        pg.on("pageerror", lambda e: errs.append(str(e))); pg.on("console", lambda m: m.type == "error" and "ERR_TUNNEL_CONNECTION_FAILED" not in m.text and errs.append(m.text))
         await pg.goto(BASE)
         check(await pg.locator("h1").count() == 1, "home has one h1")
         check(await pg.locator("a[href$='start.html?p=instagram']").count() == 1 and await pg.locator("a[href$='start.html?p=youtube']").count() == 1, "home lets you pick a platform")
         check(await pg.locator("img[src$='shots/overview.png']").count() == 1, "home shows a real screenshot of the report")
-        PAGES = ["features/", "how-it-works/", "pricing/", "guide/", "growth-guide/", "faq/", "changelog/", "help/", "contact/", "about/", "open-source/", "privacy/"]
+        PAGES = ["features/", "how-it-works/", "pricing/", "guide/", "growth-guide/", "faq/", "changelog/", "help/", "contact/", "about/", "open-source/", "privacy/", "algorithm/", "post-checker/", "planner/", "connect/", "claude/", "sample/"]
         for page_ in PAGES:
             await pg.goto(BASE + page_); check(await pg.locator("h1").count() == 1 and await pg.locator("header.site-header nav[aria-label=Main]").count() == 1 and await pg.locator("footer").count() == 1, f"{page_} has a title, the menu and the footer")
         for old, new in [("features.html", "features/"), ("report.html", "contact/#report"), ("github.html", "open-source/")]:

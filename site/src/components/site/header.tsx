@@ -29,8 +29,8 @@ export function SiteHeader({ active = "" }: { active?: string }) {
                     <ChevronDownIcon aria-hidden className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" sideOffset={12} className="w-[26rem] rounded-2xl p-2 shadow-xl shadow-foreground/5">
-                  <div className="grid gap-0.5">
+                <DropdownMenuContent align="start" sideOffset={12} className={`${g.items.length > 5 ? "w-[42rem]" : "w-[26rem]"} max-w-(--radix-dropdown-menu-content-available-width) rounded-2xl p-2 shadow-xl shadow-foreground/5`}>
+                  <div className={`grid gap-0.5 ${g.items.length > 5 ? "grid-cols-2" : ""}`}>
                     {g.items.map((it) => (
                       <DropdownMenuItem key={it.title} asChild className="items-start gap-3 rounded-xl p-2.5">
                         <a href={href(it.href)}>

@@ -1,0 +1,21 @@
+// Checks the Instagram "Download your information" reader on a fixture built in the same shape as Meta's export.
+import { readFileSync } from "node:fs";
+import vm from "node:vm";
+const root = new URL("../../", import.meta.url);
+const ctx = { window: {}, TextDecoder, DecompressionStream, Response, Blob, Uint8Array, DataView, escape, decodeURIComponent, console };
+vm.createContext(ctx); vm.runInContext(readFileSync(new URL("site/public/dyi.js", root), "utf8"), ctx);
+const D = ctx.window.CGS_DYI;
+const buf = readFileSync(new URL("tests/fixtures/instagram-dyi-sample.zip", root));
+const file = { name: "instagram.zip", arrayBuffer: async () => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) };
+let fails = 0; const check = (c, m) => { console.log((c ? "ok  " : "FAIL") + " " + m); if (!c) fails++; };
+const d = await D.read(file);
+check(d.posts === 12, `12 posts and reels found (${d.posts})`);
+check(d.rows.length === 12, `12 rows (${d.rows.length})`);
+check(d.withNumbers === 12, `insights joined to all posts (${d.withNumbers})`);
+check(d.rows.filter(r => r["Post type"] === "Reel").length === 4, "reels typed as Reel");
+check(d.rows.some(r => r["Post type"] === "Carousel"), "multi-photo posts typed as Carousel");
+check(d.rows.every(r => typeof r.Reach === "number" && r.Reach > 0), "reach numbers read");
+check(d.rows[0].Description.includes("café"), "Meta's broken accents are repaired: " + d.rows[0].Description);
+const one = await D.read({ name: "posts_1.json", arrayBuffer: async () => new TextEncoder().encode(JSON.stringify([{ media: [{ uri: "a.jpg", creation_timestamp: 1755000000, title: "hi" }] }])).buffer });
+check(one.posts === 1 && one.withNumbers === 0, "a single posts JSON without insights is read, and reports no numbers");
+console.log(fails ? `\nFAILED: ${fails}` : "\nall Instagram download checks passed"); process.exit(fails ? 1 : 0);

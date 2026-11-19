@@ -1,0 +1,103 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Sample report: Creator Growth Studio</title><style>
+@font-face { font-family: G; src: url(../../site/node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2); font-weight: 100 900; }
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: G, Arial, sans-serif; color: #15131F; background: #E9E7F0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; background: #fff; position: relative; overflow: hidden; padding: 18mm 16mm 16mm; page-break-after: always; margin: 0 auto 10mm; }
+@media print { body { background: #fff; } .page { margin: 0; } }
+.top { display: flex; align-items: center; justify-content: space-between; font-size: 9pt; color: #5F5B70; margin-bottom: 10mm; }
+.logo { display: flex; gap: 6px; align-items: center; font-weight: 600; color: #15131F; } .logo i { width: 18px; height: 18px; border-radius: 5px; background: #6C47FF; display: inline-block; }
+h1 { font-size: 30pt; letter-spacing: -1px; line-height: 1.05; margin: 0 0 6mm; } h2 { font-size: 20pt; letter-spacing: -0.5px; margin: 0 0 3mm; }
+.kick { color: #6C47FF; font-weight: 600; font-size: 10pt; margin-bottom: 2mm; } p { font-size: 10.5pt; line-height: 1.55; color: #3A3750; margin: 0 0 3mm; }
+.shot { border: 1px solid #E2DFEA; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 30px -16px rgba(32,16,92,.35); margin: 5mm 0; }
+.shot img { display: block; width: 100%; } .two { display: grid; grid-template-columns: 1fr 62mm; gap: 8mm; align-items: start; }
+.phone { border: 6px solid #15131F; border-radius: 22px; overflow: hidden; } .phone img { display: block; width: 100%; }
+.read { background: #F6F4FB; border-radius: 10px; padding: 5mm 6mm; margin-top: 4mm; } .read > b { display: block; font-size: 10pt; margin-bottom: 2mm; }
+.read ul { margin: 0; padding-left: 5mm; font-size: 10pt; line-height: 1.6; color: #3A3750; }
+.foot { position: absolute; left: 16mm; right: 16mm; bottom: 9mm; display: flex; justify-content: space-between; font-size: 8pt; color: #8A86A0; }
+.cover { background: radial-gradient(120% 70% at 80% 0%, #3A1E9E 0%, #15131F 60%); color: #fff; }
+.cover p { color: rgba(255,255,255,.75); } .cover .top { color: rgba(255,255,255,.6); } .cover .logo { color: #fff; }
+.kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 4mm; margin-top: 12mm; } .kpis div { border: 1px solid rgba(255,255,255,.15); border-radius: 10px; padding: 5mm; }
+.kpis b { display: block; font-size: 20pt; } .kpis span { font-size: 9pt; color: rgba(255,255,255,.65); }
+.toc { margin-top: 14mm; font-size: 11pt; line-height: 2; color: rgba(255,255,255,.85); } .toc span { color: #B9A8FF; margin-right: 4mm; }
+.tag { display: inline-block; background: rgba(255,255,255,.12); border-radius: 99px; padding: 1.5mm 4mm; font-size: 9pt; margin-bottom: 8mm; }
+.cta { background: #15131F; color: #fff; border-radius: 14px; padding: 9mm; margin-top: 8mm; } .cta p { color: rgba(255,255,255,.75); }
+.ways { display: grid; grid-template-columns: repeat(3,1fr); gap: 4mm; margin-top: 6mm; } .ways div { border: 1px solid #E2DFEA; border-radius: 10px; padding: 5mm; font-size: 9.5pt; line-height: 1.5; } .ways b { display: block; font-size: 11pt; margin-bottom: 1.5mm; }
+</style></head><body>
+
+<section class="page cover">
+  <div class="top"><span class="logo"><i></i>Creator Growth Studio</span><span>Sample report · fictional account</span></div>
+  <div style="margin-top:30mm"><span class="tag">Instagram · 40 posts · 20 Aug to 13 Nov 2026</span>
+  <h1 style="font-size:38pt">@lowping.rohan<br>Growth report</h1>
+  <p style="font-size:12pt;max-width:140mm">A fictional gaming creator, analysed by the real tool. This is exactly what you get for your own account, free.</p></div>
+  <div class="kpis"><div><b>3.5 ★</b><span>Average rating</span></div><div><b>1,380</b><span>Typical reach</span></div><div><b>2,282</b><span>Followers</span></div><div><b>16</b><span>Posts with 4+ stars</span></div></div>
+  <div class="toc"><div><span>1</span>Your account at a glance</div><div><span>2</span>Every post, rated</div><div><span>3</span>Why your best post worked</div><div><span>4</span>What to post next</div><div><span>5</span>Your 30-day plan</div><div><span>6</span>Your AI boardroom</div><div><span>7</span>Get your own report</div></div>
+  <div class="foot" style="color:rgba(255,255,255,.5)"><span>siddharthmehdiratta.github.io/creator-growth-studio</span><span>Free and open source</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><span class="logo"><i></i>Creator Growth Studio</span><span>1 · At a glance</span></div>
+  <p class="kick">1 · At a glance</p><h2>Your account in one screen</h2>
+  <p>The top of your report: your level, your typical post, and the patterns that stand out across all your posts.</p>
+  <div class="shot"><img src="../../site/public/shots/overview.png" alt=""></div>
+  <div class="read"><b>How to read it</b><ul><li><b>Average rating 3.5</b> means a normal month. Every post is compared with your own usual, so this works at 80 followers or 80,000.</li><li><b>The short version</b> lists patterns that held up when everything else was equal: here, face-to-camera hooks reached 2.28x more people.</li><li><b>Your last 10 posts</b> shows each signal against your usual. 100% means normal.</li></ul></div>
+  <div class="foot"><span>Sample report · fictional account</span><span>2</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><span class="logo"><i></i>Creator Growth Studio</span><span>2 · Every post, rated</span></div>
+  <p class="kick">2 · Every post, rated</p><h2>A star rating for all 40 posts</h2>
+  <p>Stars come from the signals Instagram's head names as most important: watch time, sends and likes per person reached, plus follows, saves and comments.</p>
+  <div class="shot"><img src="../../site/public/shots/posts.png" alt=""></div>
+  <div class="read"><b>How to read it</b><ul><li><b>3.5 stars</b> is a normal post for you. <b>5 stars</b> is about twice as good as usual. <b>1 star</b> is well below.</li><li>Sort by <b>Best first</b> to find what to repeat, and <b>Worst first</b> to find what to stop.</li><li>Filter by format to compare reels with reels and carousels with carousels.</li></ul></div>
+  <div class="foot"><span>Sample report · fictional account</span><span>3</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><span class="logo"><i></i>Creator Growth Studio</span><span>3 · Why it worked</span></div>
+  <p class="kick">3 · Why it worked</p><h2>Open any post to see why</h2>
+  <div class="two"><div>
+    <p>The best post, "GTA 6 price in India", reached 5,758 people: 4.2 times the usual. Each number sits next to the account's normal, so the reason jumps out.</p>
+    <div class="read"><b>What the numbers say</b><ul><li><b>Profile visits 13x</b> and <b>views 5x</b>: the topic pulled new people in.</li><li><b>Sends 3.1x</b>: people sent it to friends, one of Instagram's top 3 signals.</li><li><b>Watch time 1.1x</b>: about normal, so the hook, not the length, did the work.</li></ul></div>
+    <div class="read"><b>Next time</b><ul><li>Make a part 2 while interest is fresh.</li><li>Keep the face-to-camera opening.</li><li>End with "send this to the friend who's saving up".</li></ul></div>
+  </div><div class="phone"><img src="../../site/public/shots/post-phone.png" alt=""></div></div>
+  <div class="foot"><span>Sample report · fictional account</span><span>4</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><span class="logo"><i></i>Creator Growth Studio</span><span>4 · What to post next</span></div>
+  <p class="kick">4 · What to post next</p><h2>Ideas built from your own best posts</h2>
+  <p>Not generic tips: part 2s of your winners, posts built to be sent, and angles from your niche, each with the format, day and time that work for your audience.</p>
+  <div class="shot"><img src="../../site/public/shots/ideas.png" alt=""></div>
+  <div class="read"><b>Tip</b><ul><li>Test risky ideas as <b>trial reels</b>: Instagram shows them only to people who don't follow you, and keeps them off your grid until you choose.</li></ul></div>
+  <div class="foot"><span>Sample report · fictional account</span><span>5</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><span class="logo"><i></i>Creator Growth Studio</span><span>5 · Your plan</span></div>
+  <p class="kick">5 · Your 30-day plan</p><h2>A goal you can reach, and the calendar to get there</h2>
+  <p>Pick a follower goal. The report says whether it's realistic at your real pace, then builds a posting calendar on your best days. One tap adds it to Google Calendar.</p>
+  <div class="shot"><img src="../../site/public/shots/plan.png" alt=""></div>
+  <div class="read"><b>Why 3 to 5 posts a week</b><ul><li>Buffer's study of 2 million Instagram posts found 3 to 5 posts a week more than doubled follower growth compared with 1 to 2.</li></ul></div>
+  <div class="foot"><span>Sample report · fictional account</span><span>6</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><span class="logo"><i></i>Creator Growth Studio</span><span>6 · AI boardroom</span></div>
+  <p class="kick">6 · Your AI boardroom</p><h2>Six expert advisers, one plan</h2>
+  <p>One message from your report gets Claude to review your account as a CEO, growth lead, social media expert, SEO lead, data analyst and creative director. They disagree out loud, then the CEO decides.</p>
+  <div class="shot"><img src="../../site/public/shots/board.png" alt=""></div>
+  <div class="read"><b>Good to know</b><ul><li>Works on Claude's free plan. The advisers are AI, so treat their advice as ideas to test, not facts.</li></ul></div>
+  <div class="foot"><span>Sample report · fictional account</span><span>7</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><span class="logo"><i></i>Creator Growth Studio</span><span>7 · Get yours</span></div>
+  <p class="kick">7 · Get your own report</p><h2>Free, in under a minute</h2>
+  <p>Pick the way that suits you. You never type your Instagram password on our site.</p>
+  <div class="ways"><div><b>Log in with Instagram</b>The most detail: reach, watch time, skips, sends and saves. Your password stays with Instagram.</div><div><b>Type a username</b>Public numbers for any Creator or Business account, including creators you want to work with.</div><div><b>Upload a file</b>Instagram's own data download (ZIP) or a Meta Business Suite CSV. Read on your device only.</div></div>
+  <div class="cta"><h2 style="color:#fff">siddharthmehdiratta.github.io/creator-growth-studio</h2><p>Also free there: the Post Checker, the Planner, Claude helpers and a sourced guide to how the Instagram algorithm works.</p></div>
+  <p style="margin-top:8mm;font-size:9pt;color:#8A86A0">Sources: Instagram, "Instagram Ranking Explained" (2023); Buffer, Instagram algorithm guide and 2 million post study; TechCrunch on trial reels (2024). The sample account @lowping.rohan is fictional and was generated with known patterns for testing.</p>
+  <div class="foot"><span>Sample report · fictional account</span><span>8</span></div>
+</section>
+</body></html>

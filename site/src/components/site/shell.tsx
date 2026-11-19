@@ -63,8 +63,8 @@ export function CtaBand() {
         <h2 className="mx-auto max-w-2xl text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">See what's working on your account.</h2>
         <p className="mx-auto mt-4 max-w-lg text-white/70">Free, private, and ready in under a minute.</p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <a href={href("/start.html")} className="inline-flex h-12 items-center justify-center rounded-xl bg-white px-6 font-medium text-[#15131F] hover:bg-white/90">Get my free report</a>
-          <a href={href("/start.html?sample=1")} className="inline-flex h-12 items-center justify-center rounded-xl px-6 font-medium text-white hover:bg-white/10">See a sample first</a>
+          <a href={href("/connect/")} className="inline-flex h-12 items-center justify-center rounded-xl bg-white px-6 font-medium text-[#15131F] hover:bg-white/90">Get my free report</a>
+          <a href={href("/sample/")} className="inline-flex h-12 items-center justify-center rounded-xl px-6 font-medium text-white hover:bg-white/10">See a sample first</a>
         </div>
       </div>
     </section>

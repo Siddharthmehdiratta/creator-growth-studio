@@ -94,17 +94,25 @@
           </form>
           <div class="alts">
             <button class="altopt" id="connect" type="button"><span class="ic ig"><svg aria-hidden="true"><use href="#i-ig"/></svg></span><span><b>Connect Instagram</b><span>Adds reach, watch time, skips and comments</span></span></button>
-            <label class="altopt" id="drop" for="file" tabindex="0"><span class="ic up"><svg aria-hidden="true"><use href="#i-up"/></svg></span><span><b>Upload an export</b><span>CSV from Meta Business Suite</span></span></label>
+            <label class="altopt" id="drop" for="file" tabindex="0"><span class="ic up"><svg aria-hidden="true"><use href="#i-up"/></svg></span><span><b>Upload a file</b><span>Meta Business Suite CSV, or Instagram's own download (ZIP)</span></span></label>
           </div>
           <div class="row">
             <button class="linkbtn small" data-sample type="button">Try it with a sample account</button>
             <button class="linkbtn small" id="how-export" type="button" aria-expanded="false" aria-controls="export-help">How do I get my export?</button>
           </div>
           <div id="export-help" hidden>
-            <ol class="small muted" style="padding-left:20px;margin:8px 6px 6px">
+            <p class="small" style="margin:10px 6px 4px"><b>Best: Meta Business Suite</b> (has reach, views and saves)</p>
+            <ol class="small muted" style="padding-left:20px;margin:4px 6px 6px">
               <li>On a computer, open <a href="https://business.facebook.com/latest/insights/content" target="_blank" rel="noopener">Meta Business Suite</a>, then Insights, then Content.</li>
               <li>Pick the last 90 days.</li>
               <li>Press Export data, then CSV, and drop the file here.</li>
+            </ol>
+            <p class="small" style="margin:12px 6px 4px"><b>Or: Instagram's own download</b> (ZIP file)</p>
+            <ol class="small muted" style="padding-left:20px;margin:4px 6px 6px">
+              <li>In the Instagram app: your profile, then the menu (top right), then <b>Accounts Center</b>.</li>
+              <li><b>Your information and permissions</b>, then <b>Download your information</b> (or Export your information).</li>
+              <li>Choose your Instagram account, <b>Posts</b> and <b>Reels</b>, format <b>JSON</b>, then <b>Create files</b>.</li>
+              <li>Instagram emails you when it's ready (minutes to hours). Download the ZIP and drop it here. Nothing leaves your device.</li>
             </ol>
           </div>
         </div>
@@ -177,10 +185,11 @@
 <!--FOOTER-->
 <footer class="bar-foot"><div class="wrap"><span>Creator Growth Studio. Free and open source (MIT).</span><nav aria-label="Footer"><a href="./">Home</a><a href="faq/">FAQ</a><a href="contact/#report">Report a problem</a><a href="privacy/">Privacy</a></nav></div></footer>
 <!--/FOOTER-->
-<input type="file" id="file" accept=".csv,.txt,text/csv" class="sr">
+<input type="file" id="file" accept=".csv,.txt,text/csv,.zip,application/zip,.json,application/json" class="sr">
 <script src="config.js"></script>
 <script src="engine.js"></script>
 <script src="data.js"></script>
+<script src="dyi.js"></script>
 <script src="app.js"></script>
 <script src="site.js"></script>
 </body>

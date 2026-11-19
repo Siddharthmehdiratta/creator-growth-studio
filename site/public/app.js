@@ -101,8 +101,20 @@
     if (!$("landing").hidden && $("w2").hidden) choosePlatform(S.platform || "instagram");
     const e = $("load-err"); e.textContent = msg; e.hidden = false; toast(msg); return false;
   }
+  async function useDyi(file) {
+    if (!window.CGS_DYI) return fail("Couldn't open that file type here. Upload a CSV instead.");
+    try {
+      busy("Opening your Instagram download...");
+      const d = await window.CGS_DYI.read(file); busy();
+      if (!d.posts && !d.rows.length) return fail("No posts were found in that file. When you request your download, tick Posts and Reels, and choose JSON.");
+      if (d.withNumbers < 3) return fail(`Your file has ${d.posts} posts, but Instagram didn't include their numbers (reach, views, likes). For stars you need numbers: press Connect Instagram, or upload the Meta Business Suite CSV.`);
+      const meta = { source: "file", fileName: file.name + " (Instagram download)" };
+      if (loadRows(d.rows, meta)) { sess.set("cgs-data", JSON.stringify({ kind: "rows", rows: d.rows, meta })); toast(`Read ${d.rows.length} posts from your Instagram download.`); }
+    } catch (e) { busy(); fail(e.message || "Couldn't read that file. Download it again from Instagram, in JSON format."); }
+  }
   function useFile(file) {
     if (!file) return;
+    if (/\.(zip|json)$/i.test(file.name)) return useDyi(file);
     if (file.size > 25 * 1024 * 1024) return fail("That file is over 25 MB. Export 90 days of posts and try again.");
     const r = new FileReader();
     r.onload = () => { const text = String(r.result || ""); if (loadRows(text, { source: "file", fileName: file.name })) { sess.set("cgs-data", JSON.stringify({ kind: "csv", text, meta: { source: "file", fileName: file.name } })); } };
@@ -733,7 +745,9 @@
     const saved = sess.get("cgs-data");
     if (qs.get("sample")) { history.replaceState(null, "", location.pathname); loadSample(); }
     else if (saved) { try { const d = JSON.parse(saved); loadRows(d.kind === "csv" ? d.text : d.rows, Object.assign({}, d.meta, { keepSettings: true })); } catch (e) { sess.del("cgs-data"); } }
-    else if (qs.get("p")) { choosePlatform(qs.get("p")); }
+    else if (qs.get("p")) { choosePlatform(qs.get("p"));
+      if (qs.get("u")) { $("handle").value = qs.get("u"); loadLookup(qs.get("u")); }
+      else if (qs.get("connect") && $("connect")) $("connect").click(); }
   }
   window.CGS_APP = { boardPrompt, state: S, audit: () => A, meta: () => META };
 })();

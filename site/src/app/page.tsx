@@ -7,6 +7,9 @@ import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
 import { InstagramMark, TwitchMark, YouTubeMark } from "@/components/site/brand-icons";
 import { SITE, href } from "@/lib/site";
+import { Hero3DLazy } from "@/components/site/hero-3d-lazy";
+import { PostChecker } from "@/components/site/post-checker";
+import { Icon } from "@/components/site/icon";
 
 const PLATFORMS = [
   { name: "Instagram", sub: "Reels, posts, carousels", p: "instagram", Mark: InstagramMark, tone: "from-[#F58529] via-[#DD2A7B] to-[#8134AF]" },
@@ -32,56 +35,86 @@ export default function Home() {
       <main id="main" className="overflow-x-clip">
         {/* ---------------- hero ---------------- */}
         <section className="relative isolate overflow-hidden">
-          <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_0%,#EDE7FF_0%,transparent_70%)]" />
-          <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-size-[4rem_4rem] opacity-50 mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,black,transparent_75%)]" />
-          <div className="mx-auto max-w-7xl px-5 pt-16 pb-10 text-center sm:pt-24 lg:px-8">
-            <div>
-              <a href={href("/changelog/")} className="inline-flex items-center gap-2 rounded-full border bg-background/80 px-3 py-1 text-sm text-muted-foreground shadow-xs hover:text-foreground">
+          <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(55%_60%_at_75%_10%,#EDE7FF_0%,transparent_70%)]" />
+          <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-size-[4rem_4rem] opacity-40 mask-[radial-gradient(ellipse_70%_60%_at_70%_0%,black,transparent_75%)]" />
+          <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 pt-14 pb-16 sm:pt-20 lg:grid-cols-[1.1fr_1fr] lg:px-8">
+            <div className="text-center lg:text-left">
+              <a href={href("/algorithm/")} className="inline-flex items-center gap-2 rounded-full border bg-background/80 px-3 py-1 text-sm text-muted-foreground shadow-xs hover:text-foreground">
                 <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">New</span>
-                YouTube and Twitch reports are here
+                How the Instagram algorithm works
                 <ArrowRightIcon className="size-3.5" />
               </a>
-            </div>
-            <div>
-              <h1 className="mx-auto mt-7 max-w-4xl text-[2.6rem] leading-[1.05] font-semibold tracking-[-0.04em] text-balance sm:text-6xl lg:text-7xl">
-                Know which posts grow your account, and why.
+              <h1 className="mt-7 text-[3.4rem] leading-[0.95] font-bold tracking-[-0.045em] text-balance sm:text-7xl lg:text-[6.4rem]">
+                Know what to post next.
               </h1>
-            </div>
-            <div>
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground text-pretty sm:text-xl">
-                A star rating for every post, the reason it worked or flopped, and what to post next. Free, private, and ready in under a minute.
+              <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground text-pretty sm:text-xl lg:mx-0">
+                See which posts grew your account and why. Then check your next post before you share it. Free and private.
               </p>
-            </div>
-            <div>
-              <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
                 <Button size="lg" className="h-12 rounded-xl px-6 text-base shadow-lg shadow-primary/25" asChild>
-                  <a href={href(SITE.app)}>Get my free report<ArrowRightIcon /></a>
+                  <a href={href("/connect/")}>Get my free report<ArrowRightIcon /></a>
                 </Button>
                 <Button size="lg" variant="outline" className="h-12 rounded-xl px-6 text-base" asChild>
-                  <a href={href(SITE.sample)}>See a sample report</a>
+                  <a href={href("/post-checker/")}>Check a post</a>
                 </Button>
               </div>
-              <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+              <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground lg:justify-start">
                 {["No password", "No sign-up", "Open source"].map((t) => (
                   <li key={t} className="flex items-center gap-1.5"><CheckIcon className="size-4 text-primary" />{t}</li>
                 ))}
               </ul>
             </div>
-          </div>
-
-          <div className="mx-auto max-w-6xl px-5 pb-20 lg:px-8">
             <div className="relative">
-              <div aria-hidden className="absolute -inset-x-10 -top-10 -bottom-4 -z-10 rounded-[3rem] bg-[radial-gradient(50%_60%_at_50%_40%,#C9B8FF_0%,transparent_70%)] opacity-60 blur-2xl" />
-              <div className="mx-auto w-full max-w-[19rem] overflow-hidden rounded-[2.4rem] border-8 border-[#15131F] bg-[#15131F] shadow-2xl shadow-primary/20 sm:hidden">
-                <Shot eager src="/shots/overview-phone.png" alt="The report on a phone, for a fictional sample account." className="rounded-[1.8rem]" />
-              </div>
-              <BrowserMockup url="creator-growth-studio · sample report" className="relative hidden overflow-hidden rounded-2xl shadow-2xl shadow-primary/10 sm:block">
-                <Shot eager src="/shots/overview.png" alt="The report's overview for a fictional sample account: average rating 3.5 stars, typical reach 1,380, and the patterns that stand out." />
-                <BorderBeam size={260} duration={9} colorFrom="#6C47FF" colorTo="#C4B5FD" />
-              </BrowserMockup>
-              <p className="mt-4 text-center text-xs text-muted-foreground">Real report, fictional sample account.</p>
+              <div aria-hidden className="absolute inset-x-10 top-10 bottom-10 -z-10 rounded-full bg-[radial-gradient(closest-side,#D9CCFF,transparent)] blur-2xl" />
+              <Hero3DLazy fallback="/shots/overview-phone.png" />
+              <p className="mt-3 text-center text-xs text-muted-foreground">Real report, fictional sample account.</p>
             </div>
           </div>
+        </section>
+
+        {/* ---------------- free tools ---------------- */}
+        <section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[["/connect/", "Your report", "Stars for every post and why each worked.", "BarChart3"], ["/post-checker/", "Post Checker", "Score your next post before you share it.", "ScanSearch"], ["/planner/", "Planner", "Plan your week and get calendar reminders.", "CalendarDays"], ["/claude/", "Claude helpers", "Captions, hooks and scripts in one click.", "Sparkles"]].map(([h, t, d, ic]) => (
+              <a key={t} href={href(h)} className="group rounded-3xl border bg-background p-6 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
+                <span className="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary"><Icon name={ic} className="size-5" /></span>
+                <h2 className="mt-5 text-lg font-semibold tracking-tight">{t}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">{d}</p>
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">Open<ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-0.5" /></span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------------- inside the report ---------------- */}
+        <section className="border-y bg-[#FAFAFC]">
+          <div className="mx-auto max-w-6xl px-5 py-20 lg:px-8">
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="text-sm font-medium text-primary">Inside the report</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Every number, compared with your own usual.</h2>
+            </div>
+            <div className="relative mt-12">
+              <div aria-hidden className="absolute -inset-x-10 -top-10 -bottom-4 -z-10 rounded-[3rem] bg-[radial-gradient(50%_60%_at_50%_40%,#C9B8FF_0%,transparent_70%)] opacity-50 blur-2xl" />
+              <BrowserMockup url="creator-growth-studio · sample report" className="relative overflow-hidden rounded-2xl shadow-2xl shadow-primary/10">
+                <Shot src="/shots/overview.png" alt="The report's overview for a fictional sample account: average rating 3.5 stars, typical reach 1,380, and the patterns that stand out." />
+                <BorderBeam size={260} duration={9} colorFrom="#6C47FF" colorTo="#C4B5FD" />
+              </BrowserMockup>
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Button className="h-11 rounded-xl px-5" asChild><a href={href("/sample/")}>See the sample report (PDF)</a></Button>
+                <Button variant="outline" className="h-11 rounded-xl px-5" asChild><a href={href(SITE.sample)}>Explore it live</a></Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- try the checker ---------------- */}
+        <section className="mx-auto max-w-7xl px-5 py-24 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="text-sm font-medium text-primary">Try it now</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Will your next post get shown?</h2>
+            <p className="mt-4 text-muted-foreground">Change the post and watch the score move. Built on the signals Instagram has published, with a source for every point.</p>
+          </div>
+          <div className="mt-12"><PostChecker compact /></div>
         </section>
 
         {/* ---------------- platform choice ---------------- */}
@@ -248,7 +281,7 @@ export default function Home() {
             <p className="mx-auto mt-4 max-w-lg text-white/70">Find out what's working in under a minute. Free, private, and nothing to install.</p>
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
               <Button size="lg" className="h-12 rounded-xl bg-white px-6 text-base text-[#15131F] hover:bg-white/90" asChild><a href={href(SITE.app)}>Get my free report</a></Button>
-              <Button size="lg" variant="ghost" className="h-12 rounded-xl px-6 text-base text-white hover:bg-white/10 hover:text-white" asChild><a href={href(SITE.sample)}>See a sample first</a></Button>
+              <Button size="lg" variant="ghost" className="h-12 rounded-xl px-6 text-base text-white hover:bg-white/10 hover:text-white" asChild><a href={href("/sample/")}>See a sample first</a></Button>
             </div>
           </div>
         </section>
