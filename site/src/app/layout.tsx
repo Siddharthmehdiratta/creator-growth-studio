@@ -14,7 +14,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* Fonts load from Fontshare (Indian Type Foundry, free for commercial use; files may not be redistributed). */}
         <link rel="preconnect" href="https://api.fontshare.com" />
-        <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&f[]=general-sans@400,500,600&display=swap" />
+        {/* One link per font: the Fontshare API reads only the first font in a link. */}
+        <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap" />
+        <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" />
         {/* Instagram login can land on any page: send it to the report app. */}
         <script dangerouslySetInnerHTML={{ __html: `if(/^#(ig|error)=/.test(location.hash)&&!/start\\.html$/.test(location.pathname)){location.replace("${process.env.NEXT_PUBLIC_BASE ?? ""}/start.html"+location.hash)}` }} />
       </head>
