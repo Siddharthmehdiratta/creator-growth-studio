@@ -27,4 +27,5 @@ r = scorePost({ ...DEFAULT_POST, caption: "" }, none, null); assert.ok(r.caption
 r = scorePost({ ...DEFAULT_POST, caption: "The cheapest way to visit Goa in December, step by step. Save this and send it to your travel buddy. Which beach first? #goa #travel" }, none, null); assert.equal(r.caption10, 10);
 r = scorePost({ ...DEFAULT_POST, caption: "nice #a #b #c #d #e #f #g" }, none, null); assert.ok(r.caption10 < 2.5);
 assert.equal(slotOf(19), "evening (5-9 pm)"); assert.equal(slotOf(null), null); assert.equal(durBucket(25), "16-30 s");
+m = personal({ ...DEFAULT_POST, format: "photo" }, none, { ...L, groups: { type: [{ value: "image", posts: 8, median_score: 52 }] } }); assert.equal(m.findings[0].points, -5, "photos match the report's image type");
 console.log("all learning checks passed");

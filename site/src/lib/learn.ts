@@ -38,7 +38,7 @@ export function personal(p: Post, when: When, l: Learned | null) {
     out.push({ ok, points: pts, title: `${what}: ${ok ? "works" : "weaker"} on your account`,
       why: `On your ${g.posts} posts like this, the score was ${times(m)} your usual post.`, fix: ok ? undefined : "Your own numbers say this does less well for you. Try your best option instead, or test it once and compare.", surface: ["Reels", "Explore", "Feed"] });
   };
-  add(pick("type", p.format), TYPE_WORD[p.format]);
+  add(pick("type", p.format) ?? (p.format === "photo" ? pick("type", "image") : undefined), TYPE_WORD[p.format]); // the report calls photos "image"
   if (p.format === "reel") add(pick("length", durBucket(p.length)), `Reels of ${durBucket(p.length)}`);
   if (when.day) add(pick("weekday", when.day), `Posting on ${when.day}`);
   const sl = slotOf(when.hour); if (sl) add(pick("slot", sl), `Posting in the ${sl.split(" (")[0]}`);
