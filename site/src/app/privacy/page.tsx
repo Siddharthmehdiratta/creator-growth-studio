@@ -13,6 +13,7 @@ export default function Page() {
           ["Connect Instagram", "You log in on Instagram's own page. The tool never sees your password. Instagram gives your browser a temporary key, which stays in that browser tab and is gone when you close it."],
           ["No accounts, no tracking", "There is no sign-up, no database and no advertising tracker. GitHub Pages, which hosts this site, may keep standard server logs under GitHub's own privacy policy."],
           ["The AI boardroom", "It works by copying a message into your own Claude app. What you paste there is covered by Anthropic's privacy policy, not ours."],
+          ["Fonts", "The typefaces load from Fontshare, a free font service by Indian Type Foundry. Like any website request, your browser shares its IP address with Fontshare to fetch them. No cookies are set by this site."],
           ["Questions", "Ask anything about privacy on our contact page."]].map(([t, d]) => (
           <section key={t} className="border-b py-7 first:pt-0 last:border-b-0"><h2 className="text-xl font-semibold tracking-tight">{t}</h2><p className="mt-2 text-muted-foreground">{d}</p></section>
         ))}

@@ -41,6 +41,7 @@ export const MENU: { name: string; items: Item[] }[] = [
     { title: "About", text: "Who makes this, and why", href: "/about/", icon: "Users" },
     { title: "Open source", text: "Code, licence and how to help", href: "/open-source/", icon: "Github" },
     { title: "Privacy", text: "What happens to your data", href: "/privacy/", icon: "ShieldCheck" },
+    { title: "Terms", text: "The plain-English rules", href: "/terms/", icon: "FileText" },
     { title: "Changelog", text: "What's new, and when", href: "/changelog/", icon: "History" },
     { title: "Founder Plus", text: "Our sister project for founders", href: "https://siddharthmehdiratta.github.io/founder-skill-plus/", icon: "Rocket" },
   ]},
